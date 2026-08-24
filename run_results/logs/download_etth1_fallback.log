@@ -1,0 +1,5 @@
+﻿Trying https://raw.githubusercontent.com/zhouhaoyi/ETDataset/master/ETT/ETTh1.csv
+Failed: HTTP Error 404: Not Found
+Trying https://raw.githubusercontent.com/zhouhaoyi/ETDataset/main/ETT/ETTh1.csv
+Failed: HTTP Error 404: Not Found
+All attempts failed

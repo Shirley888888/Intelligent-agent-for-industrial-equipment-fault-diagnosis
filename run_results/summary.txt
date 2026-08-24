@@ -1,0 +1,9 @@
+﻿
+file      status exitcode log                                                                  
+----      ------ -------- ---                                                                  
+models.py ok            0 C:\Users\limin\Desktop\我的\论文\Homework2\run_results\logs\models.py.log
+train.py  failed      100 C:\Users\limin\Desktop\我的\论文\Homework2\run_results\logs\train.py.log 
+utils.py  ok            0 C:\Users\limin\Desktop\我的\论文\Homework2\run_results\logs\utils.py.log 
+
+
+
