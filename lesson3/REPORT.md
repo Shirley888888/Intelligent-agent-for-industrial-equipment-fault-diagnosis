@@ -110,7 +110,49 @@ LSTM | LSTM(2层, hidden=64) | 53,528 | 1.4515 | 3.7806 | 48 | 1499.2s
 
 > 逐轮结果详见 `outputs/metrics.csv`，曲线图见 `outputs/figures/`。
 
-## 5. 结论与讨论
+## 5. 统一 Test 结果表与曲线（按流程图最后一步补齐）
+
+前面 r1–r7 的各轮表是按"轮次"组织的。为了更直观地回答"哪个模型、哪个结构、哪个超参最好"，本节使用 `summary.py` 把 `outputs/metrics.csv` 汇总成统一的跨轮次对比表与可视化。统一汇总结果也作为后续讨论的直接证据。
+
+### 5.1 各模型在 r1–r7 中的最佳表现
+
+| model    | best_round | best_structure                          | best_mae | best_mse |  params  | best_epoch | train_time_s |
+|:---------|:-----------|:----------------------------------------|---------:|---------:|:--------:|:----------:|-------------:|
+| baseline | r1         | Last Value（取输入最后1个OT值重复24步） |   1.4606 |   3.9684 |     0    |      -     |         0.02 |
+| linear   | r7         | Linear(672→24)                          |   1.3762 |   3.5344 |  16,152  |     200    |        35.86 |
+| mlp      | r2         | MLP(672→128×2层→24)                     |   1.8381 |   6.0383 | 105,752  |       2    |        26.18 |
+| cnn      | r7         | CNN(kernel=5, channels=32)              |   2.2198 |   7.8585 |   1,944  |     115    |        55.29 |
+| lstm     | r4         | LSTM(2层, hidden=64)                    |   1.3658 |   3.5589 |  53,528  |       6    |       371.38 |
+
+> 完整逐轮明细见 `outputs/unified_test_table.md`，CSV 版本见 `outputs/unified_test_table.csv`。
+
+### 5.2 各模型 × 轮次 MAE 明细（统一热图）
+
+![统一 MAE 热图](outputs/figures/unified_mae_heatmap.png)
+
+热图一眼可见：
+- **LSTM** 在 r1–r5 基本是最优（绿/深色），r6/r7 反而变差；
+- **Linear** 在 r5–r7 持续改善，r7 几乎追平 LSTM；
+- **MLP/CNN** 基本处于暖色/红色区，始终不如 Baseline。
+
+### 5.3 各模型最佳 MAE 对比（统一柱状图）
+
+![统一最佳 MAE 对比](outputs/figures/unified_best_per_model.png)
+
+只有 **LSTM(1.3658)** 和 **Linear(1.3762)** 跌破 Baseline（灰色虚线），其余模型均无法打败"取最后一个 OT 值重复"这个简单策略。
+
+### 5.4 结构消融对比（统一柱状图）
+
+![结构消融对比](outputs/figures/unified_structure_ablation.png)
+
+本实验按流程图要求完成了三次结构变化：
+- **MLP 宽度**：hidden 64→128，MAE 从 2.1345 降到 1.8381，改善明显但仍不如 baseline；
+- **CNN 卷积核**：kernel 3→5，MAE 几乎无变化（2.2471→2.2609），说明该参数对结果不敏感；
+- **LSTM 结构**：1层/32 → 2层/64，MAE 从 1.3836 降到 1.3658，达到全实验最优。
+
+> 受实验时间限制，**MLP layers**、**CNN channels**、**LSTM hidden 单独变化** 等单一维度消融未全部补齐；但从现有结果已能判断核心规律：深度模型在 12k 样本窗口上极易过拟合，浅层/线性模型反而更稳健。
+
+## 6. 结论与讨论
 
 ### 三次结构变化实验总结
 
