@@ -245,7 +245,10 @@ def run(cfg, rnd):
             train_losses.append(tr_loss)
             val_losses.append(val_loss)
             if val_loss < best_val:
-                best_val, best_state, best_epoch = val_loss, model.state_dict(), epoch
+                # state_dict() 返回参数引用而非拷贝，必须深拷贝，否则会被后续训练 in-place 污染
+                best_val = val_loss
+                best_state = {k: v.detach().cpu().clone() for k, v in model.state_dict().items()}
+                best_epoch = epoch
             if epoch % 10 == 0 or epoch == epochs:
                 print(f'  epoch {epoch:3d}/{epochs}  train_loss={tr_loss:.5f}  val_loss={val_loss:.5f}')
 

@@ -24,16 +24,24 @@ python train.py --round r3      # 指定轮次编号
 3. 产出：`outputs/metrics.csv`（逐轮累积）、`outputs/figures/*_loss_curve.png`（train/val loss 曲线）、`*_pred_vs_true.png`（预测 vs 真实）、`*_all_models_val_loss.png`（5 模型 val loss 对比）
 4. 每轮完成后更新本文件与 `REPORT.md` 并 push 到 GitHub
 
+## 重要勘误（r7 后全量重跑）
+
+发现并修复了 `train.py` 中 best-权重加载 bug：`model.state_dict()` 返回参数**引用**而非拷贝，
+被后续训练 in-place 污染，导致测试评估误用了最后一个 epoch 的权重。
+已改为深拷贝并重跑 r1–r7 全部轮次，REPORT.md / metrics.csv 均为修复后的数值
+（val loss 曲线与 best_epoch 记录原本正确、不受影响）。
+
 ## 调参历史
 
 | 轮次 | 改动内容 | 关键结果 | 说明 |
 |------|----------|----------|------|
-| r1   | epochs=20 基准配置（快速验证） | LSTM 最优：MAE=11.56、MSE=174.34；Baseline 次优：MAE=2.58 | CPU 训练；小数据集下 persistence 基线很强，MLP/CNN/Linear 仍有优化空间，见 REPORT.md |
-| r2   | epochs 20→100 + MLP hidden 64→128（每模型独立 seed） | LSTM MAE 11.56→7.74、MSE 174→84；MLP MAE 12.67→10.45；CNN 过拟合变差 13.74→17.52 | 第一次结构变化；train.py 加入可复现 seed，同配置跨轮结果完全一致，见 REPORT.md |
-| r3   | CNN kernel 3→5 | CNN MAE 17.52→16.45、MSE 384→352；其余模型与 r2 完全一致 | 第二次结构变化；增大感受野小幅改善 CNN 但仍过拟合，见 REPORT.md |
-| r4   | LSTM 1层/32 → 2层/64 | LSTM MAE 7.74→5.31（↓31%）、MSE 84→39（↓53%）；其余模型与 r2/r3 完全一致 | 第三次结构变化；LSTM 为学习模型最优并逼近 Baseline，三次结构变化实验完成，见 REPORT.md |
-| r5   | lr 0.001→0.0001（训练超参补测 1/3） | CNN MAE 16.45→13.23（↓20%）、MSE 352→256；MLP MSE 158→122；LSTM 反而变差 5.31→6.52 | 小 lr 对 CNN/MLP/Linear 是正收益（CNN 从欠拟合转向充分训练，best_epoch 11→94），对 LSTM 收敛过慢变差，见 REPORT.md |
-| r6   | batch_size 256→128（训练超参补测 2/3） | LSTM MAE 6.52→5.28（↓19%）、MSE 58→43；MLP MAE 9.53→8.75；CNN MAE 13.23→12.60；Linear 变差 20.34→23.70 | 小 batch 的梯度噪声等效隐式正则，对 MLP/CNN/LSTM 均正收益、对 Linear 负收益；小 lr+小 batch 组合 LSTM 最优，见 REPORT.md |
+| r1   | epochs=20 基准配置（快速验证） | LSTM 最优：MAE=9.22、MSE=119.49；Baseline 次优：MAE=2.58 | CPU 训练；小数据集下 persistence 基线很强，见 REPORT.md |
+| r2   | epochs 20→100 + MLP hidden 64→128（每模型独立 seed） | LSTM MAE 9.22→8.37（↓9%）；MLP best-epoch 过早导致 test 偏大（16.61→23.03） | 第一次结构变化；train.py 加入可复现 seed，同配置跨轮结果完全一致，见 REPORT.md |
+| r3   | CNN kernel 3→5 | CNN MAE 15.86→15.20（↓4%）、MSE 344→336；其余模型与 r2 完全一致 | 第二次结构变化；增大感受野小幅改善 CNN 但仍过拟合，见 REPORT.md |
+| r4   | LSTM 1层/32 → 2层/64 | LSTM MAE 8.37→5.46（↓35%）、MSE 98→41（↓58%）；其余模型与 r2/r3 完全一致 | 第三次结构变化；LSTM 为学习模型最优（全实验最佳 MAE 5.46）并逼近 Baseline，见 REPORT.md |
+| r5   | lr 0.001→0.0001（训练超参补测 1/3） | CNN MAE 15.20→13.33（↓12%）、MLP 23.03→15.33（↓33%）、Linear 31.32→23.29；LSTM 反而变差 5.46→7.95 | 小 lr 改善 Linear/MLP/CNN 的 best-epoch 泛化；LSTM 暴露 val/test 时段分布偏移（val 最优但 test 最差），见 REPORT.md |
+| r6   | batch_size 256→128（训练超参补测 2/3） | 各模型基本持平（LSTM 7.95→7.97、CNN 13.33→13.34、MLP 15.33→15.41）；Linear 略变差 23.29→24.01 | 本任务下 batch 减半无明显收益/损失，见 REPORT.md |
+| r7   | epochs 100→200（训练超参补测 3/3） | 与 r6 完全一致（best-epoch 早已选定），仅 LSTM 耗时 47s→112s | 已有 early stopping 时多余 epochs 纯耗时无收益，见 REPORT.md |
 
 ## 环境
 
