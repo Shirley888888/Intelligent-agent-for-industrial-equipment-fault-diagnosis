@@ -23,5 +23,5 @@ models:
     kernel: 5           # r3: 3 -> 5（第二次结构变化）
     channels: 32
   lstm:                # LSTM 结构
-    layers: 1
-    hidden: 32
+    layers: 2           # r4: 1 -> 2（第三次结构变化）
+    hidden: 64          # r4: 32 -> 64
