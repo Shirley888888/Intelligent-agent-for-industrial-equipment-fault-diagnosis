@@ -1,0 +1,27 @@
+# ============================================================
+# 课程任务：ETTh1 过去 seq_len 小时 -> 未来 pred_len 小时油温(OT) 预测
+# 这是每轮超参数调节的唯一入口：修改本文件后运行 `python train.py`
+# ============================================================
+
+data:
+  seq_len: 96          # 输入窗口：过去 96 小时
+  pred_len: 24         # 输出窗口：未来 24 小时
+  train_frac: 0.70     # 时间序列划分：训练 70%
+  val_frac: 0.15       # 验证 15%（其余为测试 15%）
+
+training:
+  epochs: 20           # 训练轮数
+  batch_size: 256
+  lr: 0.001            # 学习率
+  seed: 42
+
+models:
+  mlp:                 # MLP 结构
+    hidden: 64
+    layers: 2
+  cnn:                 # CNN 结构（一维卷积）
+    kernel: 3
+    channels: 32
+  lstm:                # LSTM 结构
+    layers: 1
+    hidden: 32

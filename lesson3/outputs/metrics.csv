@@ -1,0 +1,6 @@
+﻿round,model,structure,params,mae,mse,train_time_s,best_epoch,best_val_loss,final_val_loss,final_train_loss
+r1,baseline,Last Value（取输入最后1个OT值重复24步）,0,2.5763927,11.376694,0.0,-,-,-,-
+r1,linear,Linear(672→24),16152,23.094389,699.33136,0.24,1,0.661606,1.131505,0.022144
+r1,mlp,MLP(672→64×2层→24),48792,12.66685,217.4318,0.32,3,0.073845,0.223783,0.007211
+r1,cnn,"CNN(kernel=3, channels=32)",1496,13.7381525,276.59467,0.4,12,0.17642,0.381018,0.056182
+r1,lstm,"LSTM(1层, hidden=32)",6040,11.56127,174.34334,2.08,8,0.102725,0.116566,0.079499
