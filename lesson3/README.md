@@ -29,8 +29,7 @@ python train.py --round r3      # 指定轮次编号
 | 轮次 | 改动内容 | 关键结果 | 说明 |
 |------|----------|----------|------|
 | r1   | epochs=20 基准配置（快速验证） | LSTM 最优：MAE=11.56、MSE=174.34；Baseline 次优：MAE=2.58 | CPU 训练；小数据集下 persistence 基线很强，MLP/CNN/Linear 仍有优化空间，见 REPORT.md |
-| r2   | —        | —        | 待执行：完整 epochs=100 基准 |
-| ...  | ...      | ...      | ...  |
+| r2   | epochs 20→100 + MLP hidden 64→128 | LSTM MAE 11.56→4.56、MSE 174→32；MLP MAE 12.67→8.15；CNN 过拟合变差 13.74→17.37 | 第一次结构变化；CNN 在 100 epoch 下严重过拟合，见 REPORT.md |
 
 ## 环境
 

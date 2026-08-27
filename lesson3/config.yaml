@@ -10,14 +10,14 @@ data:
   val_frac: 0.15       # 验证 15%（其余为测试 15%）
 
 training:
-  epochs: 20           # 训练轮数
+  epochs: 100           # 训练轮数
   batch_size: 256
   lr: 0.001            # 学习率
   seed: 42
 
 models:
   mlp:                 # MLP 结构
-    hidden: 64
+    hidden: 128         # r2: 64 -> 128（第一次结构变化）
     layers: 2
   cnn:                 # CNN 结构（一维卷积）
     kernel: 3
