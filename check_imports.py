@@ -1,5 +1,5 @@
-﻿import importlib
-modules = ['torch','sklearn','matplotlib','tqdm','pandas','numpy']
+﻿import importlib.util
+modules = ['torch', 'sklearn', 'matplotlib', 'tqdm', 'pandas', 'numpy']
 for m in modules:
     spec = importlib.util.find_spec(m)
     if spec is None:

@@ -1,3 +1,0 @@
-﻿Found existing data\ETTh1.csv
-Epoch 1/1  train_loss=977.0674  val_mae=27.4131
-Results written to results/metrics.csv and results/figures/pred_vs_true.png (if available)
