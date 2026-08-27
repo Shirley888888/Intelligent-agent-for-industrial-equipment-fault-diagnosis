@@ -33,6 +33,7 @@ python train.py --round r3      # 指定轮次编号
 | r3   | CNN kernel 3→5 | CNN MAE 17.52→16.45、MSE 384→352；其余模型与 r2 完全一致 | 第二次结构变化；增大感受野小幅改善 CNN 但仍过拟合，见 REPORT.md |
 | r4   | LSTM 1层/32 → 2层/64 | LSTM MAE 7.74→5.31（↓31%）、MSE 84→39（↓53%）；其余模型与 r2/r3 完全一致 | 第三次结构变化；LSTM 为学习模型最优并逼近 Baseline，三次结构变化实验完成，见 REPORT.md |
 | r5   | lr 0.001→0.0001（训练超参补测 1/3） | CNN MAE 16.45→13.23（↓20%）、MSE 352→256；MLP MSE 158→122；LSTM 反而变差 5.31→6.52 | 小 lr 对 CNN/MLP/Linear 是正收益（CNN 从欠拟合转向充分训练，best_epoch 11→94），对 LSTM 收敛过慢变差，见 REPORT.md |
+| r6   | batch_size 256→128（训练超参补测 2/3） | LSTM MAE 6.52→5.28（↓19%）、MSE 58→43；MLP MAE 9.53→8.75；CNN MAE 13.23→12.60；Linear 变差 20.34→23.70 | 小 batch 的梯度噪声等效隐式正则，对 MLP/CNN/LSTM 均正收益、对 Linear 负收益；小 lr+小 batch 组合 LSTM 最优，见 REPORT.md |
 
 ## 环境
 
