@@ -12,7 +12,7 @@ data:
 training:
   epochs: 100           # 训练轮数
   batch_size: 256
-  lr: 0.001            # 学习率
+  lr: 0.0001           # r5: 0.001 -> 0.0001（第一次训练超参变化：学习率降 10 倍，观察过拟合与最佳 epoch 变化）
   seed: 42
 
 models:
