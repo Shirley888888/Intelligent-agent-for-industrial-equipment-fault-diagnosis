@@ -227,6 +227,8 @@ def run(cfg, rnd):
             print(f'  MAE={mae:.4f}  MSE={mse:.4f}  time={elapsed:.2f}s  (baseline 无训练)')
             continue
 
+        # 每个模型训练前独立重置 seed，保证同配置跨轮结果完全一致（结构互不影响）
+        set_seed(tr_cfg.get('seed', 42))
         model = build_model(name, cfg, n_features, seq_len, pred_len).to(device)
         params = sum(p.numel() for p in model.parameters())
         optim = torch.optim.Adam(model.parameters(), lr=lr)
