@@ -27,7 +27,11 @@ python summary.py                     # 汇总 Validation 结果表 + 最终 Tes
 5. **字段校验**：`utils.py` 严格校验 7 标准列齐全、非空、无 NaN/Inf，异常直接报错。
 
 > 旧切分方式（先滑窗后切分）的 r1–r7 结果已归档为 `outputs/metrics_legacy_oldsplit.csv`，
-> 不作为最终结论依据；待新切分方式统一重跑后更新结论。
+> 不作为最终结论依据。
+>
+> **新切分方式已统一重跑完成（r8，2026-09-01）**：先按时间切原始序列 70/15/15、再段内滑窗，
+> 5 个模型各 200 epochs 全量训练。当前结论见 `REPORT.md` 第 6 节：
+> 最终方案为 **Linear**（Test MAE=1.3788），优于 Last-Value Baseline（Test MAE=1.4597）约 5.5%。
 
 ## 每轮调参工作流
 
@@ -60,6 +64,7 @@ python summary.py                     # 汇总 Validation 结果表 + 最终 Tes
 | r5   | lr 0.001→0.0001（训练超参补测 1/3） | LSTM 1.38（略变差）；CNN 2.25（略好） | 见 REPORT.md |
 | r6   | batch_size 256→128（训练超参补测 2/3） | **Linear 1.39（明显改善）**；LSTM 1.45（变差） | 见 REPORT.md |
 | r7   | epochs 100→200（训练超参补测 3/3） | **Linear 1.376（追平 LSTM，零过拟合，仅 36s）**；LSTM 无改善 | 见 REPORT.md |
+| r8   | **新切分正式重跑**：先切分后滑窗，全模型 200 epochs（lr=1e-4, bs=128） | **Linear 最终方案 Test MAE=1.3788**（优于 Baseline 1.4597 约 5.5%）；LSTM 新切分下 val 1.95 不再占优 | 结论依据，见 REPORT.md 第 4/5/6 节 |
 
 ## 环境
 

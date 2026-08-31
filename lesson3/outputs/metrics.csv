@@ -1,6 +1,6 @@
 ﻿round,model,structure,params,val_mae,val_mse,train_time_s,best_epoch,best_val_loss,final_val_loss,final_train_loss,split_mode
-r8,baseline,Last Value（取输入最后1个OT值重复24步）,0,1.2838986,2.9112365,0.04,-,-,-,-,time-first
-r8,linear,Linear(672→24),16152,2.8123648,12.690027,0.4,2,0.182074,0.182074,0.230282,time-first
-r8,mlp,MLP(672→128×2层→24),105752,3.816013,19.045053,0.55,2,0.273255,0.273255,0.167799,time-first
-r8,cnn,"CNN(kernel=5, channels=32)",1944,11.71577,143.82994,0.67,2,2.063647,2.063647,0.88887,time-first
-r8,lstm,"LSTM(2层, hidden=64)",53528,8.405037,76.026375,10.6,2,1.090813,1.090813,0.534379,time-first
+r8,baseline,Last Value（取输入最后1个OT值重复24步）,0,1.2838986,2.9112365,0.02,-,-,-,-,time-first
+r8,linear,Linear(672→24),16152,1.2982606,2.871864,58.45,200,0.041205,0.041205,0.080714,time-first
+r8,mlp,MLP(672→128×2层→24),105752,2.9185967,12.731298,112.96,25,0.182666,0.225158,0.014271,time-first
+r8,cnn,"CNN(kernel=5, channels=32)",1944,2.466294,9.567145,89.67,19,0.137268,0.165888,0.151177,time-first
+r8,lstm,"LSTM(2层, hidden=64)",53528,1.9497565,6.085624,1929.43,36,0.087315,0.558435,0.023434,time-first

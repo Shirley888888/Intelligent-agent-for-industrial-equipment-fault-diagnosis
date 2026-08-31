@@ -5,4 +5,4 @@
 | round   | model    | structure                               |   params |   test_mae |   test_mse |   train_time_s | best_epoch   | best_val_loss   | split_mode   |
 |:--------|:---------|:----------------------------------------|---------:|-----------:|-----------:|---------------:|:-------------|:----------------|:-------------|
 | final   | baseline | Last Value（取输入最后1个OT值重复24步） |        0 |     1.4597 |     3.9941 |           0.02 | -            | -               | time-first   |
-| final   | linear   | Linear(672→24)                          |    16152 |     2.813  |    13.124  |           0.39 | 2            | 0.182074        | time-first   |
+| final   | linear   | Linear(672→24)                          |    16152 |     1.3788 |     3.5725 |          47.75 | 200          | 0.041205        | time-first   |
