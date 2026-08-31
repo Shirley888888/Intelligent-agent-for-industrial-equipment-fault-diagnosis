@@ -34,11 +34,12 @@ class MLP(nn.Module):
 
 
 class Conv1DModel(nn.Module):
-    """一维卷积：沿时间轴提取局部模式 -> 全局平均池化 -> 全连接输出。"""
+    """一维卷积：沿时间轴提取局部模式 -> ReLU 激活 -> 全局平均池化 -> 全连接输出。"""
 
     def __init__(self, in_channels=7, channels=32, kernel=3, pred_len=24):
         super().__init__()
         self.conv = nn.Conv1d(in_channels, channels, kernel)
+        self.relu = nn.ReLU()
         self.pool = nn.AdaptiveAvgPool1d(1)
         self.fc = nn.Linear(channels, pred_len)
 
@@ -46,6 +47,7 @@ class Conv1DModel(nn.Module):
         # x: (B, T, F) -> (B, F, T)
         x = x.permute(0, 2, 1)
         x = self.conv(x)
+        x = self.relu(x)
         x = self.pool(x).squeeze(-1)
         return self.fc(x)
 

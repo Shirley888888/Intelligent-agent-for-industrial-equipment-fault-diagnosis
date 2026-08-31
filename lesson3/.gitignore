@@ -6,3 +6,4 @@ venv/
 *.err
 .DS_Store
 Thumbs.db
+outputs/.round

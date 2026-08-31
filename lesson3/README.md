@@ -9,10 +9,25 @@
 ## 运行方式
 
 ```bash
-cd lesson3
-python train.py                 # 默认读取 config.yaml，自动取下一轮编号 r1, r2, ...
-python train.py --round r3      # 指定轮次编号
+python train.py                       # 默认读取 config.yaml，自动取下一轮编号 r8, r9, ...
+python train.py --round r8            # 指定轮次编号
+python train.py --epochs 2            # 临时覆盖训练轮数（快速验证流程）
+python evaluate.py --model linear --model lstm   # 最终方案确定后在 Test 上正式评价（一次）
+python summary.py                     # 汇总 Validation 结果表 + 最终 Test 正式评价
 ```
+
+## 流程修正（课前评审意见，v2）
+
+1. **数据切分顺序**：先按时间把原始序列切成 Train/Val/Test（70/15/15），再在各段内部构造滑窗，
+   段间样本互不跨越（消除旧版“先滑窗后切分”造成的边界样本重叠）。
+2. **模型选择**：训练阶段仅在 Validation 上评估（`metrics.csv` 记录 `val_mae/val_mse`）；
+   Test 只在最终方案确定后由 `evaluate.py` 做一次正式评价（`outputs/final_test_results.csv`）。
+3. **CNN**：卷积后补充 ReLU 激活。
+4. **Baseline 预测图**：反归一化到原始油温单位后再绘图。
+5. **字段校验**：`utils.py` 严格校验 7 标准列齐全、非空、无 NaN/Inf，异常直接报错。
+
+> 旧切分方式（先滑窗后切分）的 r1–r7 结果已归档为 `outputs/metrics_legacy_oldsplit.csv`，
+> 不作为最终结论依据；待新切分方式统一重跑后更新结论。
 
 ## 每轮调参工作流
 
@@ -20,9 +35,10 @@ python train.py --round r3      # 指定轮次编号
    - 结构超参：`models.mlp.hidden / layers`、`models.cnn.kernel / channels`、`models.lstm.layers / hidden`
    - 训练超参：`training.epochs / batch_size / lr / seed`
    - 数据超参：`data.seq_len / pred_len / train_frac / val_frac`
-2. 运行 `python train.py`
-3. 产出：`outputs/metrics.csv`（逐轮累积）、`outputs/figures/*_loss_curve.png`（train/val loss 曲线）、`*_pred_vs_true.png`（预测 vs 真实）、`*_all_models_val_loss.png`（5 模型 val loss 对比）
-4. 每轮完成后更新本文件与 `REPORT.md` 并 push 到 GitHub
+2. 运行 `python train.py`（训练阶段只看 Validation 指标选型）
+3. 产出：`outputs/metrics.csv`（逐轮累积，含 `val_mae/val_mse`）、`outputs/figures/*_loss_curve.png`（train/val loss 曲线）、`*_pred_vs_true.png`（Validation 预测 vs 真实）、`*_all_models_val_loss.png`（5 模型 val loss 对比）
+4. 结构/超参定稿后：`python evaluate.py --model <最终模型>` → Test 正式评价
+5. 每轮完成后更新本文件与 `REPORT.md` 并 push 到 GitHub
 
 ## 重大勘误（全量重跑）
 
@@ -33,7 +49,7 @@ python train.py --round r3      # 指定轮次编号
 3. 删除过时的 `extracted_project`、`run_results` 等错误阶段产物；修复 `check_imports.py` 的 BOM；
 4. 修复 `train.py` best-权重加载 bug（`state_dict()` 需深拷贝，否则被后续训练 in-place 污染）。
 
-## 调参历史
+## 调参历史（r1–r7 为旧切分方式存档）
 
 | 轮次 | 改动内容 | 关键结果（真实 ETTh1） | 说明 |
 |------|----------|------------------------|------|
@@ -54,10 +70,15 @@ python train.py --round r3      # 指定轮次编号
 
 ```
 outputs/
-├── metrics.csv                          # 每轮全部模型指标（累积）
+├── metrics.csv                          # 每轮全部模型 Validation 指标（累积，val_mae/val_mse）
+├── metrics_legacy_oldsplit.csv          # 旧切分方式 r1–r7 结果存档（不作结论依据）
+├── final_test_results.csv               # 最终方案 Test 正式评价（evaluate.py 生成）
+├── unified_test_table.csv / .md         # summary.py 生成的模型选择统一表（Validation）
+├── final_test_table.md                  # 最终 Test 正式评价表（summary.py 生成）
 ├── .round                               # 当前轮次计数器（自动维护）
 └── figures/
     ├── rX_{model}_loss_curve.png        # 每模型 train/val loss 随 epoch 曲线
-    ├── rX_{model}_pred_vs_true.png      # 测试集首个样本预测 vs 真实
-    └── rX_all_models_val_loss.png       # 5 模型 val loss 对比
+    ├── rX_{model}_pred_vs_true.png      # Validation 首个样本预测 vs 真实（反归一化）
+    ├── rX_all_models_val_loss.png       # 5 模型 val loss 对比
+    └── final_{model}_pred_vs_true.png   # Test 正式评价预测 vs 真实（evaluate.py 生成）
 ```

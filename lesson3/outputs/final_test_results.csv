@@ -1,0 +1,3 @@
+﻿round,model,structure,params,test_mae,test_mse,train_time_s,best_epoch,best_val_loss,split_mode
+final,baseline,Last Value（取输入最后1个OT值重复24步）,0,1.4596671,3.9941022,0.02,-,-,time-first
+final,linear,Linear(672→24),16152,2.8130283,13.123956,0.39,2,0.182074,time-first

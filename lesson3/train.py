@@ -3,11 +3,18 @@
 每轮运行：
   python train.py                 # 自动取下一轮编号 r1, r2, ...
   python train.py --round r3      # 手动指定轮次编号
+  python train.py --epochs 2      # 临时覆盖训练轮数（快速验证流程）
 
-输出（lesson3/outputs/）：
-  - metrics.csv                   每轮全部模型的指标（可累积追溯）
+评估约定（修正版）：
+  - 训练阶段只在 **Validation** 集上评估（val_mae / val_mse），
+    模型结构与超参数一律根据 Validation 结果选择；
+  - Test 集不参与训练阶段，只在最终方案确定后由 evaluate.py
+    做一次正式评价（见 evaluate.py 用法）。
+
+输出（outputs/）：
+  - metrics.csv                   每轮全部模型的验证指标（可累积追溯）
   - figures/{round}_{model}_loss_curve.png    train/val loss 随 epoch 曲线
-  - figures/{round}_{model}_pred_vs_true.png  测试集首个样本预测 vs 真实
+  - figures/{round}_{model}_pred_vs_true.png  Validation 首个样本预测 vs 真实
   - figures/{round}_all_models_val_loss.png   5 模型 val loss 对比
 """
 import argparse
@@ -157,7 +164,7 @@ def save_pred_vs_true(rnd, model_name, pred_orig, true_orig):
     plt.plot(x, p0, 's--', label='pred', ms=3)
     plt.xlabel('hour offset')
     plt.ylabel('OT')
-    plt.title(f'{rnd} | {model_name} test first sample')
+    plt.title(f'{rnd} | {model_name} val first sample')
     plt.legend()
     plt.grid(alpha=0.3)
     path = os.path.join(FIG_DIR, f'{rnd}_{model_name}_pred_vs_true.png')
@@ -200,10 +207,12 @@ def run(cfg, rnd):
                    train_frac=data_cfg['train_frac'], val_frac=data_cfg['val_frac'],
                    seed=tr_cfg.get('seed', 42))
     n_features = len(d['features'])
+    print(f'[round={rnd}] split={d["split_mode"]}  '
+          f'windows: train={d["n_windows"]["train"]} '
+          f'val={d["n_windows"]["val"]} test={d["n_windows"]["test"]}')
 
     train_loader = make_loader(d['X_train'], d['y_train'], batch_size)
     val_loader = make_loader(d['X_val'], d['y_val'], batch_size)
-    test_loader = make_loader(d['X_test'], d['y_test'], batch_size)
     loss_fn = nn.MSELoss()
 
     rows, all_val_losses = [], {}
@@ -214,17 +223,20 @@ def run(cfg, rnd):
 
         if name == 'baseline':
             t0 = time.time()
-            pred, true = baseline_predict(test_loader, d['target_idx'])
+            pred, true = baseline_predict(val_loader, d['target_idx'])
             elapsed = time.time() - t0
-            mae, mse = mae_mse(to_original_ot(pred, d['scaler'], d['target_idx']),
-                               to_original_ot(true, d['scaler'], d['target_idx']))
+            # 修正：预测图必须用反归一化后的原始油温单位
+            pred_orig = to_original_ot(pred, d['scaler'], d['target_idx'])
+            true_orig = to_original_ot(true, d['scaler'], d['target_idx'])
+            val_mae, val_mse = mae_mse(pred_orig, true_orig)
             rows.append({'round': rnd, 'model': name, 'structure': structure,
-                         'params': 0, 'mae': mae, 'mse': mse,
+                         'params': 0, 'val_mae': val_mae, 'val_mse': val_mse,
                          'train_time_s': round(elapsed, 2), 'best_epoch': '-',
                          'best_val_loss': '-', 'final_val_loss': '-',
-                         'final_train_loss': '-'})
-            save_pred_vs_true(rnd, name, pred, true)
-            print(f'  MAE={mae:.4f}  MSE={mse:.4f}  time={elapsed:.2f}s  (baseline 无训练)')
+                         'final_train_loss': '-', 'split_mode': 'time-first'})
+            save_pred_vs_true(rnd, name, pred_orig, true_orig)
+            print(f'  val MAE={val_mae:.4f}  val MSE={val_mse:.4f}  '
+                  f'time={elapsed:.2f}s  (baseline 无训练)')
             continue
 
         # 每个模型训练前独立重置 seed，保证同配置跨轮结果完全一致（结构互不影响）
@@ -255,21 +267,23 @@ def run(cfg, rnd):
         elapsed = time.time() - t0
         model.load_state_dict(best_state)
 
-        pred, true = predict(model, test_loader, device)
-        mae, mse = mae_mse(to_original_ot(pred, d['scaler'], d['target_idx']),
-                           to_original_ot(true, d['scaler'], d['target_idx']))
+        # 训练阶段只在 Validation 上评估；Test 由 evaluate.py 在最终方案确定后单独评价
+        pred, true = predict(model, val_loader, device)
+        pred_orig = to_original_ot(pred, d['scaler'], d['target_idx'])
+        true_orig = to_original_ot(true, d['scaler'], d['target_idx'])
+        val_mae, val_mse = mae_mse(pred_orig, true_orig)
         rows.append({'round': rnd, 'model': name, 'structure': structure,
-                     'params': params, 'mae': mae, 'mse': mse,
+                     'params': params, 'val_mae': val_mae, 'val_mse': val_mse,
                      'train_time_s': round(elapsed, 2), 'best_epoch': best_epoch,
                      'best_val_loss': round(best_val, 6),
                      'final_val_loss': round(val_losses[-1], 6),
-                     'final_train_loss': round(train_losses[-1], 6)})
+                     'final_train_loss': round(train_losses[-1], 6),
+                     'split_mode': 'time-first'})
         all_val_losses[name] = val_losses
 
         save_loss_curve(rnd, name, train_losses, val_losses, best_epoch)
-        save_pred_vs_true(rnd, name, to_original_ot(pred, d['scaler'], d['target_idx']),
-                          to_original_ot(true, d['scaler'], d['target_idx']))
-        print(f'  params={params}  test MAE={mae:.4f}  MSE={mse:.4f}  '
+        save_pred_vs_true(rnd, name, pred_orig, true_orig)
+        print(f'  params={params}  val MAE={val_mae:.4f}  val MSE={val_mse:.4f}  '
               f'best_epoch={best_epoch}  time={elapsed:.1f}s')
 
     # 汇总指标：追加到 metrics.csv
@@ -295,10 +309,16 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--config', default=os.path.join(BASE_DIR, 'config.yaml'))
     parser.add_argument('--round', default=None, help='轮次编号，如 r3；缺省自动累加')
+    parser.add_argument('--epochs', type=int, default=None,
+                        help='临时覆盖 config 的 epochs（如快速验证流程用 2）')
     args = parser.parse_args()
 
     with open(args.config, encoding='utf-8') as f:
         config = yaml.safe_load(f)
+
+    if args.epochs is not None:
+        config['training']['epochs'] = args.epochs
+        print(f'[cli] --epochs 覆盖为 {args.epochs}（用于快速验证，正式实验请勿使用）')
 
     rnd = next_round(args.round)
     run(config, rnd)
