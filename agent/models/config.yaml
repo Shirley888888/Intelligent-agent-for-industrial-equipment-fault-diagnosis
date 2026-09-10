@@ -1,0 +1,38 @@
+model_name: LSTM
+model_checkpoint: agent/models/best_model.pt
+scaler: agent/models/scaler.pkl
+input_len: 96
+pred_len: 24
+features:
+- HUFL
+- HULL
+- MUFL
+- MULL
+- LUFL
+- LULL
+- OT
+target: OT
+risk:
+  medium: 75.0
+  high: 90.0
+risk_definitions:
+  mean: mean of 24-hour forecast
+  max: maximum forecast temperature
+  rise: maximum forecast temperature minus first forecast temperature
+  max_slope: maximum positive one-hour forecast temperature change
+data_validation:
+  require_finite: true
+  required_shape:
+  - 96
+  - 7
+
+
+anomaly:
+  thresholds:
+    jump_c_per_hour: 5.0
+    rise_6h_c: 3.0
+    rise_12h_c: 5.0
+    rise_24h_c: 8.0
+    slope_6h_c_per_hour: 0.5
+    slope_24h_c_per_hour: 0.35
+  note: "Heuristic project thresholds; not protection-system or industry-standard trip limits."

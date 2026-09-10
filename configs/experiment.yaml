@@ -1,0 +1,56 @@
+seed: 42
+input_len: 96
+pred_len: 24
+stride: 1
+features: [HUFL, HULL, MUFL, MULL, LUFL, LULL, OT]
+target: OT
+split: [0.70, 0.15, 0.15]
+
+models:
+  Linear:
+    hidden_size: 128
+    dropout: 0.0
+    lr: 0.001
+    batch_size: 128
+    epochs: 80
+    patience: 10
+  MLP:
+    hidden_size: 256
+    num_layers: 2
+    dropout: 0.10
+    lr: 0.001
+    batch_size: 128
+    epochs: 80
+    patience: 10
+  CNN1D:
+    hidden_size: 128
+    kernel_size: 5
+    dropout: 0.10
+    lr: 0.001
+    batch_size: 128
+    epochs: 80
+    patience: 10
+  LSTM:
+    hidden_size: 128
+    num_layers: 2
+    dropout: 0.10
+    lr: 0.001
+    batch_size: 128
+    epochs: 80
+    patience: 10
+  TCN:
+    channels: [64, 64, 128]
+    kernel_size: 5
+    dropout: 0.10
+    lr: 0.001
+    batch_size: 128
+    epochs: 80
+    patience: 10
+
+optimizer:
+  weight_decay: 0.00001
+  grad_clip: 1.0
+
+risk:
+  medium: 75.0
+  high: 90.0

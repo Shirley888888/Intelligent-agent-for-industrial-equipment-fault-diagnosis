@@ -1,0 +1,67 @@
+{
+  "Persistence": {
+    "MAE": 1.459667215352309,
+    "MSE": 3.994103122965504,
+    "MeanTempError": 0.004762345729298652,
+    "MaxTempError": 10.90399992465973,
+    "MaxRiseRateError": 3.23600006103516,
+    "PeakError": 2.1673720838814234,
+    "Model": "Persistence",
+    "BestEpoch": 0
+  },
+  "Linear": {
+    "MAE": 1.6866311194536043,
+    "MSE": 4.986579034425068,
+    "MeanTempError": 0.22850471564716812,
+    "MaxTempError": 12.40205260397111,
+    "MaxRiseRateError": 3.8312852784089113,
+    "PeakError": 1.6534214025528937,
+    "Model": "Linear",
+    "BestEpoch": 2,
+    "BestValLoss": 0.11834681085471449
+  },
+  "MLP": {
+    "MAE": 1.61146458198301,
+    "MSE": 4.658007648851387,
+    "MeanTempError": 0.5281405980420718,
+    "MaxTempError": 10.177795902455449,
+    "MaxRiseRateError": 2.6927410802772176,
+    "PeakError": 1.549907602750687,
+    "Model": "MLP",
+    "BestEpoch": 2,
+    "BestValLoss": 0.22265152332657515
+  },
+  "CNN1D": {
+    "MAE": 2.261807067397952,
+    "MSE": 7.570950665342459,
+    "MeanTempError": -0.6237287088362153,
+    "MaxTempError": 9.583080048226842,
+    "MaxRiseRateError": 2.7335081828022165,
+    "PeakError": 2.7280555935123947,
+    "Model": "CNN1D",
+    "BestEpoch": 4,
+    "BestValLoss": 0.19969433281979948
+  },
+  "LSTM": {
+    "MAE": 1.3644703442659538,
+    "MSE": 3.489795602952252,
+    "MeanTempError": 0.35300652855554077,
+    "MaxTempError": 10.568579677062887,
+    "MaxRiseRateError": 2.8260106880895517,
+    "PeakError": 1.300669162538506,
+    "Model": "LSTM",
+    "BestEpoch": 5,
+    "BestValLoss": 0.0727255103964756
+  },
+  "TCN": {
+    "MAE": 1.5170925487707416,
+    "MSE": 4.245252819545034,
+    "MeanTempError": 0.6825726774877586,
+    "MaxTempError": 11.394069690390351,
+    "MaxRiseRateError": 2.469316058342198,
+    "PeakError": 1.440944929996334,
+    "Model": "TCN",
+    "BestEpoch": 1,
+    "BestValLoss": 0.08963746682657847
+  }
+}
