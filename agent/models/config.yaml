@@ -1,0 +1,63 @@
+model:
+  type: LSTM  # modify:model-unification - single deployment model
+  hidden_size: 128  # modify:model-unification
+  num_layers: 2  # modify:model-unification
+  dropout: 0.1  # modify:model-unification
+model_checkpoint: agent/models/best_model.pt  # modify:model-unification - best_model.pt contains LSTM weights
+scaler: agent/models/scaler.pkl
+input_len: 96
+pred_len: 24
+features:
+- HUFL
+- HULL
+- MUFL
+- MULL
+- LUFL
+- LULL
+- OT
+target: OT
+risk:  # modify:dynamic-risk
+  mode: dynamic_quantile  # modify:dynamic-risk
+  data_path: data/ETTh1.csv  # modify:dynamic-risk
+  train_ratio: 0.70  # modify:dynamic-risk
+  forecast_horizon: 24  # modify:dynamic-risk
+  quantiles:  # modify:dynamic-risk
+    temperature:
+      medium: 0.82  # modify:dynamic-risk - tuned from demo validation to separate stable/slow_rise
+      high: 0.92  # modify:dynamic-risk
+    rise:
+      medium: 0.75  # modify:dynamic-risk
+      high: 0.95  # modify:dynamic-risk
+    slope:
+      medium: 0.75  # modify:dynamic-risk
+      high: 0.95  # modify:dynamic-risk
+risk_definitions:
+  mean: mean of 24-hour forecast
+  max: maximum forecast temperature
+  rise: maximum forecast temperature minus first forecast temperature
+  max_slope: maximum positive one-hour forecast temperature change
+  threshold_source: chronological training split quantiles  # modify:dynamic-risk
+data_validation:
+  require_finite: true
+  required_shape:
+  - 96
+  - 7
+
+
+rag:  # modify:rag-config
+  top_k: 3
+  similarity_threshold: 0.08
+  chunk_size: 40
+  chunk_overlap: 8
+react:  # modify:react-audit
+  max_steps: 4
+
+anomaly:
+  thresholds:
+    jump_c_per_hour: 5.0
+    rise_6h_c: 3.0
+    rise_12h_c: 5.0
+    rise_24h_c: 8.0
+    slope_6h_c_per_hour: 0.5
+    slope_24h_c_per_hour: 0.35
+  note: "Heuristic project thresholds; not protection-system or industry-standard trip limits."

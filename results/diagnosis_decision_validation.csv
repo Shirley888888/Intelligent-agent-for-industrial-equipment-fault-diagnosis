@@ -1,0 +1,5 @@
+case,forecast_risk,historical_anomaly,diagnosis
+synthetic_stable,LOW,NORMAL,NORMAL
+synthetic_warning,MEDIUM,WARNING,WARNING
+synthetic_historical_anomaly,LOW,ANOMALY,ANOMALY
+synthetic_forecast_high,HIGH,NORMAL,ANOMALY

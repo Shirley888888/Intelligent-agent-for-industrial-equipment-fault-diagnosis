@@ -1,0 +1,31 @@
+{
+  "model": "LSTM",
+  "input_hours": 96,
+  "forecast_hours": 24,
+  "target": "OT",
+  "risk": {
+    "mean": 9.044546568279848,
+    "max": 10.779261864020292,
+    "rise": 1.4373811708615882,
+    "max_slope": 0.7184718868423872,
+    "risk_level": "LOW",
+    "peak_hour_ahead": 22
+  },
+  "anomaly": {
+    "status": "NORMAL",
+    "score": 0.0,
+    "latest_temperature": 9.56700038909912,
+    "rise_6h": 0.14100074768066406,
+    "rise_12h": -0.07099914550781428,
+    "rise_24h": -0.9849996566772479,
+    "slope_6h": -0.2090285164969314,
+    "slope_24h": 0.017769123989602623,
+    "max_abs_jump": 1.406999588012697,
+    "max_positive_slope": 1.406999588012697
+  },
+  "diagnosis": {
+    "level": "NORMAL",
+    "diagnosis": "Temperature behavior is currently stable with no configured historical anomaly or forecast thermal risk trigger.",
+    "recommendation": "Continue routine monitoring and reassess with the next 96-hour observation window."
+  }
+}

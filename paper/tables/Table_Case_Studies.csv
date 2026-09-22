@@ -1,0 +1,4 @@
+case,data_source,input_start,input_end,input_last24_rise_C,input_last24_slope_C_per_h,forecast_peak_C,forecast_rise_C,forecast_max_slope_C_per_h,risk_level,anomaly_status,diagnosis_level,diagnosis
+stable,ETTh1 real-data window,2016-08-28 00:00:00,2016-08-31 23:00:00,0.0,0.0,25.276631557381503,0.9575549750756204,0.3649584320825561,LOW,,,
+slow_rise,ETTh1 real-data window,2016-08-29 19:00:00,2016-09-02 18:00:00,1.12600135803223,0.04895658078401,31.58822305800869,0.6757950592290634,0.8600721319254312,LOW,,,
+fast_rise,ETTh1 real-data window,2016-07-12 19:00:00,2016-07-16 18:00:00,18.713001251220703,0.8136087500530741,35.69828857729857,1.4979285841527883,0.6682871541053572,LOW,,,

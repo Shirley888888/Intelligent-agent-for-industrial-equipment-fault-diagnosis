@@ -1,0 +1,17 @@
+{
+  "v8_version": "Paper & Demo Edition",
+  "source_baseline": "V7",
+  "retrained": false,
+  "model_comparison": true,
+  "case_studies": [
+    "stable",
+    "slow_rise",
+    "fast_rise"
+  ],
+  "paper_tables": true,
+  "paper_figures": true,
+  "architecture_diagram": true,
+  "diagnosis_flow": true,
+  "demo_output": true,
+  "paper_results_narrative": true
+}
