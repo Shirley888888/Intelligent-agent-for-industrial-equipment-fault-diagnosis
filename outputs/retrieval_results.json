@@ -1,0 +1,608 @@
+{
+  "configuration": {
+    "top_k": 3,
+    "similarity_threshold": 0.35
+  },
+  "summary": {
+    "total_queries": 12,
+    "passed": 11,
+    "failed": 1,
+    "overall_accuracy": 0.9167,
+    "positive_query_hit_rate": 1.0,
+    "rejection_accuracy": 0.5,
+    "top_k": 3,
+    "similarity_threshold": 0.35
+  },
+  "results": [
+    {
+      "query_id": "Q01",
+      "type": "direct_match",
+      "query": "油温持续升高但是负载变化不大，应该关注什么？",
+      "expected_kb": [
+        "KB-017"
+      ],
+      "should_reject": false,
+      "top_k_results": [
+        {
+          "kb_id": "KB-017",
+          "chunk_id": "KB-017-C000",
+          "similarity": 0.816497,
+          "text": "当油温持续升高但负载变化不大时，应重点关注散热能力是否下降。"
+        },
+        {
+          "kb_id": "KB-031",
+          "chunk_id": "KB-031-C000",
+          "similarity": 0.5,
+          "text": "持续过载可能导致油温逐步升高。"
+        },
+        {
+          "kb_id": "KB-026",
+          "chunk_id": "KB-026-C000",
+          "similarity": 0.408248,
+          "text": "冷却风扇停转或异常会降低散热能力，并可能导致油温继续升高。"
+        }
+      ],
+      "retrieved_kb": [
+        "KB-017",
+        "KB-031",
+        "KB-026"
+      ],
+      "evidence": [
+        {
+          "kb_id": "KB-017",
+          "chunk_id": "KB-017-C000",
+          "similarity": 0.816497,
+          "text": "当油温持续升高但负载变化不大时，应重点关注散热能力是否下降。"
+        },
+        {
+          "kb_id": "KB-031",
+          "chunk_id": "KB-031-C000",
+          "similarity": 0.5,
+          "text": "持续过载可能导致油温逐步升高。"
+        },
+        {
+          "kb_id": "KB-026",
+          "chunk_id": "KB-026-C000",
+          "similarity": 0.408248,
+          "text": "冷却风扇停转或异常会降低散热能力，并可能导致油温继续升高。"
+        }
+      ],
+      "evidence_sufficient": true,
+      "answer": "当油温持续升高但负载变化不大时，应重点关注散热能力是否下降。[KB-017]持续过载可能导致油温逐步升高。[KB-031]冷却风扇停转或异常会降低散热能力，并可能导致油温继续升高。[KB-026]",
+      "passed": true
+    },
+    {
+      "query_id": "Q02",
+      "type": "paraphrase",
+      "query": "负荷没怎么变，但是机器越来越热，应该检查哪里？",
+      "expected_kb": [
+        "KB-017"
+      ],
+      "should_reject": false,
+      "top_k_results": [
+        {
+          "kb_id": "KB-017",
+          "chunk_id": "KB-017-C000",
+          "similarity": 0.816497,
+          "text": "当油温持续升高但负载变化不大时，应重点关注散热能力是否下降。"
+        },
+        {
+          "kb_id": "KB-031",
+          "chunk_id": "KB-031-C000",
+          "similarity": 0.5,
+          "text": "持续过载可能导致油温逐步升高。"
+        },
+        {
+          "kb_id": "KB-026",
+          "chunk_id": "KB-026-C000",
+          "similarity": 0.408248,
+          "text": "冷却风扇停转或异常会降低散热能力，并可能导致油温继续升高。"
+        }
+      ],
+      "retrieved_kb": [
+        "KB-017",
+        "KB-031",
+        "KB-026"
+      ],
+      "evidence": [
+        {
+          "kb_id": "KB-017",
+          "chunk_id": "KB-017-C000",
+          "similarity": 0.816497,
+          "text": "当油温持续升高但负载变化不大时，应重点关注散热能力是否下降。"
+        },
+        {
+          "kb_id": "KB-031",
+          "chunk_id": "KB-031-C000",
+          "similarity": 0.5,
+          "text": "持续过载可能导致油温逐步升高。"
+        },
+        {
+          "kb_id": "KB-026",
+          "chunk_id": "KB-026-C000",
+          "similarity": 0.408248,
+          "text": "冷却风扇停转或异常会降低散热能力，并可能导致油温继续升高。"
+        }
+      ],
+      "evidence_sufficient": true,
+      "answer": "当油温持续升高但负载变化不大时，应重点关注散热能力是否下降。[KB-017]持续过载可能导致油温逐步升高。[KB-031]冷却风扇停转或异常会降低散热能力，并可能导致油温继续升高。[KB-026]",
+      "passed": true
+    },
+    {
+      "query_id": "Q03",
+      "type": "cooling",
+      "query": "油温越来越高，冷却系统需要检查什么？",
+      "expected_kb": [
+        "KB-017",
+        "KB-018",
+        "KB-026"
+      ],
+      "should_reject": false,
+      "top_k_results": [
+        {
+          "kb_id": "KB-017",
+          "chunk_id": "KB-017-C000",
+          "similarity": 0.57735,
+          "text": "当油温持续升高但负载变化不大时，应重点关注散热能力是否下降。"
+        },
+        {
+          "kb_id": "KB-026",
+          "chunk_id": "KB-026-C000",
+          "similarity": 0.57735,
+          "text": "冷却风扇停转或异常会降低散热能力，并可能导致油温继续升高。"
+        },
+        {
+          "kb_id": "KB-018",
+          "chunk_id": "KB-018-C000",
+          "similarity": 0.5,
+          "text": "可进一步检查冷却风扇、油泵运行状态以及散热通道是否受阻。"
+        }
+      ],
+      "retrieved_kb": [
+        "KB-017",
+        "KB-026",
+        "KB-018"
+      ],
+      "evidence": [
+        {
+          "kb_id": "KB-017",
+          "chunk_id": "KB-017-C000",
+          "similarity": 0.57735,
+          "text": "当油温持续升高但负载变化不大时，应重点关注散热能力是否下降。"
+        },
+        {
+          "kb_id": "KB-026",
+          "chunk_id": "KB-026-C000",
+          "similarity": 0.57735,
+          "text": "冷却风扇停转或异常会降低散热能力，并可能导致油温继续升高。"
+        },
+        {
+          "kb_id": "KB-018",
+          "chunk_id": "KB-018-C000",
+          "similarity": 0.5,
+          "text": "可进一步检查冷却风扇、油泵运行状态以及散热通道是否受阻。"
+        }
+      ],
+      "evidence_sufficient": true,
+      "answer": "当油温持续升高但负载变化不大时，应重点关注散热能力是否下降。[KB-017]冷却风扇停转或异常会降低散热能力，并可能导致油温继续升高。[KB-026]可进一步检查冷却风扇、油泵运行状态以及散热通道是否受阻。[KB-018]",
+      "passed": true
+    },
+    {
+      "query_id": "Q04",
+      "type": "fan",
+      "query": "冷却风扇出现异常会造成什么影响？",
+      "expected_kb": [
+        "KB-026"
+      ],
+      "should_reject": false,
+      "top_k_results": [
+        {
+          "kb_id": "KB-026",
+          "chunk_id": "KB-026-C000",
+          "similarity": 0.816497,
+          "text": "冷却风扇停转或异常会降低散热能力，并可能导致油温继续升高。"
+        },
+        {
+          "kb_id": "KB-018",
+          "chunk_id": "KB-018-C000",
+          "similarity": 0.707107,
+          "text": "可进一步检查冷却风扇、油泵运行状态以及散热通道是否受阻。"
+        },
+        {
+          "kb_id": "KB-017",
+          "chunk_id": "KB-017-C000",
+          "similarity": 0.408248,
+          "text": "当油温持续升高但负载变化不大时，应重点关注散热能力是否下降。"
+        }
+      ],
+      "retrieved_kb": [
+        "KB-026",
+        "KB-018",
+        "KB-017"
+      ],
+      "evidence": [
+        {
+          "kb_id": "KB-026",
+          "chunk_id": "KB-026-C000",
+          "similarity": 0.816497,
+          "text": "冷却风扇停转或异常会降低散热能力，并可能导致油温继续升高。"
+        },
+        {
+          "kb_id": "KB-018",
+          "chunk_id": "KB-018-C000",
+          "similarity": 0.707107,
+          "text": "可进一步检查冷却风扇、油泵运行状态以及散热通道是否受阻。"
+        },
+        {
+          "kb_id": "KB-017",
+          "chunk_id": "KB-017-C000",
+          "similarity": 0.408248,
+          "text": "当油温持续升高但负载变化不大时，应重点关注散热能力是否下降。"
+        }
+      ],
+      "evidence_sufficient": true,
+      "answer": "冷却风扇停转或异常会降低散热能力，并可能导致油温继续升高。[KB-026]可进一步检查冷却风扇、油泵运行状态以及散热通道是否受阻。[KB-018]当油温持续升高但负载变化不大时，应重点关注散热能力是否下降。[KB-017]",
+      "passed": true
+    },
+    {
+      "query_id": "Q05",
+      "type": "composite",
+      "query": "油温升高同时风扇报警怎么办？",
+      "expected_kb": [
+        "KB-026",
+        "KB-018"
+      ],
+      "should_reject": false,
+      "top_k_results": [
+        {
+          "kb_id": "KB-026",
+          "chunk_id": "KB-026-C000",
+          "similarity": 0.816497,
+          "text": "冷却风扇停转或异常会降低散热能力，并可能导致油温继续升高。"
+        },
+        {
+          "kb_id": "KB-031",
+          "chunk_id": "KB-031-C000",
+          "similarity": 0.5,
+          "text": "持续过载可能导致油温逐步升高。"
+        },
+        {
+          "kb_id": "KB-017",
+          "chunk_id": "KB-017-C000",
+          "similarity": 0.408248,
+          "text": "当油温持续升高但负载变化不大时，应重点关注散热能力是否下降。"
+        }
+      ],
+      "retrieved_kb": [
+        "KB-026",
+        "KB-031",
+        "KB-017"
+      ],
+      "evidence": [
+        {
+          "kb_id": "KB-026",
+          "chunk_id": "KB-026-C000",
+          "similarity": 0.816497,
+          "text": "冷却风扇停转或异常会降低散热能力，并可能导致油温继续升高。"
+        },
+        {
+          "kb_id": "KB-031",
+          "chunk_id": "KB-031-C000",
+          "similarity": 0.5,
+          "text": "持续过载可能导致油温逐步升高。"
+        },
+        {
+          "kb_id": "KB-017",
+          "chunk_id": "KB-017-C000",
+          "similarity": 0.408248,
+          "text": "当油温持续升高但负载变化不大时，应重点关注散热能力是否下降。"
+        }
+      ],
+      "evidence_sufficient": true,
+      "answer": "冷却风扇停转或异常会降低散热能力，并可能导致油温继续升高。[KB-026]持续过载可能导致油温逐步升高。[KB-031]当油温持续升高但负载变化不大时，应重点关注散热能力是否下降。[KB-017]",
+      "passed": true
+    },
+    {
+      "query_id": "Q06",
+      "type": "oil_pump",
+      "query": "怀疑散热不好，需要检查油泵吗？",
+      "expected_kb": [
+        "KB-018"
+      ],
+      "should_reject": false,
+      "top_k_results": [
+        {
+          "kb_id": "KB-018",
+          "chunk_id": "KB-018-C000",
+          "similarity": 0.707107,
+          "text": "可进一步检查冷却风扇、油泵运行状态以及散热通道是否受阻。"
+        },
+        {
+          "kb_id": "KB-017",
+          "chunk_id": "KB-017-C000",
+          "similarity": 0.408248,
+          "text": "当油温持续升高但负载变化不大时，应重点关注散热能力是否下降。"
+        },
+        {
+          "kb_id": "KB-026",
+          "chunk_id": "KB-026-C000",
+          "similarity": 0.408248,
+          "text": "冷却风扇停转或异常会降低散热能力，并可能导致油温继续升高。"
+        }
+      ],
+      "retrieved_kb": [
+        "KB-018",
+        "KB-017",
+        "KB-026"
+      ],
+      "evidence": [
+        {
+          "kb_id": "KB-018",
+          "chunk_id": "KB-018-C000",
+          "similarity": 0.707107,
+          "text": "可进一步检查冷却风扇、油泵运行状态以及散热通道是否受阻。"
+        },
+        {
+          "kb_id": "KB-017",
+          "chunk_id": "KB-017-C000",
+          "similarity": 0.408248,
+          "text": "当油温持续升高但负载变化不大时，应重点关注散热能力是否下降。"
+        },
+        {
+          "kb_id": "KB-026",
+          "chunk_id": "KB-026-C000",
+          "similarity": 0.408248,
+          "text": "冷却风扇停转或异常会降低散热能力，并可能导致油温继续升高。"
+        }
+      ],
+      "evidence_sufficient": true,
+      "answer": "可进一步检查冷却风扇、油泵运行状态以及散热通道是否受阻。[KB-018]当油温持续升高但负载变化不大时，应重点关注散热能力是否下降。[KB-017]冷却风扇停转或异常会降低散热能力，并可能导致油温继续升高。[KB-026]",
+      "passed": true
+    },
+    {
+      "query_id": "Q07",
+      "type": "temperature_jump",
+      "query": "温度突然跳了一下，应该排查什么？",
+      "expected_kb": [
+        "KB-022"
+      ],
+      "should_reject": false,
+      "top_k_results": [
+        {
+          "kb_id": "KB-022",
+          "chunk_id": "KB-022-C000",
+          "similarity": 0.707107,
+          "text": "若温度出现瞬时跳变，应排查传感器接线与采样异常。"
+        },
+        {
+          "kb_id": "KB-017",
+          "chunk_id": "KB-017-C000",
+          "similarity": 0.0,
+          "text": "当油温持续升高但负载变化不大时，应重点关注散热能力是否下降。"
+        },
+        {
+          "kb_id": "KB-018",
+          "chunk_id": "KB-018-C000",
+          "similarity": 0.0,
+          "text": "可进一步检查冷却风扇、油泵运行状态以及散热通道是否受阻。"
+        }
+      ],
+      "retrieved_kb": [
+        "KB-022"
+      ],
+      "evidence": [
+        {
+          "kb_id": "KB-022",
+          "chunk_id": "KB-022-C000",
+          "similarity": 0.707107,
+          "text": "若温度出现瞬时跳变，应排查传感器接线与采样异常。"
+        }
+      ],
+      "evidence_sufficient": true,
+      "answer": "若温度出现瞬时跳变，应排查传感器接线与采样异常。[KB-022]",
+      "passed": true
+    },
+    {
+      "query_id": "Q08",
+      "type": "sensor",
+      "query": "温度采样突然异常，应该检查哪里？",
+      "expected_kb": [
+        "KB-022"
+      ],
+      "should_reject": false,
+      "top_k_results": [
+        {
+          "kb_id": "KB-022",
+          "chunk_id": "KB-022-C000",
+          "similarity": 0.707107,
+          "text": "若温度出现瞬时跳变，应排查传感器接线与采样异常。"
+        },
+        {
+          "kb_id": "KB-017",
+          "chunk_id": "KB-017-C000",
+          "similarity": 0.0,
+          "text": "当油温持续升高但负载变化不大时，应重点关注散热能力是否下降。"
+        },
+        {
+          "kb_id": "KB-018",
+          "chunk_id": "KB-018-C000",
+          "similarity": 0.0,
+          "text": "可进一步检查冷却风扇、油泵运行状态以及散热通道是否受阻。"
+        }
+      ],
+      "retrieved_kb": [
+        "KB-022"
+      ],
+      "evidence": [
+        {
+          "kb_id": "KB-022",
+          "chunk_id": "KB-022-C000",
+          "similarity": 0.707107,
+          "text": "若温度出现瞬时跳变，应排查传感器接线与采样异常。"
+        }
+      ],
+      "evidence_sufficient": true,
+      "answer": "若温度出现瞬时跳变，应排查传感器接线与采样异常。[KB-022]",
+      "passed": true
+    },
+    {
+      "query_id": "Q09",
+      "type": "overload",
+      "query": "设备长期过载会对油温产生什么影响？",
+      "expected_kb": [
+        "KB-031"
+      ],
+      "should_reject": false,
+      "top_k_results": [
+        {
+          "kb_id": "KB-031",
+          "chunk_id": "KB-031-C000",
+          "similarity": 0.707107,
+          "text": "持续过载可能导致油温逐步升高。"
+        },
+        {
+          "kb_id": "KB-017",
+          "chunk_id": "KB-017-C000",
+          "similarity": 0.0,
+          "text": "当油温持续升高但负载变化不大时，应重点关注散热能力是否下降。"
+        },
+        {
+          "kb_id": "KB-018",
+          "chunk_id": "KB-018-C000",
+          "similarity": 0.0,
+          "text": "可进一步检查冷却风扇、油泵运行状态以及散热通道是否受阻。"
+        }
+      ],
+      "retrieved_kb": [
+        "KB-031"
+      ],
+      "evidence": [
+        {
+          "kb_id": "KB-031",
+          "chunk_id": "KB-031-C000",
+          "similarity": 0.707107,
+          "text": "持续过载可能导致油温逐步升高。"
+        }
+      ],
+      "evidence_sufficient": true,
+      "answer": "持续过载可能导致油温逐步升高。[KB-031]",
+      "passed": true
+    },
+    {
+      "query_id": "Q10",
+      "type": "vibration",
+      "query": "设备出现异常振动应该检查什么？",
+      "expected_kb": [
+        "KB-044"
+      ],
+      "should_reject": false,
+      "top_k_results": [
+        {
+          "kb_id": "KB-044",
+          "chunk_id": "KB-044-C000",
+          "similarity": 0.57735,
+          "text": "振动异常需要检查机械连接和轴承状态。"
+        },
+        {
+          "kb_id": "KB-017",
+          "chunk_id": "KB-017-C000",
+          "similarity": 0.0,
+          "text": "当油温持续升高但负载变化不大时，应重点关注散热能力是否下降。"
+        },
+        {
+          "kb_id": "KB-018",
+          "chunk_id": "KB-018-C000",
+          "similarity": 0.0,
+          "text": "可进一步检查冷却风扇、油泵运行状态以及散热通道是否受阻。"
+        }
+      ],
+      "retrieved_kb": [
+        "KB-044"
+      ],
+      "evidence": [
+        {
+          "kb_id": "KB-044",
+          "chunk_id": "KB-044-C000",
+          "similarity": 0.57735,
+          "text": "振动异常需要检查机械连接和轴承状态。"
+        }
+      ],
+      "evidence_sufficient": true,
+      "answer": "振动异常需要检查机械连接和轴承状态。[KB-044]",
+      "passed": true
+    },
+    {
+      "query_id": "Q11",
+      "type": "out_of_kb_hard",
+      "query": "齿轮箱轴向振动频谱怎么分析？",
+      "expected_kb": [],
+      "should_reject": true,
+      "top_k_results": [
+        {
+          "kb_id": "KB-044",
+          "chunk_id": "KB-044-C000",
+          "similarity": 0.57735,
+          "text": "振动异常需要检查机械连接和轴承状态。"
+        },
+        {
+          "kb_id": "KB-017",
+          "chunk_id": "KB-017-C000",
+          "similarity": 0.0,
+          "text": "当油温持续升高但负载变化不大时，应重点关注散热能力是否下降。"
+        },
+        {
+          "kb_id": "KB-018",
+          "chunk_id": "KB-018-C000",
+          "similarity": 0.0,
+          "text": "可进一步检查冷却风扇、油泵运行状态以及散热通道是否受阻。"
+        }
+      ],
+      "retrieved_kb": [
+        "KB-044"
+      ],
+      "evidence": [
+        {
+          "kb_id": "KB-044",
+          "chunk_id": "KB-044-C000",
+          "similarity": 0.57735,
+          "text": "振动异常需要检查机械连接和轴承状态。"
+        }
+      ],
+      "evidence_sufficient": true,
+      "answer": "振动异常需要检查机械连接和轴承状态。[KB-044]",
+      "passed": false
+    },
+    {
+      "query_id": "Q12",
+      "type": "out_of_kb",
+      "query": "PLC通讯协议的寄存器地址怎么配置？",
+      "expected_kb": [],
+      "should_reject": true,
+      "top_k_results": [
+        {
+          "kb_id": "KB-017",
+          "chunk_id": "KB-017-C000",
+          "similarity": 0.0,
+          "text": "当油温持续升高但负载变化不大时，应重点关注散热能力是否下降。"
+        },
+        {
+          "kb_id": "KB-018",
+          "chunk_id": "KB-018-C000",
+          "similarity": 0.0,
+          "text": "可进一步检查冷却风扇、油泵运行状态以及散热通道是否受阻。"
+        },
+        {
+          "kb_id": "KB-022",
+          "chunk_id": "KB-022-C000",
+          "similarity": 0.0,
+          "text": "若温度出现瞬时跳变，应排查传感器接线与采样异常。"
+        }
+      ],
+      "retrieved_kb": [],
+      "evidence": [],
+      "evidence_sufficient": false,
+      "answer": "知识库证据不足，无法判断，不编造故障结论。",
+      "passed": true
+    }
+  ]
+}
