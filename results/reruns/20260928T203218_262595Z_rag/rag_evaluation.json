@@ -1,0 +1,1008 @@
+{
+  "tfidf": {
+    "backend": "tfidf",
+    "config": {
+      "top_k": 3,
+      "backend": "tfidf",
+      "embedding_model": "agent/models/embedding",
+      "similarity_threshold": 0.08,
+      "tfidf_threshold": 0.08,
+      "chunk_size": 40,
+      "chunk_overlap": 8
+    },
+    "metrics": {
+      "answerable_n": 9,
+      "unanswerable_n": 3,
+      "retrieval_accuracy_top1_thresholded": 0.4444444444444444,
+      "Hit@3_raw": 0.7777777777777778,
+      "MRR@3_raw": 0.5925925925925926,
+      "Hit@3_thresholded": 0.7777777777777778,
+      "multi_all_evidence_rate": 0.3333333333333333,
+      "no_answer_rejection_rate": 0.0,
+      "no_answer_false_accepts": 3,
+      "answerable_false_rejections": 0
+    },
+    "records": [
+      {
+        "id": "Q01",
+        "category": "direct",
+        "query": "What should be checked when a cooling fan fails?",
+        "relevant_ids": [
+          "KB-COOLING-002"
+        ],
+        "top3": [
+          {
+            "id": "KB-SENSOR-001-C1",
+            "score": 0.2752329371257249,
+            "accepted": true,
+            "text": "Unexpected temperature jumps should be checked against sensor quality, timestamp continuity and correlated operating signals before maintenance conclusions are made.",
+            "document_id": "KB-SENSOR-001",
+            "relevant": false
+          },
+          {
+            "id": "KB-COOLING-002-C1",
+            "score": 0.20827880389315542,
+            "accepted": true,
+            "text": "Cooling fan failure can reduce heat removal. Inspect fan status, power supply and control alarms through authorized procedures.",
+            "document_id": "KB-COOLING-002",
+            "relevant": true
+          },
+          {
+            "id": "KB-ELECTRICAL-002-C1",
+            "score": 0.15734542628710574,
+            "accepted": true,
+            "text": "Unusual transformer noise or vibration should be recorded with operating conditions and reviewed by qualified maintenance personnel.",
+            "document_id": "KB-ELECTRICAL-002",
+            "relevant": false
+          }
+        ],
+        "refused": false,
+        "top1_correct": false,
+        "hit_at_3": true,
+        "reciprocal_rank_at_3": 0.5,
+        "accepted_hit_at_3": true,
+        "all_relevant_accepted": true
+      },
+      {
+        "id": "Q02",
+        "category": "direct",
+        "query": "How should duplicate timestamps be handled before forecasting?",
+        "relevant_ids": [
+          "KB-SENSOR-003"
+        ],
+        "top3": [
+          {
+            "id": "KB-SENSOR-003-C1",
+            "score": 0.36990245075617245,
+            "accepted": true,
+            "text": "Duplicate timestamps or out-of-order samples distort temporal slopes. Check chronological ordering and hourly sampling before forecasting.",
+            "document_id": "KB-SENSOR-003",
+            "relevant": true
+          },
+          {
+            "id": "KB-SENSOR-001-C1",
+            "score": 0.12565026174926464,
+            "accepted": true,
+            "text": "Unexpected temperature jumps should be checked against sensor quality, timestamp continuity and correlated operating signals before maintenance conclusions are made.",
+            "document_id": "KB-SENSOR-001",
+            "relevant": false
+          },
+          {
+            "id": "KB-ELECTRICAL-002-C1",
+            "score": 0.09378255216816209,
+            "accepted": true,
+            "text": "Unusual transformer noise or vibration should be recorded with operating conditions and reviewed by qualified maintenance personnel.",
+            "document_id": "KB-ELECTRICAL-002",
+            "relevant": false
+          }
+        ],
+        "refused": false,
+        "top1_correct": true,
+        "hit_at_3": true,
+        "reciprocal_rank_at_3": 1.0,
+        "accepted_hit_at_3": true,
+        "all_relevant_accepted": true
+      },
+      {
+        "id": "Q03",
+        "category": "direct",
+        "query": "Can oil temperature identify dissolved gas concentrations?",
+        "relevant_ids": [
+          "KB-OIL-004"
+        ],
+        "top3": [
+          {
+            "id": "KB-OIL-004-C1",
+            "score": 0.5059785690710662,
+            "accepted": true,
+            "text": "Dissolved gas analysis supports investigation of internal transformer abnormalities. Oil temperature alone cannot identify gas concentrations or fault types.",
+            "document_id": "KB-OIL-004",
+            "relevant": true
+          },
+          {
+            "id": "KB-AMBIENT-001-C1",
+            "score": 0.10105809800795065,
+            "accepted": true,
+            "text": "Higher ambient air temperature can elevate oil temperature without an internal fault. Compare ambient and oil trends over the same period.",
+            "document_id": "KB-AMBIENT-001",
+            "relevant": false
+          },
+          {
+            "id": "KB-LOAD-001-C1",
+            "score": 0.0795895156117805,
+            "accepted": false,
+            "text": "Increased electrical load can raise transformer oil temperature. Compare load trends with thermal trends before attributing a rise to a fault.",
+            "document_id": "KB-LOAD-001",
+            "relevant": false
+          }
+        ],
+        "refused": false,
+        "top1_correct": true,
+        "hit_at_3": true,
+        "reciprocal_rank_at_3": 1.0,
+        "accepted_hit_at_3": true,
+        "all_relevant_accepted": true
+      },
+      {
+        "id": "Q04",
+        "category": "paraphrase",
+        "query": "The heat exchanger fins are covered in dirt and air cannot pass. What inspection is appropriate?",
+        "relevant_ids": [
+          "KB-COOLING-004"
+        ],
+        "top3": [
+          {
+            "id": "KB-OIL-003-C1",
+            "score": 0.1188726130430123,
+            "accepted": true,
+            "text": "Moisture in insulating oil can degrade insulation performance. Use appropriate oil analysis records rather than temperature alone to assess moisture.",
+            "document_id": "KB-OIL-003",
+            "relevant": false
+          },
+          {
+            "id": "KB-AMBIENT-001-C1",
+            "score": 0.09991521222773525,
+            "accepted": true,
+            "text": "Higher ambient air temperature can elevate oil temperature without an internal fault. Compare ambient and oil trends over the same period.",
+            "document_id": "KB-AMBIENT-001",
+            "relevant": false
+          },
+          {
+            "id": "KB-ELECTRICAL-001-C1",
+            "score": 0.09844342303048864,
+            "accepted": true,
+            "text": "Abnormal bushing heating needs independent inspection and electrical evidence. Oil temperature forecasts cannot locate a bushing defect.",
+            "document_id": "KB-ELECTRICAL-001",
+            "relevant": false
+          }
+        ],
+        "refused": false,
+        "top1_correct": false,
+        "hit_at_3": false,
+        "reciprocal_rank_at_3": 0,
+        "accepted_hit_at_3": false,
+        "all_relevant_accepted": false
+      },
+      {
+        "id": "Q05",
+        "category": "paraphrase",
+        "query": "Two thermometers keep giving different readings. Could an instrument have drifted?",
+        "relevant_ids": [
+          "KB-SENSOR-004"
+        ],
+        "top3": [
+          {
+            "id": "KB-AMBIENT-001-C1",
+            "score": 0.16720733277934122,
+            "accepted": true,
+            "text": "Higher ambient air temperature can elevate oil temperature without an internal fault. Compare ambient and oil trends over the same period.",
+            "document_id": "KB-AMBIENT-001",
+            "relevant": false
+          },
+          {
+            "id": "KB-THERMAL-001-C1",
+            "score": 0.0,
+            "accepted": false,
+            "text": "Stable transformer oil temperature with no unusual rise should continue routine trend monitoring and normal inspection.",
+            "document_id": "KB-THERMAL-001",
+            "relevant": false
+          },
+          {
+            "id": "KB-THERMAL-002-C1",
+            "score": 0.0,
+            "accepted": false,
+            "text": "A gradual oil-temperature rise should trigger closer monitoring of transformer load, cooling effectiveness, ambient conditions and sensor consistency.",
+            "document_id": "KB-THERMAL-002",
+            "relevant": false
+          }
+        ],
+        "refused": false,
+        "top1_correct": false,
+        "hit_at_3": false,
+        "reciprocal_rank_at_3": 0,
+        "accepted_hit_at_3": false,
+        "all_relevant_accepted": false
+      },
+      {
+        "id": "Q06",
+        "category": "paraphrase",
+        "query": "The weather got hotter and the equipment warmed up too. Does that prove something broke inside?",
+        "relevant_ids": [
+          "KB-AMBIENT-001"
+        ],
+        "top3": [
+          {
+            "id": "KB-THERMAL-003-C1",
+            "score": 0.1228945573254543,
+            "accepted": true,
+            "text": "A rapid oil-temperature rise or high predicted temperature requires prompt review of load and cooling conditions and escalation under the site's approved operating procedure.",
+            "document_id": "KB-THERMAL-003",
+            "relevant": false
+          },
+          {
+            "id": "KB-MODEL-002-C1",
+            "score": 0.11383924433934335,
+            "accepted": true,
+            "text": "Training-only normalization avoids data leakage. Validation and test observations must use the scaler fitted on training data.",
+            "document_id": "KB-MODEL-002",
+            "relevant": false
+          },
+          {
+            "id": "KB-AMBIENT-001-C1",
+            "score": 0.11188056313896654,
+            "accepted": true,
+            "text": "Higher ambient air temperature can elevate oil temperature without an internal fault. Compare ambient and oil trends over the same period.",
+            "document_id": "KB-AMBIENT-001",
+            "relevant": true
+          }
+        ],
+        "refused": false,
+        "top1_correct": false,
+        "hit_at_3": true,
+        "reciprocal_rank_at_3": 0.3333333333333333,
+        "accepted_hit_at_3": true,
+        "all_relevant_accepted": true
+      },
+      {
+        "id": "Q07",
+        "category": "multi",
+        "query": "Oil temperature is increasing while electrical demand and outside air temperature are both rising. Which two factors should be compared?",
+        "relevant_ids": [
+          "KB-LOAD-001",
+          "KB-AMBIENT-001"
+        ],
+        "top3": [
+          {
+            "id": "KB-AMBIENT-001-C1",
+            "score": 0.20717133203595314,
+            "accepted": true,
+            "text": "Higher ambient air temperature can elevate oil temperature without an internal fault. Compare ambient and oil trends over the same period.",
+            "document_id": "KB-AMBIENT-001",
+            "relevant": true
+          },
+          {
+            "id": "KB-SENSOR-001-C1",
+            "score": 0.19953854059527276,
+            "accepted": true,
+            "text": "Unexpected temperature jumps should be checked against sensor quality, timestamp continuity and correlated operating signals before maintenance conclusions are made.",
+            "document_id": "KB-SENSOR-001",
+            "relevant": false
+          },
+          {
+            "id": "KB-ELECTRICAL-002-C1",
+            "score": 0.13773249657807973,
+            "accepted": true,
+            "text": "Unusual transformer noise or vibration should be recorded with operating conditions and reviewed by qualified maintenance personnel.",
+            "document_id": "KB-ELECTRICAL-002",
+            "relevant": false
+          }
+        ],
+        "refused": false,
+        "top1_correct": true,
+        "hit_at_3": true,
+        "reciprocal_rank_at_3": 1.0,
+        "accepted_hit_at_3": true,
+        "all_relevant_accepted": false
+      },
+      {
+        "id": "Q08",
+        "category": "multi",
+        "query": "Some temperature samples are absent and other timestamps occur twice. Which data checks are needed?",
+        "relevant_ids": [
+          "KB-SENSOR-002",
+          "KB-SENSOR-003"
+        ],
+        "top3": [
+          {
+            "id": "KB-SENSOR-001-C1",
+            "score": 0.14714800280416515,
+            "accepted": true,
+            "text": "Unexpected temperature jumps should be checked against sensor quality, timestamp continuity and correlated operating signals before maintenance conclusions are made.",
+            "document_id": "KB-SENSOR-001",
+            "relevant": false
+          },
+          {
+            "id": "KB-SENSOR-003-C1",
+            "score": 0.13998475115286765,
+            "accepted": true,
+            "text": "Duplicate timestamps or out-of-order samples distort temporal slopes. Check chronological ordering and hourly sampling before forecasting.",
+            "document_id": "KB-SENSOR-003",
+            "relevant": true
+          },
+          {
+            "id": "KB-MODEL-002-C1",
+            "score": 0.10777637511474569,
+            "accepted": true,
+            "text": "Training-only normalization avoids data leakage. Validation and test observations must use the scaler fitted on training data.",
+            "document_id": "KB-MODEL-002",
+            "relevant": false
+          }
+        ],
+        "refused": false,
+        "top1_correct": false,
+        "hit_at_3": true,
+        "reciprocal_rank_at_3": 0.5,
+        "accepted_hit_at_3": true,
+        "all_relevant_accepted": false
+      },
+      {
+        "id": "Q09",
+        "category": "multi",
+        "query": "A cooling fan has stopped and oil circulation is reduced. Which cooling components need checking?",
+        "relevant_ids": [
+          "KB-COOLING-002",
+          "KB-COOLING-003"
+        ],
+        "top3": [
+          {
+            "id": "KB-COOLING-003-C1",
+            "score": 0.21432892302637066,
+            "accepted": true,
+            "text": "Oil pump failure or reduced circulation can impair cooling. Compare pump indications with oil flow and maintenance records.",
+            "document_id": "KB-COOLING-003",
+            "relevant": true
+          },
+          {
+            "id": "KB-COOLING-002-C1",
+            "score": 0.20929136928014178,
+            "accepted": true,
+            "text": "Cooling fan failure can reduce heat removal. Inspect fan status, power supply and control alarms through authorized procedures.",
+            "document_id": "KB-COOLING-002",
+            "relevant": true
+          },
+          {
+            "id": "KB-COOLING-001-C1",
+            "score": 0.10729562848106669,
+            "accepted": true,
+            "text": "Thermal risk investigation should include cooling path availability, fan or pump operation where applicable, and recent loading changes.",
+            "document_id": "KB-COOLING-001",
+            "relevant": false
+          }
+        ],
+        "refused": false,
+        "top1_correct": true,
+        "hit_at_3": true,
+        "reciprocal_rank_at_3": 1.0,
+        "accepted_hit_at_3": true,
+        "all_relevant_accepted": true
+      },
+      {
+        "id": "Q10",
+        "category": "unanswerable",
+        "query": "What is the exact replacement bearing part number for transformer serial TX9981?",
+        "relevant_ids": [],
+        "top3": [
+          {
+            "id": "KB-MODEL-001-C1",
+            "score": 0.11231108514075781,
+            "accepted": true,
+            "text": "Forecast uncertainty increases for operating conditions outside training coverage. Flag distribution shifts and seek additional evidence.",
+            "document_id": "KB-MODEL-001",
+            "relevant": false
+          },
+          {
+            "id": "KB-SENSOR-002-C1",
+            "score": 0.08302247425438501,
+            "accepted": true,
+            "text": "A missing measurement is not a zero temperature. Flag missing values and suspend forecasts until input quality meets requirements.",
+            "document_id": "KB-SENSOR-002",
+            "relevant": false
+          },
+          {
+            "id": "KB-RISK-001-C1",
+            "score": 0.07535243024142042,
+            "accepted": false,
+            "text": "Quantile thermal risk indicates unusual temperature, rise or slope relative to training data. It is not a validated fault label or equipment trip setting.",
+            "document_id": "KB-RISK-001",
+            "relevant": false
+          }
+        ],
+        "refused": false,
+        "top1_correct": false,
+        "hit_at_3": false,
+        "reciprocal_rank_at_3": 0,
+        "accepted_hit_at_3": false,
+        "all_relevant_accepted": false
+      },
+      {
+        "id": "Q11",
+        "category": "unanswerable",
+        "query": "What is the approved numeric oil temperature trip setting for unit T17 at our site?",
+        "relevant_ids": [],
+        "top3": [
+          {
+            "id": "KB-RISK-001-C1",
+            "score": 0.23387691057961105,
+            "accepted": true,
+            "text": "Quantile thermal risk indicates unusual temperature, rise or slope relative to training data. It is not a validated fault label or equipment trip setting.",
+            "document_id": "KB-RISK-001",
+            "relevant": false
+          },
+          {
+            "id": "KB-THERMAL-003-C1",
+            "score": 0.17709095129012234,
+            "accepted": true,
+            "text": "A rapid oil-temperature rise or high predicted temperature requires prompt review of load and cooling conditions and escalation under the site's approved operating procedure.",
+            "document_id": "KB-THERMAL-003",
+            "relevant": false
+          },
+          {
+            "id": "KB-PROTECTION-001-C1",
+            "score": 0.12605515282652374,
+            "accepted": true,
+            "text": "A protection alarm requires following the site approved response procedure. A forecasting agent must not override protection interlocks.",
+            "document_id": "KB-PROTECTION-001",
+            "relevant": false
+          }
+        ],
+        "refused": false,
+        "top1_correct": false,
+        "hit_at_3": false,
+        "reciprocal_rank_at_3": 0,
+        "accepted_hit_at_3": false,
+        "all_relevant_accepted": false
+      },
+      {
+        "id": "Q12",
+        "category": "unanswerable",
+        "query": "Who won the 2022 football world cup?",
+        "relevant_ids": [],
+        "top3": [
+          {
+            "id": "KB-PROTECTION-001-C1",
+            "score": 0.13560748007186837,
+            "accepted": true,
+            "text": "A protection alarm requires following the site approved response procedure. A forecasting agent must not override protection interlocks.",
+            "document_id": "KB-PROTECTION-001",
+            "relevant": false
+          },
+          {
+            "id": "KB-MODEL-002-C1",
+            "score": 0.12640530549225978,
+            "accepted": true,
+            "text": "Training-only normalization avoids data leakage. Validation and test observations must use the scaler fitted on training data.",
+            "document_id": "KB-MODEL-002",
+            "relevant": false
+          },
+          {
+            "id": "KB-THERMAL-003-C1",
+            "score": 0.12462172095031138,
+            "accepted": true,
+            "text": "A rapid oil-temperature rise or high predicted temperature requires prompt review of load and cooling conditions and escalation under the site's approved operating procedure.",
+            "document_id": "KB-THERMAL-003",
+            "relevant": false
+          }
+        ],
+        "refused": false,
+        "top1_correct": false,
+        "hit_at_3": false,
+        "reciprocal_rank_at_3": 0,
+        "accepted_hit_at_3": false,
+        "all_relevant_accepted": false
+      }
+    ]
+  },
+  "embedding": {
+    "backend": "embedding",
+    "config": {
+      "top_k": 3,
+      "backend": "embedding",
+      "embedding_model": "agent/models/embedding",
+      "similarity_threshold": 0.45,
+      "tfidf_threshold": 0.08,
+      "chunk_size": 40,
+      "chunk_overlap": 8
+    },
+    "metrics": {
+      "answerable_n": 9,
+      "unanswerable_n": 3,
+      "retrieval_accuracy_top1_thresholded": 0.7777777777777778,
+      "Hit@3_raw": 0.8888888888888888,
+      "MRR@3_raw": 0.8333333333333334,
+      "Hit@3_thresholded": 0.8888888888888888,
+      "multi_all_evidence_rate": 0.6666666666666666,
+      "no_answer_rejection_rate": 0.6666666666666666,
+      "no_answer_false_accepts": 1,
+      "answerable_false_rejections": 0
+    },
+    "records": [
+      {
+        "id": "Q01",
+        "category": "direct",
+        "query": "What should be checked when a cooling fan fails?",
+        "relevant_ids": [
+          "KB-COOLING-002"
+        ],
+        "top3": [
+          {
+            "id": "KB-COOLING-002-C1",
+            "score": 0.6797544956207275,
+            "accepted": true,
+            "text": "Cooling fan failure can reduce heat removal. Inspect fan status, power supply and control alarms through authorized procedures.",
+            "document_id": "KB-COOLING-002",
+            "relevant": true
+          },
+          {
+            "id": "KB-COOLING-001-C1",
+            "score": 0.5034397840499878,
+            "accepted": true,
+            "text": "Thermal risk investigation should include cooling path availability, fan or pump operation where applicable, and recent loading changes.",
+            "document_id": "KB-COOLING-001",
+            "relevant": false
+          },
+          {
+            "id": "KB-SENSOR-001-C1",
+            "score": 0.46024248003959656,
+            "accepted": true,
+            "text": "Unexpected temperature jumps should be checked against sensor quality, timestamp continuity and correlated operating signals before maintenance conclusions are made.",
+            "document_id": "KB-SENSOR-001",
+            "relevant": false
+          }
+        ],
+        "refused": false,
+        "top1_correct": true,
+        "hit_at_3": true,
+        "reciprocal_rank_at_3": 1.0,
+        "accepted_hit_at_3": true,
+        "all_relevant_accepted": true
+      },
+      {
+        "id": "Q02",
+        "category": "direct",
+        "query": "How should duplicate timestamps be handled before forecasting?",
+        "relevant_ids": [
+          "KB-SENSOR-003"
+        ],
+        "top3": [
+          {
+            "id": "KB-SENSOR-003-C1",
+            "score": 0.6138951778411865,
+            "accepted": true,
+            "text": "Duplicate timestamps or out-of-order samples distort temporal slopes. Check chronological ordering and hourly sampling before forecasting.",
+            "document_id": "KB-SENSOR-003",
+            "relevant": true
+          },
+          {
+            "id": "KB-PROTECTION-001-C1",
+            "score": 0.2999972999095917,
+            "accepted": false,
+            "text": "A protection alarm requires following the site approved response procedure. A forecasting agent must not override protection interlocks.",
+            "document_id": "KB-PROTECTION-001",
+            "relevant": false
+          },
+          {
+            "id": "KB-SENSOR-001-C1",
+            "score": 0.2761930227279663,
+            "accepted": false,
+            "text": "Unexpected temperature jumps should be checked against sensor quality, timestamp continuity and correlated operating signals before maintenance conclusions are made.",
+            "document_id": "KB-SENSOR-001",
+            "relevant": false
+          }
+        ],
+        "refused": false,
+        "top1_correct": true,
+        "hit_at_3": true,
+        "reciprocal_rank_at_3": 1.0,
+        "accepted_hit_at_3": true,
+        "all_relevant_accepted": true
+      },
+      {
+        "id": "Q03",
+        "category": "direct",
+        "query": "Can oil temperature identify dissolved gas concentrations?",
+        "relevant_ids": [
+          "KB-OIL-004"
+        ],
+        "top3": [
+          {
+            "id": "KB-OIL-004-C1",
+            "score": 0.6810903549194336,
+            "accepted": true,
+            "text": "Dissolved gas analysis supports investigation of internal transformer abnormalities. Oil temperature alone cannot identify gas concentrations or fault types.",
+            "document_id": "KB-OIL-004",
+            "relevant": true
+          },
+          {
+            "id": "KB-OIL-002-C1",
+            "score": 0.5182203054428101,
+            "accepted": true,
+            "text": "Visible oil leakage requires recording its location and escalation to authorized maintenance staff. Do not infer leak severity from temperature alone.",
+            "document_id": "KB-OIL-002",
+            "relevant": false
+          },
+          {
+            "id": "KB-OIL-001-C1",
+            "score": 0.48240411281585693,
+            "accepted": true,
+            "text": "Low oil level can compromise thermal performance. Check level indications and potential leaks using approved inspection procedures.",
+            "document_id": "KB-OIL-001",
+            "relevant": false
+          }
+        ],
+        "refused": false,
+        "top1_correct": true,
+        "hit_at_3": true,
+        "reciprocal_rank_at_3": 1.0,
+        "accepted_hit_at_3": true,
+        "all_relevant_accepted": true
+      },
+      {
+        "id": "Q04",
+        "category": "paraphrase",
+        "query": "The heat exchanger fins are covered in dirt and air cannot pass. What inspection is appropriate?",
+        "relevant_ids": [
+          "KB-COOLING-004"
+        ],
+        "top3": [
+          {
+            "id": "KB-COOLING-004-C1",
+            "score": 0.5148003101348877,
+            "accepted": true,
+            "text": "Blocked radiator surfaces or obstructed airflow can reduce cooling effectiveness. Arrange inspection and approved cleaning.",
+            "document_id": "KB-COOLING-004",
+            "relevant": true
+          },
+          {
+            "id": "KB-OIL-001-C1",
+            "score": 0.457719624042511,
+            "accepted": true,
+            "text": "Low oil level can compromise thermal performance. Check level indications and potential leaks using approved inspection procedures.",
+            "document_id": "KB-OIL-001",
+            "relevant": false
+          },
+          {
+            "id": "KB-COOLING-001-C1",
+            "score": 0.42161017656326294,
+            "accepted": false,
+            "text": "Thermal risk investigation should include cooling path availability, fan or pump operation where applicable, and recent loading changes.",
+            "document_id": "KB-COOLING-001",
+            "relevant": false
+          }
+        ],
+        "refused": false,
+        "top1_correct": true,
+        "hit_at_3": true,
+        "reciprocal_rank_at_3": 1.0,
+        "accepted_hit_at_3": true,
+        "all_relevant_accepted": true
+      },
+      {
+        "id": "Q05",
+        "category": "paraphrase",
+        "query": "Two thermometers keep giving different readings. Could an instrument have drifted?",
+        "relevant_ids": [
+          "KB-SENSOR-004"
+        ],
+        "top3": [
+          {
+            "id": "KB-SENSOR-004-C1",
+            "score": 0.6919705867767334,
+            "accepted": true,
+            "text": "Persistent disagreement between temperature sensors may indicate calibration drift. Compare independent instruments and calibration history.",
+            "document_id": "KB-SENSOR-004",
+            "relevant": true
+          },
+          {
+            "id": "KB-SENSOR-001-C1",
+            "score": 0.42920467257499695,
+            "accepted": false,
+            "text": "Unexpected temperature jumps should be checked against sensor quality, timestamp continuity and correlated operating signals before maintenance conclusions are made.",
+            "document_id": "KB-SENSOR-001",
+            "relevant": false
+          },
+          {
+            "id": "KB-SENSOR-002-C1",
+            "score": 0.42417001724243164,
+            "accepted": false,
+            "text": "A missing measurement is not a zero temperature. Flag missing values and suspend forecasts until input quality meets requirements.",
+            "document_id": "KB-SENSOR-002",
+            "relevant": false
+          }
+        ],
+        "refused": false,
+        "top1_correct": true,
+        "hit_at_3": true,
+        "reciprocal_rank_at_3": 1.0,
+        "accepted_hit_at_3": true,
+        "all_relevant_accepted": true
+      },
+      {
+        "id": "Q06",
+        "category": "paraphrase",
+        "query": "The weather got hotter and the equipment warmed up too. Does that prove something broke inside?",
+        "relevant_ids": [
+          "KB-AMBIENT-001"
+        ],
+        "top3": [
+          {
+            "id": "KB-MAINTENANCE-001-C1",
+            "score": 0.4704427123069763,
+            "accepted": true,
+            "text": "Record maintenance time, affected components and load conditions. Compare pre-maintenance and post-maintenance temperature trends.",
+            "document_id": "KB-MAINTENANCE-001",
+            "relevant": false
+          },
+          {
+            "id": "KB-SENSOR-001-C1",
+            "score": 0.4419252872467041,
+            "accepted": false,
+            "text": "Unexpected temperature jumps should be checked against sensor quality, timestamp continuity and correlated operating signals before maintenance conclusions are made.",
+            "document_id": "KB-SENSOR-001",
+            "relevant": false
+          },
+          {
+            "id": "KB-COOLING-002-C1",
+            "score": 0.38819485902786255,
+            "accepted": false,
+            "text": "Cooling fan failure can reduce heat removal. Inspect fan status, power supply and control alarms through authorized procedures.",
+            "document_id": "KB-COOLING-002",
+            "relevant": false
+          }
+        ],
+        "refused": false,
+        "top1_correct": false,
+        "hit_at_3": false,
+        "reciprocal_rank_at_3": 0,
+        "accepted_hit_at_3": false,
+        "all_relevant_accepted": false
+      },
+      {
+        "id": "Q07",
+        "category": "multi",
+        "query": "Oil temperature is increasing while electrical demand and outside air temperature are both rising. Which two factors should be compared?",
+        "relevant_ids": [
+          "KB-LOAD-001",
+          "KB-AMBIENT-001"
+        ],
+        "top3": [
+          {
+            "id": "KB-AMBIENT-001-C1",
+            "score": 0.6208535432815552,
+            "accepted": true,
+            "text": "Higher ambient air temperature can elevate oil temperature without an internal fault. Compare ambient and oil trends over the same period.",
+            "document_id": "KB-AMBIENT-001",
+            "relevant": true
+          },
+          {
+            "id": "KB-LOAD-001-C1",
+            "score": 0.6179222464561462,
+            "accepted": true,
+            "text": "Increased electrical load can raise transformer oil temperature. Compare load trends with thermal trends before attributing a rise to a fault.",
+            "document_id": "KB-LOAD-001",
+            "relevant": true
+          },
+          {
+            "id": "KB-THERMAL-002-C1",
+            "score": 0.4715309739112854,
+            "accepted": true,
+            "text": "A gradual oil-temperature rise should trigger closer monitoring of transformer load, cooling effectiveness, ambient conditions and sensor consistency.",
+            "document_id": "KB-THERMAL-002",
+            "relevant": false
+          }
+        ],
+        "refused": false,
+        "top1_correct": true,
+        "hit_at_3": true,
+        "reciprocal_rank_at_3": 1.0,
+        "accepted_hit_at_3": true,
+        "all_relevant_accepted": true
+      },
+      {
+        "id": "Q08",
+        "category": "multi",
+        "query": "Some temperature samples are absent and other timestamps occur twice. Which data checks are needed?",
+        "relevant_ids": [
+          "KB-SENSOR-002",
+          "KB-SENSOR-003"
+        ],
+        "top3": [
+          {
+            "id": "KB-SENSOR-001-C1",
+            "score": 0.6484987735748291,
+            "accepted": true,
+            "text": "Unexpected temperature jumps should be checked against sensor quality, timestamp continuity and correlated operating signals before maintenance conclusions are made.",
+            "document_id": "KB-SENSOR-001",
+            "relevant": false
+          },
+          {
+            "id": "KB-SENSOR-002-C1",
+            "score": 0.5658078193664551,
+            "accepted": true,
+            "text": "A missing measurement is not a zero temperature. Flag missing values and suspend forecasts until input quality meets requirements.",
+            "document_id": "KB-SENSOR-002",
+            "relevant": true
+          },
+          {
+            "id": "KB-SENSOR-004-C1",
+            "score": 0.5338826179504395,
+            "accepted": true,
+            "text": "Persistent disagreement between temperature sensors may indicate calibration drift. Compare independent instruments and calibration history.",
+            "document_id": "KB-SENSOR-004",
+            "relevant": false
+          }
+        ],
+        "refused": false,
+        "top1_correct": false,
+        "hit_at_3": true,
+        "reciprocal_rank_at_3": 0.5,
+        "accepted_hit_at_3": true,
+        "all_relevant_accepted": false
+      },
+      {
+        "id": "Q09",
+        "category": "multi",
+        "query": "A cooling fan has stopped and oil circulation is reduced. Which cooling components need checking?",
+        "relevant_ids": [
+          "KB-COOLING-002",
+          "KB-COOLING-003"
+        ],
+        "top3": [
+          {
+            "id": "KB-COOLING-003-C1",
+            "score": 0.6176457405090332,
+            "accepted": true,
+            "text": "Oil pump failure or reduced circulation can impair cooling. Compare pump indications with oil flow and maintenance records.",
+            "document_id": "KB-COOLING-003",
+            "relevant": true
+          },
+          {
+            "id": "KB-COOLING-002-C1",
+            "score": 0.5967187285423279,
+            "accepted": true,
+            "text": "Cooling fan failure can reduce heat removal. Inspect fan status, power supply and control alarms through authorized procedures.",
+            "document_id": "KB-COOLING-002",
+            "relevant": true
+          },
+          {
+            "id": "KB-COOLING-001-C1",
+            "score": 0.5320680737495422,
+            "accepted": true,
+            "text": "Thermal risk investigation should include cooling path availability, fan or pump operation where applicable, and recent loading changes.",
+            "document_id": "KB-COOLING-001",
+            "relevant": false
+          }
+        ],
+        "refused": false,
+        "top1_correct": true,
+        "hit_at_3": true,
+        "reciprocal_rank_at_3": 1.0,
+        "accepted_hit_at_3": true,
+        "all_relevant_accepted": true
+      },
+      {
+        "id": "Q10",
+        "category": "unanswerable",
+        "query": "What is the exact replacement bearing part number for transformer serial TX9981?",
+        "relevant_ids": [],
+        "top3": [
+          {
+            "id": "KB-ELECTRICAL-002-C1",
+            "score": 0.2556934058666229,
+            "accepted": false,
+            "text": "Unusual transformer noise or vibration should be recorded with operating conditions and reviewed by qualified maintenance personnel.",
+            "document_id": "KB-ELECTRICAL-002",
+            "relevant": false
+          },
+          {
+            "id": "KB-OIL-004-C1",
+            "score": 0.21738237142562866,
+            "accepted": false,
+            "text": "Dissolved gas analysis supports investigation of internal transformer abnormalities. Oil temperature alone cannot identify gas concentrations or fault types.",
+            "document_id": "KB-OIL-004",
+            "relevant": false
+          },
+          {
+            "id": "KB-THERMAL-002-C1",
+            "score": 0.1861671507358551,
+            "accepted": false,
+            "text": "A gradual oil-temperature rise should trigger closer monitoring of transformer load, cooling effectiveness, ambient conditions and sensor consistency.",
+            "document_id": "KB-THERMAL-002",
+            "relevant": false
+          }
+        ],
+        "refused": true,
+        "top1_correct": false,
+        "hit_at_3": false,
+        "reciprocal_rank_at_3": 0,
+        "accepted_hit_at_3": false,
+        "all_relevant_accepted": false
+      },
+      {
+        "id": "Q11",
+        "category": "unanswerable",
+        "query": "What is the approved numeric oil temperature trip setting for unit T17 at our site?",
+        "relevant_ids": [],
+        "top3": [
+          {
+            "id": "KB-THERMAL-003-C1",
+            "score": 0.5320152640342712,
+            "accepted": true,
+            "text": "A rapid oil-temperature rise or high predicted temperature requires prompt review of load and cooling conditions and escalation under the site's approved operating procedure.",
+            "document_id": "KB-THERMAL-003",
+            "relevant": false
+          },
+          {
+            "id": "KB-OIL-001-C1",
+            "score": 0.40104949474334717,
+            "accepted": false,
+            "text": "Low oil level can compromise thermal performance. Check level indications and potential leaks using approved inspection procedures.",
+            "document_id": "KB-OIL-001",
+            "relevant": false
+          },
+          {
+            "id": "KB-OIL-002-C1",
+            "score": 0.39885228872299194,
+            "accepted": false,
+            "text": "Visible oil leakage requires recording its location and escalation to authorized maintenance staff. Do not infer leak severity from temperature alone.",
+            "document_id": "KB-OIL-002",
+            "relevant": false
+          }
+        ],
+        "refused": false,
+        "top1_correct": false,
+        "hit_at_3": false,
+        "reciprocal_rank_at_3": 0,
+        "accepted_hit_at_3": false,
+        "all_relevant_accepted": false
+      },
+      {
+        "id": "Q12",
+        "category": "unanswerable",
+        "query": "Who won the 2022 football world cup?",
+        "relevant_ids": [],
+        "top3": [
+          {
+            "id": "KB-COOLING-004-C1",
+            "score": 0.0622589997947216,
+            "accepted": false,
+            "text": "Blocked radiator surfaces or obstructed airflow can reduce cooling effectiveness. Arrange inspection and approved cleaning.",
+            "document_id": "KB-COOLING-004",
+            "relevant": false
+          },
+          {
+            "id": "KB-SENSOR-004-C1",
+            "score": 0.06171596422791481,
+            "accepted": false,
+            "text": "Persistent disagreement between temperature sensors may indicate calibration drift. Compare independent instruments and calibration history.",
+            "document_id": "KB-SENSOR-004",
+            "relevant": false
+          },
+          {
+            "id": "KB-ELECTRICAL-001-C1",
+            "score": 0.03801971301436424,
+            "accepted": false,
+            "text": "Abnormal bushing heating needs independent inspection and electrical evidence. Oil temperature forecasts cannot locate a bushing defect.",
+            "document_id": "KB-ELECTRICAL-001",
+            "relevant": false
+          }
+        ],
+        "refused": true,
+        "top1_correct": false,
+        "hit_at_3": false,
+        "reciprocal_rank_at_3": 0,
+        "accepted_hit_at_3": false,
+        "all_relevant_accepted": false
+      }
+    ]
+  }
+}

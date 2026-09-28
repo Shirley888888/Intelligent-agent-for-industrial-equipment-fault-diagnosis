@@ -1,0 +1,9 @@
+Backend,Category,N,Top1_correct_n,Hit3_n,All_evidence_n,Refused_n
+tfidf,direct,3,2,3,N/A,0
+tfidf,paraphrase,3,0,1,N/A,0
+tfidf,multi,3,2,3,1,0
+tfidf,unanswerable,3,N/A,N/A,N/A,0
+embedding,direct,3,3,3,N/A,0
+embedding,paraphrase,3,2,2,N/A,0
+embedding,multi,3,2,3,2,0
+embedding,unanswerable,3,N/A,N/A,N/A,2

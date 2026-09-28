@@ -1,0 +1,14 @@
+[
+ {"id":"Q01","category":"direct","query":"What should be checked when a cooling fan fails?","relevant_ids":["KB-COOLING-002"]},
+ {"id":"Q02","category":"direct","query":"How should duplicate timestamps be handled before forecasting?","relevant_ids":["KB-SENSOR-003"]},
+ {"id":"Q03","category":"direct","query":"Can oil temperature identify dissolved gas concentrations?","relevant_ids":["KB-OIL-004"]},
+ {"id":"Q04","category":"paraphrase","query":"The heat exchanger fins are covered in dirt and air cannot pass. What inspection is appropriate?","relevant_ids":["KB-COOLING-004"]},
+ {"id":"Q05","category":"paraphrase","query":"Two thermometers keep giving different readings. Could an instrument have drifted?","relevant_ids":["KB-SENSOR-004"]},
+ {"id":"Q06","category":"paraphrase","query":"The weather got hotter and the equipment warmed up too. Does that prove something broke inside?","relevant_ids":["KB-AMBIENT-001"]},
+ {"id":"Q07","category":"multi","query":"Oil temperature is increasing while electrical demand and outside air temperature are both rising. Which two factors should be compared?","relevant_ids":["KB-LOAD-001","KB-AMBIENT-001"]},
+ {"id":"Q08","category":"multi","query":"Some temperature samples are absent and other timestamps occur twice. Which data checks are needed?","relevant_ids":["KB-SENSOR-002","KB-SENSOR-003"]},
+ {"id":"Q09","category":"multi","query":"A cooling fan has stopped and oil circulation is reduced. Which cooling components need checking?","relevant_ids":["KB-COOLING-002","KB-COOLING-003"]},
+ {"id":"Q10","category":"unanswerable","query":"What is the exact replacement bearing part number for transformer serial TX9981?","relevant_ids":[]},
+ {"id":"Q11","category":"unanswerable","query":"What is the approved numeric oil temperature trip setting for unit T17 at our site?","relevant_ids":[]},
+ {"id":"Q12","category":"unanswerable","query":"Who won the 2022 football world cup?","relevant_ids":[]}
+]

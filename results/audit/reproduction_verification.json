@@ -1,0 +1,167 @@
+{
+  "status": "PASS",
+  "formal_experiment_id": "ETTh1_CLOSEOUT_20260929_v1",
+  "forecast_metric_differences": [
+    {
+      "Model": "Persistence",
+      "Metric": "MAE",
+      "abs_difference": 0.0
+    },
+    {
+      "Model": "Persistence",
+      "Metric": "MSE",
+      "abs_difference": 0.0
+    },
+    {
+      "Model": "Persistence",
+      "Metric": "MeanTempError",
+      "abs_difference": 0.0
+    },
+    {
+      "Model": "Persistence",
+      "Metric": "MaxTempError",
+      "abs_difference": 0.0
+    },
+    {
+      "Model": "Persistence",
+      "Metric": "MaxRiseRateError",
+      "abs_difference": 0.0
+    },
+    {
+      "Model": "Persistence",
+      "Metric": "PeakError",
+      "abs_difference": 0.0
+    },
+    {
+      "Model": "Linear",
+      "Metric": "MAE",
+      "abs_difference": 5.451066931172477e-09
+    },
+    {
+      "Model": "Linear",
+      "Metric": "MSE",
+      "abs_difference": 1.9953399821304174e-08
+    },
+    {
+      "Model": "Linear",
+      "Metric": "MeanTempError",
+      "abs_difference": 6.912278999182675e-09
+    },
+    {
+      "Model": "Linear",
+      "Metric": "MaxTempError",
+      "abs_difference": 1.368421202130321e-06
+    },
+    {
+      "Model": "Linear",
+      "Metric": "MaxRiseRateError",
+      "abs_difference": 1.492823127335896e-06
+    },
+    {
+      "Model": "Linear",
+      "Metric": "PeakError",
+      "abs_difference": 1.663514148653178e-08
+    },
+    {
+      "Model": "CNN1D",
+      "Metric": "MAE",
+      "abs_difference": 0.0
+    },
+    {
+      "Model": "CNN1D",
+      "Metric": "MSE",
+      "abs_difference": 0.0
+    },
+    {
+      "Model": "CNN1D",
+      "Metric": "MeanTempError",
+      "abs_difference": 0.0
+    },
+    {
+      "Model": "CNN1D",
+      "Metric": "MaxTempError",
+      "abs_difference": 0.0
+    },
+    {
+      "Model": "CNN1D",
+      "Metric": "MaxRiseRateError",
+      "abs_difference": 0.0
+    },
+    {
+      "Model": "CNN1D",
+      "Metric": "PeakError",
+      "abs_difference": 0.0
+    },
+    {
+      "Model": "LSTM",
+      "Metric": "MAE",
+      "abs_difference": 0.0
+    },
+    {
+      "Model": "LSTM",
+      "Metric": "MSE",
+      "abs_difference": 0.0
+    },
+    {
+      "Model": "LSTM",
+      "Metric": "MeanTempError",
+      "abs_difference": 0.0
+    },
+    {
+      "Model": "LSTM",
+      "Metric": "MaxTempError",
+      "abs_difference": 0.0
+    },
+    {
+      "Model": "LSTM",
+      "Metric": "MaxRiseRateError",
+      "abs_difference": 0.0
+    },
+    {
+      "Model": "LSTM",
+      "Metric": "PeakError",
+      "abs_difference": 0.0
+    },
+    {
+      "Model": "TCN",
+      "Metric": "MAE",
+      "abs_difference": 0.0
+    },
+    {
+      "Model": "TCN",
+      "Metric": "MSE",
+      "abs_difference": 0.0
+    },
+    {
+      "Model": "TCN",
+      "Metric": "MeanTempError",
+      "abs_difference": 0.0
+    },
+    {
+      "Model": "TCN",
+      "Metric": "MaxTempError",
+      "abs_difference": 0.0
+    },
+    {
+      "Model": "TCN",
+      "Metric": "MaxRiseRateError",
+      "abs_difference": 0.0
+    },
+    {
+      "Model": "TCN",
+      "Metric": "PeakError",
+      "abs_difference": 0.0
+    }
+  ],
+  "prediction_max_abs_differences": {
+    "truth": 0.0,
+    "Persistence": 0.0,
+    "Linear": 5.971292516449012e-06,
+    "CNN1D": 0.0,
+    "LSTM": 0.0,
+    "TCN": 0.0
+  },
+  "rag_metrics_equal": true,
+  "rag_ranks_and_acceptance_equal": true,
+  "rag_max_score_abs_difference": 2.980232238769531e-07
+}

@@ -1,0 +1,10 @@
+numpy
+pandas
+matplotlib
+scikit-learn
+torch
+pyyaml
+
+sentence-transformers==6.1.0
+openpyxl
+tqdm

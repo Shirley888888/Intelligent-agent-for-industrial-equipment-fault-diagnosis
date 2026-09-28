@@ -1,0 +1,4492 @@
+{
+  "experiment_id": "ETTh1_CLOSEOUT_20260929_v1",
+  "protocol": "Fixed existing four checkpoints; CPU float32 inference, float64 inverse scaling/metrics; no retraining or test-based model selection.",
+  "dataset_sha256": "f18de3ad269cef59bb07b5438d79bb3042d3be49bdeecf01c1cd6d29695ee066",
+  "split_rows": [
+    12194,
+    2613,
+    2613
+  ],
+  "split_windows": [
+    12075,
+    2494,
+    2494
+  ],
+  "deployment_model": "LSTM",
+  "checkpoint_sha256": {
+    "outputs/checkpoints/Linear_best.pt": "00d4243584d94586866d7f28d3ceeb2d5de866778866d16ca744ad542f7db558",
+    "outputs/checkpoints/CNN1D_best.pt": "e2fee5800ca031e3887a59915f51c39faef831efd7b00fa510ccae224c61d974",
+    "outputs/checkpoints/LSTM_best.pt": "16d08cf1061a534719853bea5ec17c8490a5cbd0c0ba7cfe9908f4c881273ff6",
+    "outputs/checkpoints/TCN_best.pt": "2ad024e600461d5c7f24e6a9b793031a5282b087ad7ccb5e40c197fca097428e"
+  },
+  "metrics": [
+    {
+      "Model": "Persistence",
+      "MAE": 1.4596672102391748,
+      "MSE": 3.9941031092386066,
+      "MeanTempError": 0.0047623459312649006,
+      "MaxTempError": 10.904000115498615,
+      "MaxRiseRateError": 3.236000160960428,
+      "PeakError": 2.1673720695367087,
+      "BestEpoch": 0
+    },
+    {
+      "Model": "Linear",
+      "MAE": 1.6198814923912466,
+      "MSE": 4.469733844461999,
+      "MeanTempError": -0.19960563661893904,
+      "MaxTempError": 12.12744679416668,
+      "MaxRiseRateError": 2.8185194839245984,
+      "PeakError": 1.5937538826135182,
+      "BestEpoch": 7,
+      "BestValLoss": 0.04481131886076048
+    },
+    {
+      "Model": "CNN1D",
+      "MAE": 2.1502015606705824,
+      "MSE": 7.759850553354486,
+      "MeanTempError": 0.546788896389077,
+      "MaxTempError": 10.964543547928132,
+      "MaxRiseRateError": 2.8697683507487906,
+      "PeakError": 2.3716945785091976,
+      "BestEpoch": 3,
+      "BestValLoss": 0.15485238360947576
+    },
+    {
+      "Model": "LSTM",
+      "MAE": 1.354184399897416,
+      "MSE": 3.4767743271823854,
+      "MeanTempError": 0.05692135292543393,
+      "MaxTempError": 10.196203904459784,
+      "MaxRiseRateError": 2.713289977251499,
+      "PeakError": 1.3594660329867312,
+      "BestEpoch": 3,
+      "BestValLoss": 0.06016111441416652
+    },
+    {
+      "Model": "TCN",
+      "MAE": 1.5572621839360965,
+      "MSE": 3.9253124782512536,
+      "MeanTempError": -0.5585913826346525,
+      "MaxTempError": 9.775008834675019,
+      "MaxRiseRateError": 2.6386509667321754,
+      "PeakError": 1.5787924587320608,
+      "BestEpoch": 1,
+      "BestValLoss": 0.050575816924680016
+    }
+  ],
+  "environment": {
+    "python": "3.12.14",
+    "torch": "2.14.0+cu130",
+    "numpy": "2.3.5"
+  },
+  "limitations": [
+    "Historical checkpoints; no new training run or confidence intervals.",
+    "Deployment LSTM retained by project design, not selected on final test scores."
+  ],
+  "rag": {
+    "tfidf": {
+      "backend": "tfidf",
+      "config": {
+        "top_k": 3,
+        "backend": "tfidf",
+        "embedding_model": "agent/models/embedding",
+        "similarity_threshold": 0.08,
+        "tfidf_threshold": 0.08,
+        "chunk_size": 40,
+        "chunk_overlap": 8
+      },
+      "metrics": {
+        "answerable_n": 9,
+        "unanswerable_n": 3,
+        "retrieval_accuracy_top1_thresholded": 0.4444444444444444,
+        "Hit@3_raw": 0.7777777777777778,
+        "MRR@3_raw": 0.5925925925925926,
+        "Hit@3_thresholded": 0.7777777777777778,
+        "multi_all_evidence_rate": 0.3333333333333333,
+        "no_answer_rejection_rate": 0.0,
+        "no_answer_false_accepts": 3,
+        "answerable_false_rejections": 0
+      },
+      "records": [
+        {
+          "id": "Q01",
+          "category": "direct",
+          "query": "What should be checked when a cooling fan fails?",
+          "relevant_ids": [
+            "KB-COOLING-002"
+          ],
+          "top3": [
+            {
+              "id": "KB-SENSOR-001-C1",
+              "score": 0.2752329371257249,
+              "accepted": true,
+              "text": "Unexpected temperature jumps should be checked against sensor quality, timestamp continuity and correlated operating signals before maintenance conclusions are made.",
+              "document_id": "KB-SENSOR-001",
+              "relevant": false
+            },
+            {
+              "id": "KB-COOLING-002-C1",
+              "score": 0.20827880389315542,
+              "accepted": true,
+              "text": "Cooling fan failure can reduce heat removal. Inspect fan status, power supply and control alarms through authorized procedures.",
+              "document_id": "KB-COOLING-002",
+              "relevant": true
+            },
+            {
+              "id": "KB-ELECTRICAL-002-C1",
+              "score": 0.15734542628710574,
+              "accepted": true,
+              "text": "Unusual transformer noise or vibration should be recorded with operating conditions and reviewed by qualified maintenance personnel.",
+              "document_id": "KB-ELECTRICAL-002",
+              "relevant": false
+            }
+          ],
+          "refused": false,
+          "top1_correct": false,
+          "hit_at_3": true,
+          "reciprocal_rank_at_3": 0.5,
+          "accepted_hit_at_3": true,
+          "all_relevant_accepted": true
+        },
+        {
+          "id": "Q02",
+          "category": "direct",
+          "query": "How should duplicate timestamps be handled before forecasting?",
+          "relevant_ids": [
+            "KB-SENSOR-003"
+          ],
+          "top3": [
+            {
+              "id": "KB-SENSOR-003-C1",
+              "score": 0.36990245075617245,
+              "accepted": true,
+              "text": "Duplicate timestamps or out-of-order samples distort temporal slopes. Check chronological ordering and hourly sampling before forecasting.",
+              "document_id": "KB-SENSOR-003",
+              "relevant": true
+            },
+            {
+              "id": "KB-SENSOR-001-C1",
+              "score": 0.12565026174926464,
+              "accepted": true,
+              "text": "Unexpected temperature jumps should be checked against sensor quality, timestamp continuity and correlated operating signals before maintenance conclusions are made.",
+              "document_id": "KB-SENSOR-001",
+              "relevant": false
+            },
+            {
+              "id": "KB-ELECTRICAL-002-C1",
+              "score": 0.09378255216816209,
+              "accepted": true,
+              "text": "Unusual transformer noise or vibration should be recorded with operating conditions and reviewed by qualified maintenance personnel.",
+              "document_id": "KB-ELECTRICAL-002",
+              "relevant": false
+            }
+          ],
+          "refused": false,
+          "top1_correct": true,
+          "hit_at_3": true,
+          "reciprocal_rank_at_3": 1.0,
+          "accepted_hit_at_3": true,
+          "all_relevant_accepted": true
+        },
+        {
+          "id": "Q03",
+          "category": "direct",
+          "query": "Can oil temperature identify dissolved gas concentrations?",
+          "relevant_ids": [
+            "KB-OIL-004"
+          ],
+          "top3": [
+            {
+              "id": "KB-OIL-004-C1",
+              "score": 0.5059785690710663,
+              "accepted": true,
+              "text": "Dissolved gas analysis supports investigation of internal transformer abnormalities. Oil temperature alone cannot identify gas concentrations or fault types.",
+              "document_id": "KB-OIL-004",
+              "relevant": true
+            },
+            {
+              "id": "KB-AMBIENT-001-C1",
+              "score": 0.10105809800795065,
+              "accepted": true,
+              "text": "Higher ambient air temperature can elevate oil temperature without an internal fault. Compare ambient and oil trends over the same period.",
+              "document_id": "KB-AMBIENT-001",
+              "relevant": false
+            },
+            {
+              "id": "KB-LOAD-001-C1",
+              "score": 0.0795895156117805,
+              "accepted": false,
+              "text": "Increased electrical load can raise transformer oil temperature. Compare load trends with thermal trends before attributing a rise to a fault.",
+              "document_id": "KB-LOAD-001",
+              "relevant": false
+            }
+          ],
+          "refused": false,
+          "top1_correct": true,
+          "hit_at_3": true,
+          "reciprocal_rank_at_3": 1.0,
+          "accepted_hit_at_3": true,
+          "all_relevant_accepted": true
+        },
+        {
+          "id": "Q04",
+          "category": "paraphrase",
+          "query": "The heat exchanger fins are covered in dirt and air cannot pass. What inspection is appropriate?",
+          "relevant_ids": [
+            "KB-COOLING-004"
+          ],
+          "top3": [
+            {
+              "id": "KB-OIL-003-C1",
+              "score": 0.1188726130430123,
+              "accepted": true,
+              "text": "Moisture in insulating oil can degrade insulation performance. Use appropriate oil analysis records rather than temperature alone to assess moisture.",
+              "document_id": "KB-OIL-003",
+              "relevant": false
+            },
+            {
+              "id": "KB-AMBIENT-001-C1",
+              "score": 0.09991521222773525,
+              "accepted": true,
+              "text": "Higher ambient air temperature can elevate oil temperature without an internal fault. Compare ambient and oil trends over the same period.",
+              "document_id": "KB-AMBIENT-001",
+              "relevant": false
+            },
+            {
+              "id": "KB-ELECTRICAL-001-C1",
+              "score": 0.09844342303048864,
+              "accepted": true,
+              "text": "Abnormal bushing heating needs independent inspection and electrical evidence. Oil temperature forecasts cannot locate a bushing defect.",
+              "document_id": "KB-ELECTRICAL-001",
+              "relevant": false
+            }
+          ],
+          "refused": false,
+          "top1_correct": false,
+          "hit_at_3": false,
+          "reciprocal_rank_at_3": 0,
+          "accepted_hit_at_3": false,
+          "all_relevant_accepted": false
+        },
+        {
+          "id": "Q05",
+          "category": "paraphrase",
+          "query": "Two thermometers keep giving different readings. Could an instrument have drifted?",
+          "relevant_ids": [
+            "KB-SENSOR-004"
+          ],
+          "top3": [
+            {
+              "id": "KB-AMBIENT-001-C1",
+              "score": 0.16720733277934122,
+              "accepted": true,
+              "text": "Higher ambient air temperature can elevate oil temperature without an internal fault. Compare ambient and oil trends over the same period.",
+              "document_id": "KB-AMBIENT-001",
+              "relevant": false
+            },
+            {
+              "id": "KB-THERMAL-001-C1",
+              "score": 0.0,
+              "accepted": false,
+              "text": "Stable transformer oil temperature with no unusual rise should continue routine trend monitoring and normal inspection.",
+              "document_id": "KB-THERMAL-001",
+              "relevant": false
+            },
+            {
+              "id": "KB-THERMAL-002-C1",
+              "score": 0.0,
+              "accepted": false,
+              "text": "A gradual oil-temperature rise should trigger closer monitoring of transformer load, cooling effectiveness, ambient conditions and sensor consistency.",
+              "document_id": "KB-THERMAL-002",
+              "relevant": false
+            }
+          ],
+          "refused": false,
+          "top1_correct": false,
+          "hit_at_3": false,
+          "reciprocal_rank_at_3": 0,
+          "accepted_hit_at_3": false,
+          "all_relevant_accepted": false
+        },
+        {
+          "id": "Q06",
+          "category": "paraphrase",
+          "query": "The weather got hotter and the equipment warmed up too. Does that prove something broke inside?",
+          "relevant_ids": [
+            "KB-AMBIENT-001"
+          ],
+          "top3": [
+            {
+              "id": "KB-THERMAL-003-C1",
+              "score": 0.1228945573254543,
+              "accepted": true,
+              "text": "A rapid oil-temperature rise or high predicted temperature requires prompt review of load and cooling conditions and escalation under the site's approved operating procedure.",
+              "document_id": "KB-THERMAL-003",
+              "relevant": false
+            },
+            {
+              "id": "KB-MODEL-002-C1",
+              "score": 0.11383924433934335,
+              "accepted": true,
+              "text": "Training-only normalization avoids data leakage. Validation and test observations must use the scaler fitted on training data.",
+              "document_id": "KB-MODEL-002",
+              "relevant": false
+            },
+            {
+              "id": "KB-AMBIENT-001-C1",
+              "score": 0.11188056313896654,
+              "accepted": true,
+              "text": "Higher ambient air temperature can elevate oil temperature without an internal fault. Compare ambient and oil trends over the same period.",
+              "document_id": "KB-AMBIENT-001",
+              "relevant": true
+            }
+          ],
+          "refused": false,
+          "top1_correct": false,
+          "hit_at_3": true,
+          "reciprocal_rank_at_3": 0.3333333333333333,
+          "accepted_hit_at_3": true,
+          "all_relevant_accepted": true
+        },
+        {
+          "id": "Q07",
+          "category": "multi",
+          "query": "Oil temperature is increasing while electrical demand and outside air temperature are both rising. Which two factors should be compared?",
+          "relevant_ids": [
+            "KB-LOAD-001",
+            "KB-AMBIENT-001"
+          ],
+          "top3": [
+            {
+              "id": "KB-AMBIENT-001-C1",
+              "score": 0.20717133203595317,
+              "accepted": true,
+              "text": "Higher ambient air temperature can elevate oil temperature without an internal fault. Compare ambient and oil trends over the same period.",
+              "document_id": "KB-AMBIENT-001",
+              "relevant": true
+            },
+            {
+              "id": "KB-SENSOR-001-C1",
+              "score": 0.19953854059527276,
+              "accepted": true,
+              "text": "Unexpected temperature jumps should be checked against sensor quality, timestamp continuity and correlated operating signals before maintenance conclusions are made.",
+              "document_id": "KB-SENSOR-001",
+              "relevant": false
+            },
+            {
+              "id": "KB-ELECTRICAL-002-C1",
+              "score": 0.13773249657807973,
+              "accepted": true,
+              "text": "Unusual transformer noise or vibration should be recorded with operating conditions and reviewed by qualified maintenance personnel.",
+              "document_id": "KB-ELECTRICAL-002",
+              "relevant": false
+            }
+          ],
+          "refused": false,
+          "top1_correct": true,
+          "hit_at_3": true,
+          "reciprocal_rank_at_3": 1.0,
+          "accepted_hit_at_3": true,
+          "all_relevant_accepted": false
+        },
+        {
+          "id": "Q08",
+          "category": "multi",
+          "query": "Some temperature samples are absent and other timestamps occur twice. Which data checks are needed?",
+          "relevant_ids": [
+            "KB-SENSOR-002",
+            "KB-SENSOR-003"
+          ],
+          "top3": [
+            {
+              "id": "KB-SENSOR-001-C1",
+              "score": 0.14714800280416515,
+              "accepted": true,
+              "text": "Unexpected temperature jumps should be checked against sensor quality, timestamp continuity and correlated operating signals before maintenance conclusions are made.",
+              "document_id": "KB-SENSOR-001",
+              "relevant": false
+            },
+            {
+              "id": "KB-SENSOR-003-C1",
+              "score": 0.13998475115286765,
+              "accepted": true,
+              "text": "Duplicate timestamps or out-of-order samples distort temporal slopes. Check chronological ordering and hourly sampling before forecasting.",
+              "document_id": "KB-SENSOR-003",
+              "relevant": true
+            },
+            {
+              "id": "KB-MODEL-002-C1",
+              "score": 0.10777637511474569,
+              "accepted": true,
+              "text": "Training-only normalization avoids data leakage. Validation and test observations must use the scaler fitted on training data.",
+              "document_id": "KB-MODEL-002",
+              "relevant": false
+            }
+          ],
+          "refused": false,
+          "top1_correct": false,
+          "hit_at_3": true,
+          "reciprocal_rank_at_3": 0.5,
+          "accepted_hit_at_3": true,
+          "all_relevant_accepted": false
+        },
+        {
+          "id": "Q09",
+          "category": "multi",
+          "query": "A cooling fan has stopped and oil circulation is reduced. Which cooling components need checking?",
+          "relevant_ids": [
+            "KB-COOLING-002",
+            "KB-COOLING-003"
+          ],
+          "top3": [
+            {
+              "id": "KB-COOLING-003-C1",
+              "score": 0.21432892302637066,
+              "accepted": true,
+              "text": "Oil pump failure or reduced circulation can impair cooling. Compare pump indications with oil flow and maintenance records.",
+              "document_id": "KB-COOLING-003",
+              "relevant": true
+            },
+            {
+              "id": "KB-COOLING-002-C1",
+              "score": 0.20929136928014178,
+              "accepted": true,
+              "text": "Cooling fan failure can reduce heat removal. Inspect fan status, power supply and control alarms through authorized procedures.",
+              "document_id": "KB-COOLING-002",
+              "relevant": true
+            },
+            {
+              "id": "KB-COOLING-001-C1",
+              "score": 0.10729562848106669,
+              "accepted": true,
+              "text": "Thermal risk investigation should include cooling path availability, fan or pump operation where applicable, and recent loading changes.",
+              "document_id": "KB-COOLING-001",
+              "relevant": false
+            }
+          ],
+          "refused": false,
+          "top1_correct": true,
+          "hit_at_3": true,
+          "reciprocal_rank_at_3": 1.0,
+          "accepted_hit_at_3": true,
+          "all_relevant_accepted": true
+        },
+        {
+          "id": "Q10",
+          "category": "unanswerable",
+          "query": "What is the exact replacement bearing part number for transformer serial TX9981?",
+          "relevant_ids": [],
+          "top3": [
+            {
+              "id": "KB-MODEL-001-C1",
+              "score": 0.11231108514075781,
+              "accepted": true,
+              "text": "Forecast uncertainty increases for operating conditions outside training coverage. Flag distribution shifts and seek additional evidence.",
+              "document_id": "KB-MODEL-001",
+              "relevant": false
+            },
+            {
+              "id": "KB-SENSOR-002-C1",
+              "score": 0.08302247425438501,
+              "accepted": true,
+              "text": "A missing measurement is not a zero temperature. Flag missing values and suspend forecasts until input quality meets requirements.",
+              "document_id": "KB-SENSOR-002",
+              "relevant": false
+            },
+            {
+              "id": "KB-RISK-001-C1",
+              "score": 0.07535243024142042,
+              "accepted": false,
+              "text": "Quantile thermal risk indicates unusual temperature, rise or slope relative to training data. It is not a validated fault label or equipment trip setting.",
+              "document_id": "KB-RISK-001",
+              "relevant": false
+            }
+          ],
+          "refused": false,
+          "top1_correct": false,
+          "hit_at_3": false,
+          "reciprocal_rank_at_3": 0,
+          "accepted_hit_at_3": false,
+          "all_relevant_accepted": false
+        },
+        {
+          "id": "Q11",
+          "category": "unanswerable",
+          "query": "What is the approved numeric oil temperature trip setting for unit T17 at our site?",
+          "relevant_ids": [],
+          "top3": [
+            {
+              "id": "KB-RISK-001-C1",
+              "score": 0.23387691057961102,
+              "accepted": true,
+              "text": "Quantile thermal risk indicates unusual temperature, rise or slope relative to training data. It is not a validated fault label or equipment trip setting.",
+              "document_id": "KB-RISK-001",
+              "relevant": false
+            },
+            {
+              "id": "KB-THERMAL-003-C1",
+              "score": 0.1770909512901223,
+              "accepted": true,
+              "text": "A rapid oil-temperature rise or high predicted temperature requires prompt review of load and cooling conditions and escalation under the site's approved operating procedure.",
+              "document_id": "KB-THERMAL-003",
+              "relevant": false
+            },
+            {
+              "id": "KB-PROTECTION-001-C1",
+              "score": 0.12605515282652374,
+              "accepted": true,
+              "text": "A protection alarm requires following the site approved response procedure. A forecasting agent must not override protection interlocks.",
+              "document_id": "KB-PROTECTION-001",
+              "relevant": false
+            }
+          ],
+          "refused": false,
+          "top1_correct": false,
+          "hit_at_3": false,
+          "reciprocal_rank_at_3": 0,
+          "accepted_hit_at_3": false,
+          "all_relevant_accepted": false
+        },
+        {
+          "id": "Q12",
+          "category": "unanswerable",
+          "query": "Who won the 2022 football world cup?",
+          "relevant_ids": [],
+          "top3": [
+            {
+              "id": "KB-PROTECTION-001-C1",
+              "score": 0.13560748007186837,
+              "accepted": true,
+              "text": "A protection alarm requires following the site approved response procedure. A forecasting agent must not override protection interlocks.",
+              "document_id": "KB-PROTECTION-001",
+              "relevant": false
+            },
+            {
+              "id": "KB-MODEL-002-C1",
+              "score": 0.12640530549225978,
+              "accepted": true,
+              "text": "Training-only normalization avoids data leakage. Validation and test observations must use the scaler fitted on training data.",
+              "document_id": "KB-MODEL-002",
+              "relevant": false
+            },
+            {
+              "id": "KB-THERMAL-003-C1",
+              "score": 0.12462172095031138,
+              "accepted": true,
+              "text": "A rapid oil-temperature rise or high predicted temperature requires prompt review of load and cooling conditions and escalation under the site's approved operating procedure.",
+              "document_id": "KB-THERMAL-003",
+              "relevant": false
+            }
+          ],
+          "refused": false,
+          "top1_correct": false,
+          "hit_at_3": false,
+          "reciprocal_rank_at_3": 0,
+          "accepted_hit_at_3": false,
+          "all_relevant_accepted": false
+        }
+      ]
+    },
+    "embedding": {
+      "backend": "embedding",
+      "config": {
+        "top_k": 3,
+        "backend": "embedding",
+        "embedding_model": "agent/models/embedding",
+        "similarity_threshold": 0.45,
+        "tfidf_threshold": 0.08,
+        "chunk_size": 40,
+        "chunk_overlap": 8
+      },
+      "metrics": {
+        "answerable_n": 9,
+        "unanswerable_n": 3,
+        "retrieval_accuracy_top1_thresholded": 0.7777777777777778,
+        "Hit@3_raw": 0.8888888888888888,
+        "MRR@3_raw": 0.8333333333333334,
+        "Hit@3_thresholded": 0.8888888888888888,
+        "multi_all_evidence_rate": 0.6666666666666666,
+        "no_answer_rejection_rate": 0.6666666666666666,
+        "no_answer_false_accepts": 1,
+        "answerable_false_rejections": 0
+      },
+      "records": [
+        {
+          "id": "Q01",
+          "category": "direct",
+          "query": "What should be checked when a cooling fan fails?",
+          "relevant_ids": [
+            "KB-COOLING-002"
+          ],
+          "top3": [
+            {
+              "id": "KB-COOLING-002-C1",
+              "score": 0.6797544956207275,
+              "accepted": true,
+              "text": "Cooling fan failure can reduce heat removal. Inspect fan status, power supply and control alarms through authorized procedures.",
+              "document_id": "KB-COOLING-002",
+              "relevant": true
+            },
+            {
+              "id": "KB-COOLING-001-C1",
+              "score": 0.503439724445343,
+              "accepted": true,
+              "text": "Thermal risk investigation should include cooling path availability, fan or pump operation where applicable, and recent loading changes.",
+              "document_id": "KB-COOLING-001",
+              "relevant": false
+            },
+            {
+              "id": "KB-SENSOR-001-C1",
+              "score": 0.4602421820163727,
+              "accepted": true,
+              "text": "Unexpected temperature jumps should be checked against sensor quality, timestamp continuity and correlated operating signals before maintenance conclusions are made.",
+              "document_id": "KB-SENSOR-001",
+              "relevant": false
+            }
+          ],
+          "refused": false,
+          "top1_correct": true,
+          "hit_at_3": true,
+          "reciprocal_rank_at_3": 1.0,
+          "accepted_hit_at_3": true,
+          "all_relevant_accepted": true
+        },
+        {
+          "id": "Q02",
+          "category": "direct",
+          "query": "How should duplicate timestamps be handled before forecasting?",
+          "relevant_ids": [
+            "KB-SENSOR-003"
+          ],
+          "top3": [
+            {
+              "id": "KB-SENSOR-003-C1",
+              "score": 0.6138952970504761,
+              "accepted": true,
+              "text": "Duplicate timestamps or out-of-order samples distort temporal slopes. Check chronological ordering and hourly sampling before forecasting.",
+              "document_id": "KB-SENSOR-003",
+              "relevant": true
+            },
+            {
+              "id": "KB-PROTECTION-001-C1",
+              "score": 0.29999715089797974,
+              "accepted": false,
+              "text": "A protection alarm requires following the site approved response procedure. A forecasting agent must not override protection interlocks.",
+              "document_id": "KB-PROTECTION-001",
+              "relevant": false
+            },
+            {
+              "id": "KB-SENSOR-001-C1",
+              "score": 0.2761930227279663,
+              "accepted": false,
+              "text": "Unexpected temperature jumps should be checked against sensor quality, timestamp continuity and correlated operating signals before maintenance conclusions are made.",
+              "document_id": "KB-SENSOR-001",
+              "relevant": false
+            }
+          ],
+          "refused": false,
+          "top1_correct": true,
+          "hit_at_3": true,
+          "reciprocal_rank_at_3": 1.0,
+          "accepted_hit_at_3": true,
+          "all_relevant_accepted": true
+        },
+        {
+          "id": "Q03",
+          "category": "direct",
+          "query": "Can oil temperature identify dissolved gas concentrations?",
+          "relevant_ids": [
+            "KB-OIL-004"
+          ],
+          "top3": [
+            {
+              "id": "KB-OIL-004-C1",
+              "score": 0.6810902953147888,
+              "accepted": true,
+              "text": "Dissolved gas analysis supports investigation of internal transformer abnormalities. Oil temperature alone cannot identify gas concentrations or fault types.",
+              "document_id": "KB-OIL-004",
+              "relevant": true
+            },
+            {
+              "id": "KB-OIL-002-C1",
+              "score": 0.5182201862335205,
+              "accepted": true,
+              "text": "Visible oil leakage requires recording its location and escalation to authorized maintenance staff. Do not infer leak severity from temperature alone.",
+              "document_id": "KB-OIL-002",
+              "relevant": false
+            },
+            {
+              "id": "KB-OIL-001-C1",
+              "score": 0.48240405321121216,
+              "accepted": true,
+              "text": "Low oil level can compromise thermal performance. Check level indications and potential leaks using approved inspection procedures.",
+              "document_id": "KB-OIL-001",
+              "relevant": false
+            }
+          ],
+          "refused": false,
+          "top1_correct": true,
+          "hit_at_3": true,
+          "reciprocal_rank_at_3": 1.0,
+          "accepted_hit_at_3": true,
+          "all_relevant_accepted": true
+        },
+        {
+          "id": "Q04",
+          "category": "paraphrase",
+          "query": "The heat exchanger fins are covered in dirt and air cannot pass. What inspection is appropriate?",
+          "relevant_ids": [
+            "KB-COOLING-004"
+          ],
+          "top3": [
+            {
+              "id": "KB-COOLING-004-C1",
+              "score": 0.514800488948822,
+              "accepted": true,
+              "text": "Blocked radiator surfaces or obstructed airflow can reduce cooling effectiveness. Arrange inspection and approved cleaning.",
+              "document_id": "KB-COOLING-004",
+              "relevant": true
+            },
+            {
+              "id": "KB-OIL-001-C1",
+              "score": 0.4577195346355438,
+              "accepted": true,
+              "text": "Low oil level can compromise thermal performance. Check level indications and potential leaks using approved inspection procedures.",
+              "document_id": "KB-OIL-001",
+              "relevant": false
+            },
+            {
+              "id": "KB-COOLING-001-C1",
+              "score": 0.42161011695861816,
+              "accepted": false,
+              "text": "Thermal risk investigation should include cooling path availability, fan or pump operation where applicable, and recent loading changes.",
+              "document_id": "KB-COOLING-001",
+              "relevant": false
+            }
+          ],
+          "refused": false,
+          "top1_correct": true,
+          "hit_at_3": true,
+          "reciprocal_rank_at_3": 1.0,
+          "accepted_hit_at_3": true,
+          "all_relevant_accepted": true
+        },
+        {
+          "id": "Q05",
+          "category": "paraphrase",
+          "query": "Two thermometers keep giving different readings. Could an instrument have drifted?",
+          "relevant_ids": [
+            "KB-SENSOR-004"
+          ],
+          "top3": [
+            {
+              "id": "KB-SENSOR-004-C1",
+              "score": 0.691970705986023,
+              "accepted": true,
+              "text": "Persistent disagreement between temperature sensors may indicate calibration drift. Compare independent instruments and calibration history.",
+              "document_id": "KB-SENSOR-004",
+              "relevant": true
+            },
+            {
+              "id": "KB-SENSOR-001-C1",
+              "score": 0.4292045831680298,
+              "accepted": false,
+              "text": "Unexpected temperature jumps should be checked against sensor quality, timestamp continuity and correlated operating signals before maintenance conclusions are made.",
+              "document_id": "KB-SENSOR-001",
+              "relevant": false
+            },
+            {
+              "id": "KB-SENSOR-002-C1",
+              "score": 0.4241700768470764,
+              "accepted": false,
+              "text": "A missing measurement is not a zero temperature. Flag missing values and suspend forecasts until input quality meets requirements.",
+              "document_id": "KB-SENSOR-002",
+              "relevant": false
+            }
+          ],
+          "refused": false,
+          "top1_correct": true,
+          "hit_at_3": true,
+          "reciprocal_rank_at_3": 1.0,
+          "accepted_hit_at_3": true,
+          "all_relevant_accepted": true
+        },
+        {
+          "id": "Q06",
+          "category": "paraphrase",
+          "query": "The weather got hotter and the equipment warmed up too. Does that prove something broke inside?",
+          "relevant_ids": [
+            "KB-AMBIENT-001"
+          ],
+          "top3": [
+            {
+              "id": "KB-MAINTENANCE-001-C1",
+              "score": 0.4704430401325226,
+              "accepted": true,
+              "text": "Record maintenance time, affected components and load conditions. Compare pre-maintenance and post-maintenance temperature trends.",
+              "document_id": "KB-MAINTENANCE-001",
+              "relevant": false
+            },
+            {
+              "id": "KB-SENSOR-001-C1",
+              "score": 0.44192540645599365,
+              "accepted": false,
+              "text": "Unexpected temperature jumps should be checked against sensor quality, timestamp continuity and correlated operating signals before maintenance conclusions are made.",
+              "document_id": "KB-SENSOR-001",
+              "relevant": false
+            },
+            {
+              "id": "KB-COOLING-002-C1",
+              "score": 0.3881949484348297,
+              "accepted": false,
+              "text": "Cooling fan failure can reduce heat removal. Inspect fan status, power supply and control alarms through authorized procedures.",
+              "document_id": "KB-COOLING-002",
+              "relevant": false
+            }
+          ],
+          "refused": false,
+          "top1_correct": false,
+          "hit_at_3": false,
+          "reciprocal_rank_at_3": 0,
+          "accepted_hit_at_3": false,
+          "all_relevant_accepted": false
+        },
+        {
+          "id": "Q07",
+          "category": "multi",
+          "query": "Oil temperature is increasing while electrical demand and outside air temperature are both rising. Which two factors should be compared?",
+          "relevant_ids": [
+            "KB-LOAD-001",
+            "KB-AMBIENT-001"
+          ],
+          "top3": [
+            {
+              "id": "KB-AMBIENT-001-C1",
+              "score": 0.6208534836769104,
+              "accepted": true,
+              "text": "Higher ambient air temperature can elevate oil temperature without an internal fault. Compare ambient and oil trends over the same period.",
+              "document_id": "KB-AMBIENT-001",
+              "relevant": true
+            },
+            {
+              "id": "KB-LOAD-001-C1",
+              "score": 0.617922306060791,
+              "accepted": true,
+              "text": "Increased electrical load can raise transformer oil temperature. Compare load trends with thermal trends before attributing a rise to a fault.",
+              "document_id": "KB-LOAD-001",
+              "relevant": true
+            },
+            {
+              "id": "KB-THERMAL-002-C1",
+              "score": 0.47153088450431824,
+              "accepted": true,
+              "text": "A gradual oil-temperature rise should trigger closer monitoring of transformer load, cooling effectiveness, ambient conditions and sensor consistency.",
+              "document_id": "KB-THERMAL-002",
+              "relevant": false
+            }
+          ],
+          "refused": false,
+          "top1_correct": true,
+          "hit_at_3": true,
+          "reciprocal_rank_at_3": 1.0,
+          "accepted_hit_at_3": true,
+          "all_relevant_accepted": true
+        },
+        {
+          "id": "Q08",
+          "category": "multi",
+          "query": "Some temperature samples are absent and other timestamps occur twice. Which data checks are needed?",
+          "relevant_ids": [
+            "KB-SENSOR-002",
+            "KB-SENSOR-003"
+          ],
+          "top3": [
+            {
+              "id": "KB-SENSOR-001-C1",
+              "score": 0.6484986543655396,
+              "accepted": true,
+              "text": "Unexpected temperature jumps should be checked against sensor quality, timestamp continuity and correlated operating signals before maintenance conclusions are made.",
+              "document_id": "KB-SENSOR-001",
+              "relevant": false
+            },
+            {
+              "id": "KB-SENSOR-002-C1",
+              "score": 0.5658079385757446,
+              "accepted": true,
+              "text": "A missing measurement is not a zero temperature. Flag missing values and suspend forecasts until input quality meets requirements.",
+              "document_id": "KB-SENSOR-002",
+              "relevant": true
+            },
+            {
+              "id": "KB-SENSOR-004-C1",
+              "score": 0.5338826179504395,
+              "accepted": true,
+              "text": "Persistent disagreement between temperature sensors may indicate calibration drift. Compare independent instruments and calibration history.",
+              "document_id": "KB-SENSOR-004",
+              "relevant": false
+            }
+          ],
+          "refused": false,
+          "top1_correct": false,
+          "hit_at_3": true,
+          "reciprocal_rank_at_3": 0.5,
+          "accepted_hit_at_3": true,
+          "all_relevant_accepted": false
+        },
+        {
+          "id": "Q09",
+          "category": "multi",
+          "query": "A cooling fan has stopped and oil circulation is reduced. Which cooling components need checking?",
+          "relevant_ids": [
+            "KB-COOLING-002",
+            "KB-COOLING-003"
+          ],
+          "top3": [
+            {
+              "id": "KB-COOLING-003-C1",
+              "score": 0.6176457405090332,
+              "accepted": true,
+              "text": "Oil pump failure or reduced circulation can impair cooling. Compare pump indications with oil flow and maintenance records.",
+              "document_id": "KB-COOLING-003",
+              "relevant": true
+            },
+            {
+              "id": "KB-COOLING-002-C1",
+              "score": 0.5967186093330383,
+              "accepted": true,
+              "text": "Cooling fan failure can reduce heat removal. Inspect fan status, power supply and control alarms through authorized procedures.",
+              "document_id": "KB-COOLING-002",
+              "relevant": true
+            },
+            {
+              "id": "KB-COOLING-001-C1",
+              "score": 0.5320678353309631,
+              "accepted": true,
+              "text": "Thermal risk investigation should include cooling path availability, fan or pump operation where applicable, and recent loading changes.",
+              "document_id": "KB-COOLING-001",
+              "relevant": false
+            }
+          ],
+          "refused": false,
+          "top1_correct": true,
+          "hit_at_3": true,
+          "reciprocal_rank_at_3": 1.0,
+          "accepted_hit_at_3": true,
+          "all_relevant_accepted": true
+        },
+        {
+          "id": "Q10",
+          "category": "unanswerable",
+          "query": "What is the exact replacement bearing part number for transformer serial TX9981?",
+          "relevant_ids": [],
+          "top3": [
+            {
+              "id": "KB-ELECTRICAL-002-C1",
+              "score": 0.2556934058666229,
+              "accepted": false,
+              "text": "Unusual transformer noise or vibration should be recorded with operating conditions and reviewed by qualified maintenance personnel.",
+              "document_id": "KB-ELECTRICAL-002",
+              "relevant": false
+            },
+            {
+              "id": "KB-OIL-004-C1",
+              "score": 0.2173825204372406,
+              "accepted": false,
+              "text": "Dissolved gas analysis supports investigation of internal transformer abnormalities. Oil temperature alone cannot identify gas concentrations or fault types.",
+              "document_id": "KB-OIL-004",
+              "relevant": false
+            },
+            {
+              "id": "KB-THERMAL-002-C1",
+              "score": 0.18616726994514465,
+              "accepted": false,
+              "text": "A gradual oil-temperature rise should trigger closer monitoring of transformer load, cooling effectiveness, ambient conditions and sensor consistency.",
+              "document_id": "KB-THERMAL-002",
+              "relevant": false
+            }
+          ],
+          "refused": true,
+          "top1_correct": false,
+          "hit_at_3": false,
+          "reciprocal_rank_at_3": 0,
+          "accepted_hit_at_3": false,
+          "all_relevant_accepted": false
+        },
+        {
+          "id": "Q11",
+          "category": "unanswerable",
+          "query": "What is the approved numeric oil temperature trip setting for unit T17 at our site?",
+          "relevant_ids": [],
+          "top3": [
+            {
+              "id": "KB-THERMAL-003-C1",
+              "score": 0.5320150852203369,
+              "accepted": true,
+              "text": "A rapid oil-temperature rise or high predicted temperature requires prompt review of load and cooling conditions and escalation under the site's approved operating procedure.",
+              "document_id": "KB-THERMAL-003",
+              "relevant": false
+            },
+            {
+              "id": "KB-OIL-001-C1",
+              "score": 0.40104949474334717,
+              "accepted": false,
+              "text": "Low oil level can compromise thermal performance. Check level indications and potential leaks using approved inspection procedures.",
+              "document_id": "KB-OIL-001",
+              "relevant": false
+            },
+            {
+              "id": "KB-OIL-002-C1",
+              "score": 0.39885222911834717,
+              "accepted": false,
+              "text": "Visible oil leakage requires recording its location and escalation to authorized maintenance staff. Do not infer leak severity from temperature alone.",
+              "document_id": "KB-OIL-002",
+              "relevant": false
+            }
+          ],
+          "refused": false,
+          "top1_correct": false,
+          "hit_at_3": false,
+          "reciprocal_rank_at_3": 0,
+          "accepted_hit_at_3": false,
+          "all_relevant_accepted": false
+        },
+        {
+          "id": "Q12",
+          "category": "unanswerable",
+          "query": "Who won the 2022 football world cup?",
+          "relevant_ids": [],
+          "top3": [
+            {
+              "id": "KB-COOLING-004-C1",
+              "score": 0.06225891411304474,
+              "accepted": false,
+              "text": "Blocked radiator surfaces or obstructed airflow can reduce cooling effectiveness. Arrange inspection and approved cleaning.",
+              "document_id": "KB-COOLING-004",
+              "relevant": false
+            },
+            {
+              "id": "KB-SENSOR-004-C1",
+              "score": 0.06171591579914093,
+              "accepted": false,
+              "text": "Persistent disagreement between temperature sensors may indicate calibration drift. Compare independent instruments and calibration history.",
+              "document_id": "KB-SENSOR-004",
+              "relevant": false
+            },
+            {
+              "id": "KB-ELECTRICAL-001-C1",
+              "score": 0.038019679486751556,
+              "accepted": false,
+              "text": "Abnormal bushing heating needs independent inspection and electrical evidence. Oil temperature forecasts cannot locate a bushing defect.",
+              "document_id": "KB-ELECTRICAL-001",
+              "relevant": false
+            }
+          ],
+          "refused": true,
+          "top1_correct": false,
+          "hit_at_3": false,
+          "reciprocal_rank_at_3": 0,
+          "accepted_hit_at_3": false,
+          "all_relevant_accepted": false
+        }
+      ]
+    }
+  },
+  "cases": {
+    "stable": {
+      "case_name": "stable",
+      "raw_input_signal": [
+        [
+          9.51099967956543,
+          4.822999954223633,
+          7.071000099182129,
+          3.625,
+          1.888000011444092,
+          0.7609999775886536,
+          23.847999572753903
+        ],
+        [
+          8.505999565124513,
+          4.421000003814697,
+          6.076000213623048,
+          2.664999961853028,
+          1.7359999418258667,
+          0.7310000061988831,
+          23.49600028991699
+        ],
+        [
+          6.564000129699707,
+          3.818000078201294,
+          5.401000022888184,
+          2.5230000019073486,
+          1.6139999628067017,
+          0.7009999752044678,
+          22.299999237060547
+        ],
+        [
+          7.368000030517577,
+          3.41599988937378,
+          5.828000068664551,
+          2.878000020980835,
+          1.5839999914169312,
+          0.7310000061988831,
+          22.15900039672852
+        ],
+        [
+          8.104999542236326,
+          3.3489999771118164,
+          5.89900016784668,
+          2.806999921798706,
+          1.6139999628067017,
+          0.6399999856948853,
+          22.299999237060547
+        ],
+        [
+          7.836999893188477,
+          4.0859999656677255,
+          6.289999961853027,
+          2.486999988555908,
+          1.8580000400543213,
+          0.6700000166893005,
+          20.96299934387207
+        ],
+        [
+          8.171999931335451,
+          3.1480000019073486,
+          6.005000114440918,
+          2.2390000820159908,
+          2.497999906539917,
+          0.8220000267028809,
+          20.32999992370605
+        ],
+        [
+          9.444000244140623,
+          4.287000179290772,
+          6.928999900817871,
+          3.0920000076293945,
+          2.61899995803833,
+          1.065999984741211,
+          21.66699981689453
+        ],
+        [
+          8.975000381469727,
+          3.282000064849853,
+          5.89900016784668,
+          1.031000018119812,
+          2.650000095367432,
+          1.156999945640564,
+          22.58099937438965
+        ],
+        [
+          8.439000129699707,
+          4.75600004196167,
+          5.258999824523926,
+          2.9489998817443848,
+          2.497999906539917,
+          1.156999945640564,
+          25.32500076293945
+        ],
+        [
+          9.845999717712402,
+          5.0229997634887695,
+          6.183000087738037,
+          2.7720000743865967,
+          3.2899999618530287,
+          1.371000051498413,
+          26.80200004577637
+        ],
+        [
+          9.57800006866455,
+          4.956999778747559,
+          6.822999954223633,
+          3.233999967575073,
+          2.984999895095825,
+          1.2489999532699585,
+          26.80200004577637
+        ],
+        [
+          6.966000080108643,
+          3.3489999771118164,
+          4.547999858856201,
+          1.812000036239624,
+          2.315000057220459,
+          0.975000023841858,
+          26.80200004577637
+        ],
+        [
+          8.439000129699707,
+          4.0859999656677255,
+          5.578999996185303,
+          2.878000020980835,
+          2.4670000076293945,
+          1.097000002861023,
+          27.57600021362305
+        ],
+        [
+          8.505999565124513,
+          4.75600004196167,
+          5.791999816894531,
+          2.594000101089477,
+          2.253999948501587,
+          1.156999945640564,
+          29.05299949645996
+        ],
+        [
+          6.831999778747559,
+          3.3489999771118164,
+          4.690999984741211,
+          2.594000101089477,
+          2.131999969482422,
+          1.097000002861023,
+          28.913000106811523
+        ],
+        [
+          7.301000118255615,
+          4.0859999656677255,
+          4.974999904632568,
+          2.630000114440918,
+          2.253999948501587,
+          1.0049999952316284,
+          30.24900054931641
+        ],
+        [
+          7.903999805450439,
+          3.750999927520752,
+          5.223999977111816,
+          2.38100004196167,
+          2.740999937057495,
+          1.0360000133514404,
+          30.24900054931641
+        ],
+        [
+          7.703000068664551,
+          3.4830000400543213,
+          4.939000129699707,
+          2.2390000820159908,
+          2.6800000667572017,
+          1.065999984741211,
+          29.05299949645996
+        ],
+        [
+          6.966000080108643,
+          3.0810000896453857,
+          4.547999858856201,
+          1.919000029563904,
+          2.375999927520752,
+          0.944000005722046,
+          27.645999908447266
+        ],
+        [
+          8.371999740600586,
+          3.617000102996826,
+          5.4720001220703125,
+          2.203000068664551,
+          2.8020000457763667,
+          0.944000005722046,
+          26.66200065612793
+        ],
+        [
+          7.368000030517577,
+          3.3489999771118164,
+          4.90399980545044,
+          2.45199990272522,
+          2.375999927520752,
+          0.8220000267028809,
+          25.816999435424805
+        ],
+        [
+          8.104999542236326,
+          3.818000078201294,
+          5.96999979019165,
+          2.38100004196167,
+          2.253999948501587,
+          0.944000005722046,
+          25.2549991607666
+        ],
+        [
+          8.505999565124513,
+          4.3540000915527335,
+          5.89900016784668,
+          2.594000101089477,
+          2.193000078201294,
+          0.944000005722046,
+          24.62100028991699
+        ],
+        [
+          6.429999828338622,
+          3.750999927520752,
+          4.513000011444092,
+          2.45199990272522,
+          2.0710000991821294,
+          0.8830000162124634,
+          24.481000900268555
+        ],
+        [
+          7.703000068664551,
+          3.750999927520752,
+          5.89900016784668,
+          2.5230000019073486,
+          1.9490000009536743,
+          0.8830000162124634,
+          23.988000869750977
+        ],
+        [
+          7.501999855041504,
+          4.019000053405762,
+          6.1479997634887695,
+          2.8429999351501465,
+          1.7970000505447388,
+          0.8220000267028809,
+          24.19899940490723
+        ],
+        [
+          7.099999904632568,
+          4.019000053405762,
+          4.76200008392334,
+          2.736000061035156,
+          1.8580000400543213,
+          0.8529999852180481,
+          23.636999130249023
+        ],
+        [
+          6.36299991607666,
+          3.3489999771118164,
+          4.263999938964844,
+          2.45199990272522,
+          1.8580000400543213,
+          0.9139999747276306,
+          23.07399940490723
+        ],
+        [
+          7.368000030517577,
+          3.013999938964844,
+          5.258999824523926,
+          2.486999988555908,
+          2.0710000991821294,
+          0.7919999957084656,
+          22.58099937438965
+        ],
+        [
+          10.784000396728516,
+          4.48799991607666,
+          7.676000118255615,
+          3.0559999942779537,
+          2.740999937057495,
+          1.0360000133514404,
+          23.143999099731445
+        ],
+        [
+          8.305999755859375,
+          4.75600004196167,
+          5.578999996185303,
+          2.5230000019073486,
+          2.4670000076293945,
+          1.218000054359436,
+          23.917999267578125
+        ],
+        [
+          8.572999954223633,
+          4.622000217437744,
+          5.543000221252441,
+          3.375999927520752,
+          2.7109999656677246,
+          1.3400000333786009,
+          25.395000457763672
+        ],
+        [
+          8.975000381469727,
+          5.223999977111816,
+          6.254000186920166,
+          3.5529999732971187,
+          2.740999937057495,
+          1.3400000333786009,
+          26.66200065612793
+        ],
+        [
+          10.04699993133545,
+          5.425000190734863,
+          6.681000232696532,
+          3.1630001068115234,
+          2.984999895095825,
+          1.309999942779541,
+          26.16900062561035
+        ],
+        [
+          9.845999717712402,
+          4.75600004196167,
+          6.681000232696532,
+          2.9489998817443848,
+          3.2899999618530287,
+          1.309999942779541,
+          25.816999435424805
+        ],
+        [
+          8.371999740600586,
+          4.019000053405762,
+          5.6500000953674325,
+          2.2390000820159908,
+          2.375999927520752,
+          1.065999984741211,
+          27.78700065612793
+        ],
+        [
+          8.77400016784668,
+          4.622000217437744,
+          5.828000068664551,
+          2.9140000343322754,
+          2.5280001163482666,
+          1.156999945640564,
+          28.420000076293945
+        ],
+        [
+          8.640000343322754,
+          4.689000129699707,
+          5.6500000953674325,
+          2.8429999351501465,
+          2.4670000076293945,
+          1.187999963760376,
+          28.49099922180176
+        ],
+        [
+          8.706999778747559,
+          4.75600004196167,
+          5.4720001220703125,
+          2.9489998817443848,
+          2.58899998664856,
+          1.187999963760376,
+          29.334999084472656
+        ],
+        [
+          8.975000381469727,
+          4.956999778747559,
+          6.361000061035156,
+          3.1630001068115234,
+          2.61899995803833,
+          1.218000054359436,
+          29.82699966430664
+        ],
+        [
+          8.77400016784668,
+          4.554999828338623,
+          6.361000061035156,
+          2.9489998817443848,
+          2.7109999656677246,
+          1.218000054359436,
+          29.263999938964844
+        ],
+        [
+          7.836999893188477,
+          3.95199990272522,
+          5.295000076293945,
+          2.2390000820159908,
+          2.559000015258789,
+          1.065999984741211,
+          26.520999908447266
+        ],
+        [
+          7.434999942779541,
+          3.1480000019073486,
+          4.833000183105469,
+          1.9539999961853027,
+          2.5280001163482666,
+          0.944000005722046,
+          26.09900093078613
+        ],
+        [
+          8.371999740600586,
+          3.41599988937378,
+          5.7210001945495605,
+          2.2739999294281006,
+          2.650000095367432,
+          0.7609999775886536,
+          25.2549991607666
+        ],
+        [
+          10.381999969482422,
+          3.818000078201294,
+          7.427000045776367,
+          2.594000101089477,
+          2.375999927520752,
+          0.8529999852180481,
+          24.55100059509277
+        ],
+        [
+          9.645000457763672,
+          4.889999866485597,
+          7.782000064849853,
+          3.696000099182129,
+          1.9490000009536743,
+          0.8220000267028809,
+          24.691999435424805
+        ],
+        [
+          10.91800022125244,
+          5.625999927520752,
+          8.883999824523926,
+          3.802000045776367,
+          1.9490000009536743,
+          0.9139999747276306,
+          24.832000732421875
+        ],
+        [
+          14.869999885559082,
+          6.497000217437744,
+          10.126999855041504,
+          4.72599983215332,
+          4.295000076293944,
+          1.4010000228881836,
+          24.12899971008301
+        ],
+        [
+          14.668999671936035,
+          7.099999904632568,
+          10.340999603271484,
+          4.584000110626222,
+          4.081999778747559,
+          1.3400000333786009,
+          23.917999267578125
+        ],
+        [
+          13.663999557495115,
+          6.764999866485598,
+          9.45199966430664,
+          4.0869998931884775,
+          4.0209999084472665,
+          1.3400000333786009,
+          24.55100059509277
+        ],
+        [
+          13.529999732971191,
+          6.296000003814697,
+          9.666000366210938,
+          4.014999866485597,
+          3.8989999294281006,
+          1.309999942779541,
+          24.481000900268555
+        ],
+        [
+          12.994000434875488,
+          6.09499979019165,
+          8.670999526977539,
+          4.406000137329102,
+          4.172999858856201,
+          1.371000051498413,
+          24.62100028991699
+        ],
+        [
+          15.06999969482422,
+          6.831999778747559,
+          9.949999809265137,
+          4.014999866485597,
+          4.751999855041504,
+          1.4320000410079956,
+          24.62100028991699
+        ],
+        [
+          15.338000297546388,
+          7.099999904632568,
+          10.37600040435791,
+          3.9440000057220463,
+          5.208000183105469,
+          1.6139999628067017,
+          24.40999984741211
+        ],
+        [
+          16.208999633789062,
+          6.027999877929688,
+          11.654999732971191,
+          3.375999927520752,
+          4.965000152587892,
+          1.7669999599456787,
+          24.90299987792969
+        ],
+        [
+          12.994000434875488,
+          5.559000015258789,
+          10.092000007629396,
+          3.1979999542236333,
+          2.6800000667572017,
+          1.4010000228881836,
+          25.32500076293945
+        ],
+        [
+          9.779000282287598,
+          4.622000217437744,
+          7.2849998474121085,
+          3.0199999809265137,
+          2.375999927520752,
+          1.156999945640564,
+          26.520999908447266
+        ],
+        [
+          9.645000457763672,
+          4.689000129699707,
+          6.787000179290772,
+          3.375999927520752,
+          2.86299991607666,
+          1.218000054359436,
+          27.71699905395508
+        ],
+        [
+          9.913000106811523,
+          4.75600004196167,
+          7.0,
+          3.0559999942779537,
+          3.015000104904175,
+          1.1269999742507937,
+          27.78700065612793
+        ],
+        [
+          8.439000129699707,
+          3.884999990463257,
+          5.401000022888184,
+          2.1679999828338623,
+          2.345000028610229,
+          0.944000005722046,
+          28.27899932861328
+        ],
+        [
+          8.572999954223633,
+          4.3540000915527335,
+          6.324999809265138,
+          2.9140000343322754,
+          2.2239999771118164,
+          1.0049999952316284,
+          28.70199966430664
+        ],
+        [
+          8.505999565124513,
+          4.822999954223633,
+          5.791999816894531,
+          3.1630001068115234,
+          2.253999948501587,
+          1.065999984741211,
+          30.31999969482422
+        ],
+        [
+          7.903999805450439,
+          4.689000129699707,
+          6.111999988555907,
+          3.58899998664856,
+          2.2239999771118164,
+          1.097000002861023,
+          30.038000106811523
+        ],
+        [
+          7.903999805450439,
+          4.554999828338623,
+          5.436999797821045,
+          2.984999895095825,
+          2.437000036239624,
+          1.218000054359436,
+          30.5310001373291
+        ],
+        [
+          8.907999992370605,
+          4.421000003814697,
+          5.89900016784668,
+          3.0199999809265137,
+          2.7720000743865967,
+          1.2489999532699585,
+          30.31999969482422
+        ],
+        [
+          8.104999542236326,
+          4.0859999656677255,
+          5.366000175476074,
+          2.664999961853028,
+          2.6800000667572017,
+          1.097000002861023,
+          28.77199935913086
+        ],
+        [
+          7.769999980926514,
+          3.617000102996826,
+          5.188000202178955,
+          2.1679999828338623,
+          2.58899998664856,
+          1.0360000133514404,
+          26.87299919128418
+        ],
+        [
+          8.572999954223633,
+          3.884999990463257,
+          5.89900016784668,
+          2.594000101089477,
+          2.559000015258789,
+          0.8830000162124634,
+          25.95800018310547
+        ],
+        [
+          9.51099967956543,
+          3.617000102996826,
+          7.532999992370605,
+          2.5230000019073486,
+          2.253999948501587,
+          0.8529999852180481,
+          25.2549991607666
+        ],
+        [
+          11.45400047302246,
+          5.290999889373778,
+          9.3100004196167,
+          4.513000011444092,
+          2.101999998092652,
+          0.7609999775886536,
+          24.832000732421875
+        ],
+        [
+          12.79300022125244,
+          3.818000078201294,
+          10.909000396728516,
+          2.2739999294281006,
+          1.9490000009536743,
+          0.7919999957084656,
+          24.40999984741211
+        ],
+        [
+          13.79800033569336,
+          4.622000217437744,
+          12.366000175476074,
+          3.0559999942779537,
+          1.8580000400543213,
+          0.8220000267028809,
+          25.04400062561035
+        ],
+        [
+          13.79800033569336,
+          4.622000217437744,
+          12.366000175476074,
+          3.0559999942779537,
+          1.8580000400543213,
+          0.8220000267028809,
+          25.04400062561035
+        ],
+        [
+          13.79800033569336,
+          4.622000217437744,
+          12.366000175476074,
+          3.0559999942779537,
+          1.8580000400543213,
+          0.8220000267028809,
+          25.04400062561035
+        ],
+        [
+          13.79800033569336,
+          4.622000217437744,
+          12.366000175476074,
+          3.0559999942779537,
+          1.8580000400543213,
+          0.8220000267028809,
+          25.04400062561035
+        ],
+        [
+          13.79800033569336,
+          4.622000217437744,
+          12.366000175476074,
+          3.0559999942779537,
+          1.8580000400543213,
+          0.8220000267028809,
+          25.04400062561035
+        ],
+        [
+          13.79800033569336,
+          4.622000217437744,
+          12.366000175476074,
+          3.0559999942779537,
+          1.8580000400543213,
+          0.8220000267028809,
+          25.04400062561035
+        ],
+        [
+          13.79800033569336,
+          4.622000217437744,
+          12.366000175476074,
+          3.0559999942779537,
+          1.8580000400543213,
+          0.8220000267028809,
+          25.04400062561035
+        ],
+        [
+          13.79800033569336,
+          4.622000217437744,
+          12.366000175476074,
+          3.0559999942779537,
+          1.8580000400543213,
+          0.8220000267028809,
+          25.04400062561035
+        ],
+        [
+          13.79800033569336,
+          4.622000217437744,
+          12.366000175476074,
+          3.0559999942779537,
+          1.8580000400543213,
+          0.8220000267028809,
+          25.04400062561035
+        ],
+        [
+          13.79800033569336,
+          4.622000217437744,
+          12.366000175476074,
+          3.0559999942779537,
+          1.8580000400543213,
+          0.8220000267028809,
+          25.04400062561035
+        ],
+        [
+          13.79800033569336,
+          4.622000217437744,
+          12.366000175476074,
+          3.0559999942779537,
+          1.8580000400543213,
+          0.8220000267028809,
+          25.04400062561035
+        ],
+        [
+          13.79800033569336,
+          4.622000217437744,
+          12.366000175476074,
+          3.0559999942779537,
+          1.8580000400543213,
+          0.8220000267028809,
+          25.04400062561035
+        ],
+        [
+          13.79800033569336,
+          4.622000217437744,
+          12.366000175476074,
+          3.0559999942779537,
+          1.8580000400543213,
+          0.8220000267028809,
+          25.04400062561035
+        ],
+        [
+          13.79800033569336,
+          4.622000217437744,
+          12.366000175476074,
+          3.0559999942779537,
+          1.8580000400543213,
+          0.8220000267028809,
+          25.04400062561035
+        ],
+        [
+          13.79800033569336,
+          4.622000217437744,
+          12.366000175476074,
+          3.0559999942779537,
+          1.8580000400543213,
+          0.8220000267028809,
+          25.04400062561035
+        ],
+        [
+          13.79800033569336,
+          4.622000217437744,
+          12.366000175476074,
+          3.0559999942779537,
+          1.8580000400543213,
+          0.8220000267028809,
+          25.04400062561035
+        ],
+        [
+          13.79800033569336,
+          4.622000217437744,
+          12.366000175476074,
+          3.0559999942779537,
+          1.8580000400543213,
+          0.8220000267028809,
+          25.04400062561035
+        ],
+        [
+          13.79800033569336,
+          4.622000217437744,
+          12.366000175476074,
+          3.0559999942779537,
+          1.8580000400543213,
+          0.8220000267028809,
+          25.04400062561035
+        ],
+        [
+          13.79800033569336,
+          4.622000217437744,
+          12.366000175476074,
+          3.0559999942779537,
+          1.8580000400543213,
+          0.8220000267028809,
+          25.04400062561035
+        ],
+        [
+          13.79800033569336,
+          4.622000217437744,
+          12.366000175476074,
+          3.0559999942779537,
+          1.8580000400543213,
+          0.8220000267028809,
+          25.04400062561035
+        ],
+        [
+          13.79800033569336,
+          4.622000217437744,
+          12.366000175476074,
+          3.0559999942779537,
+          1.8580000400543213,
+          0.8220000267028809,
+          25.04400062561035
+        ],
+        [
+          13.79800033569336,
+          4.622000217437744,
+          12.366000175476074,
+          3.0559999942779537,
+          1.8580000400543213,
+          0.8220000267028809,
+          25.04400062561035
+        ],
+        [
+          13.79800033569336,
+          4.622000217437744,
+          12.366000175476074,
+          3.0559999942779537,
+          1.8580000400543213,
+          0.8220000267028809,
+          25.04400062561035
+        ],
+        [
+          13.79800033569336,
+          4.622000217437744,
+          12.366000175476074,
+          3.0559999942779537,
+          1.8580000400543213,
+          0.8220000267028809,
+          25.04400062561035
+        ]
+      ],
+      "forecast_output": [
+        24.169495207167223,
+        24.553633928419544,
+        24.36447582169889,
+        24.32992890884638,
+        25.013593136396388,
+        25.058631610199868,
+        24.59356445908312,
+        24.542092912808847,
+        24.84766285995606,
+        24.421876861441753,
+        23.85096855047526,
+        23.53463236292133,
+        23.316533391805464,
+        23.392763409675055,
+        22.950599648611924,
+        22.439725219780236,
+        22.938210709463927,
+        22.474325376657678,
+        22.279450254960466,
+        22.007634033976522,
+        22.125056515661452,
+        21.94774246764669,
+        22.46944633306423,
+        22.703614549948913
+      ],
+      "temperature_metric": 25.058631610199868,
+      "temperature_rise_metric": 0.8891364030326443,
+      "slope_metric": 0.6836642275500076,
+      "risk_intermediate_values": {
+        "mean": 23.513569105444464,
+        "peak_hour_ahead": 6,
+        "thresholds": {
+          "temperature": {
+            "medium": 32.570999145507805,
+            "high": 37.00299835205078,
+            "medium_quantile": 0.9,
+            "high_quantile": 0.95,
+            "constant": false
+          },
+          "rise": {
+            "medium": 6.120999336242676,
+            "high": 7.176000595092772,
+            "medium_quantile": 0.9,
+            "high_quantile": 0.95,
+            "constant": false
+          },
+          "slope": {
+            "medium": 3.2360000610351634,
+            "high": 3.7280006408691406,
+            "medium_quantile": 0.9,
+            "high_quantile": 0.95,
+            "constant": false
+          },
+          "source": {
+            "data_path": "data/ETTh1.csv",
+            "train_rows": 12194,
+            "forecast_horizon": 24
+          }
+        }
+      },
+      "rag_evidence": [
+        {
+          "id": "KB-THERMAL-001-C1",
+          "score": 0.727738618850708,
+          "accepted": true,
+          "text": "Stable transformer oil temperature with no unusual rise should continue routine trend monitoring and normal inspection."
+        },
+        {
+          "id": "KB-THERMAL-002-C1",
+          "score": 0.6622200608253479,
+          "accepted": true,
+          "text": "A gradual oil-temperature rise should trigger closer monitoring of transformer load, cooling effectiveness, ambient conditions and sensor consistency."
+        },
+        {
+          "id": "KB-LOAD-001-C1",
+          "score": 0.6195905208587646,
+          "accepted": true,
+          "text": "Increased electrical load can raise transformer oil temperature. Compare load trends with thermal trends before attributing a rise to a fault."
+        }
+      ],
+      "react_observations": [
+        {
+          "step": 1,
+          "thought": "Forecast the next oil-temperature horizon.",
+          "action": "Forecast",
+          "observation": {
+            "model": "LSTM",
+            "input_hours": 96,
+            "forecast_hours": 24,
+            "target": "OT",
+            "forecast": [
+              24.169495207167223,
+              24.553633928419544,
+              24.36447582169889,
+              24.32992890884638,
+              25.013593136396388,
+              25.058631610199868,
+              24.59356445908312,
+              24.542092912808847,
+              24.84766285995606,
+              24.421876861441753,
+              23.85096855047526,
+              23.53463236292133,
+              23.316533391805464,
+              23.392763409675055,
+              22.950599648611924,
+              22.439725219780236,
+              22.938210709463927,
+              22.474325376657678,
+              22.279450254960466,
+              22.007634033976522,
+              22.125056515661452,
+              21.94774246764669,
+              22.46944633306423,
+              22.703614549948913
+            ]
+          }
+        },
+        {
+          "step": 2,
+          "thought": "Evaluate forecast thermal indicators against training quantiles.",
+          "action": "Risk",
+          "observation": {
+            "mean": 23.513569105444464,
+            "max": 25.058631610199868,
+            "rise": 0.8891364030326443,
+            "max_slope": 0.6836642275500076,
+            "risk_level": "LOW",
+            "peak_hour_ahead": 6,
+            "thresholds": {
+              "temperature": {
+                "medium": 32.570999145507805,
+                "high": 37.00299835205078,
+                "medium_quantile": 0.9,
+                "high_quantile": 0.95,
+                "constant": false
+              },
+              "rise": {
+                "medium": 6.120999336242676,
+                "high": 7.176000595092772,
+                "medium_quantile": 0.9,
+                "high_quantile": 0.95,
+                "constant": false
+              },
+              "slope": {
+                "medium": 3.2360000610351634,
+                "high": 3.7280006408691406,
+                "medium_quantile": 0.9,
+                "high_quantile": 0.95,
+                "constant": false
+              },
+              "source": {
+                "data_path": "data/ETTh1.csv",
+                "train_rows": 12194,
+                "forecast_horizon": 24
+              }
+            }
+          }
+        },
+        {
+          "step": 3,
+          "thought": "Retrieve maintenance evidence relevant to the forecast and risk.",
+          "action": "RAG",
+          "observation": [
+            {
+              "id": "KB-THERMAL-001-C1",
+              "score": 0.727738618850708,
+              "accepted": true,
+              "text": "Stable transformer oil temperature with no unusual rise should continue routine trend monitoring and normal inspection."
+            },
+            {
+              "id": "KB-THERMAL-002-C1",
+              "score": 0.6622200608253479,
+              "accepted": true,
+              "text": "A gradual oil-temperature rise should trigger closer monitoring of transformer load, cooling effectiveness, ambient conditions and sensor consistency."
+            },
+            {
+              "id": "KB-LOAD-001-C1",
+              "score": 0.6195905208587646,
+              "accepted": true,
+              "text": "Increased electrical load can raise transformer oil temperature. Compare load trends with thermal trends before attributing a rise to a fault."
+            }
+          ]
+        }
+      ],
+      "risk_level": "LOW",
+      "agent_final_output": "Risk=LOW. Temperature behavior is currently stable with no configured historical anomaly or forecast thermal risk trigger. Forecast peak=25.06°C, rise=0.89°C, max positive slope=0.68°C/h. Evidence: KB-THERMAL-001-C1: Stable transformer oil temperature with no unusual rise should continue routine trend monitoring and normal inspection.; KB-THERMAL-002-C1: A gradual oil-temperature rise should trigger closer monitoring of transformer load, cooling effectiveness, ambient conditions and sensor consistency.; KB-LOAD-001-C1: Increased electrical load can raise transformer oil temperature. Compare load trends with thermal trends before attributing a rise to a fault. Recommendation: Continue routine monitoring and reassess with the next 96-hour observation window.",
+      "model": "LSTM",
+      "anomaly": {
+        "status": "NORMAL",
+        "score": 0.0,
+        "latest_temperature": 25.04400062561035,
+        "rise_6h": 0.0,
+        "rise_12h": 0.0,
+        "rise_24h": 0.6340007781982422,
+        "slope_6h": 1.5675465914953935e-15,
+        "slope_24h": -9.718086569804522e-17,
+        "max_abs_jump": 2.744001388549801,
+        "max_positive_slope": 2.744001388549801,
+        "reasons": [
+          "No configured thermal anomaly rule was triggered."
+        ],
+        "thresholds": {
+          "jump_c_per_hour": 5.0,
+          "rise_6h_c": 3.0,
+          "rise_12h_c": 5.0,
+          "rise_24h_c": 8.0,
+          "slope_6h_c_per_hour": 0.5,
+          "slope_24h_c_per_hour": 0.35
+        }
+      },
+      "diagnosis": {
+        "level": "NORMAL",
+        "diagnosis": "Temperature behavior is currently stable with no configured historical anomaly or forecast thermal risk trigger.",
+        "reason": "Temperature behavior is currently stable with no configured historical anomaly or forecast thermal risk trigger.",
+        "evidence": [
+          "No configured thermal anomaly rule was triggered.",
+          "Forecast peak is 25.06 °C.",
+          "Forecast maximum positive slope is 0.68 °C/h."
+        ],
+        "recommendation": "Continue routine monitoring and reassess with the next 96-hour observation window."
+      }
+    },
+    "slow_rise": {
+      "case_name": "slow_rise",
+      "raw_input_signal": [
+        [
+          7.434999942779541,
+          3.1480000019073486,
+          4.833000183105469,
+          1.9539999961853027,
+          2.5280001163482666,
+          0.944000005722046,
+          26.09900093078613
+        ],
+        [
+          8.371999740600586,
+          3.41599988937378,
+          5.7210001945495605,
+          2.2739999294281006,
+          2.650000095367432,
+          0.7609999775886536,
+          25.2549991607666
+        ],
+        [
+          10.381999969482422,
+          3.818000078201294,
+          7.427000045776367,
+          2.594000101089477,
+          2.375999927520752,
+          0.8529999852180481,
+          24.55100059509277
+        ],
+        [
+          9.645000457763672,
+          4.889999866485597,
+          7.782000064849853,
+          3.696000099182129,
+          1.9490000009536743,
+          0.8220000267028809,
+          24.691999435424805
+        ],
+        [
+          10.91800022125244,
+          5.625999927520752,
+          8.883999824523926,
+          3.802000045776367,
+          1.9490000009536743,
+          0.9139999747276306,
+          24.832000732421875
+        ],
+        [
+          14.869999885559082,
+          6.497000217437744,
+          10.126999855041504,
+          4.72599983215332,
+          4.295000076293944,
+          1.4010000228881836,
+          24.12899971008301
+        ],
+        [
+          14.668999671936035,
+          7.099999904632568,
+          10.340999603271484,
+          4.584000110626222,
+          4.081999778747559,
+          1.3400000333786009,
+          23.917999267578125
+        ],
+        [
+          13.663999557495115,
+          6.764999866485598,
+          9.45199966430664,
+          4.0869998931884775,
+          4.0209999084472665,
+          1.3400000333786009,
+          24.55100059509277
+        ],
+        [
+          13.529999732971191,
+          6.296000003814697,
+          9.666000366210938,
+          4.014999866485597,
+          3.8989999294281006,
+          1.309999942779541,
+          24.481000900268555
+        ],
+        [
+          12.994000434875488,
+          6.09499979019165,
+          8.670999526977539,
+          4.406000137329102,
+          4.172999858856201,
+          1.371000051498413,
+          24.62100028991699
+        ],
+        [
+          15.06999969482422,
+          6.831999778747559,
+          9.949999809265137,
+          4.014999866485597,
+          4.751999855041504,
+          1.4320000410079956,
+          24.62100028991699
+        ],
+        [
+          15.338000297546388,
+          7.099999904632568,
+          10.37600040435791,
+          3.9440000057220463,
+          5.208000183105469,
+          1.6139999628067017,
+          24.40999984741211
+        ],
+        [
+          16.208999633789062,
+          6.027999877929688,
+          11.654999732971191,
+          3.375999927520752,
+          4.965000152587892,
+          1.7669999599456787,
+          24.90299987792969
+        ],
+        [
+          12.994000434875488,
+          5.559000015258789,
+          10.092000007629396,
+          3.1979999542236333,
+          2.6800000667572017,
+          1.4010000228881836,
+          25.32500076293945
+        ],
+        [
+          9.779000282287598,
+          4.622000217437744,
+          7.2849998474121085,
+          3.0199999809265137,
+          2.375999927520752,
+          1.156999945640564,
+          26.520999908447266
+        ],
+        [
+          9.645000457763672,
+          4.689000129699707,
+          6.787000179290772,
+          3.375999927520752,
+          2.86299991607666,
+          1.218000054359436,
+          27.71699905395508
+        ],
+        [
+          9.913000106811523,
+          4.75600004196167,
+          7.0,
+          3.0559999942779537,
+          3.015000104904175,
+          1.1269999742507937,
+          27.78700065612793
+        ],
+        [
+          8.439000129699707,
+          3.884999990463257,
+          5.401000022888184,
+          2.1679999828338623,
+          2.345000028610229,
+          0.944000005722046,
+          28.27899932861328
+        ],
+        [
+          8.572999954223633,
+          4.3540000915527335,
+          6.324999809265138,
+          2.9140000343322754,
+          2.2239999771118164,
+          1.0049999952316284,
+          28.70199966430664
+        ],
+        [
+          8.505999565124513,
+          4.822999954223633,
+          5.791999816894531,
+          3.1630001068115234,
+          2.253999948501587,
+          1.065999984741211,
+          30.31999969482422
+        ],
+        [
+          7.903999805450439,
+          4.689000129699707,
+          6.111999988555907,
+          3.58899998664856,
+          2.2239999771118164,
+          1.097000002861023,
+          30.038000106811523
+        ],
+        [
+          7.903999805450439,
+          4.554999828338623,
+          5.436999797821045,
+          2.984999895095825,
+          2.437000036239624,
+          1.218000054359436,
+          30.5310001373291
+        ],
+        [
+          8.907999992370605,
+          4.421000003814697,
+          5.89900016784668,
+          3.0199999809265137,
+          2.7720000743865967,
+          1.2489999532699585,
+          30.31999969482422
+        ],
+        [
+          8.104999542236326,
+          4.0859999656677255,
+          5.366000175476074,
+          2.664999961853028,
+          2.6800000667572017,
+          1.097000002861023,
+          28.77199935913086
+        ],
+        [
+          7.769999980926514,
+          3.617000102996826,
+          5.188000202178955,
+          2.1679999828338623,
+          2.58899998664856,
+          1.0360000133514404,
+          26.87299919128418
+        ],
+        [
+          8.572999954223633,
+          3.884999990463257,
+          5.89900016784668,
+          2.594000101089477,
+          2.559000015258789,
+          0.8830000162124634,
+          25.95800018310547
+        ],
+        [
+          9.51099967956543,
+          3.617000102996826,
+          7.532999992370605,
+          2.5230000019073486,
+          2.253999948501587,
+          0.8529999852180481,
+          25.2549991607666
+        ],
+        [
+          11.45400047302246,
+          5.290999889373778,
+          9.3100004196167,
+          4.513000011444092,
+          2.101999998092652,
+          0.7609999775886536,
+          24.832000732421875
+        ],
+        [
+          12.79300022125244,
+          3.818000078201294,
+          10.909000396728516,
+          2.2739999294281006,
+          1.9490000009536743,
+          0.7919999957084656,
+          24.40999984741211
+        ],
+        [
+          13.79800033569336,
+          4.622000217437744,
+          12.366000175476074,
+          3.0559999942779537,
+          1.8580000400543213,
+          0.8220000267028809,
+          25.04400062561035
+        ],
+        [
+          13.79800033569336,
+          4.622000217437744,
+          12.366000175476074,
+          3.0559999942779537,
+          1.8580000400543213,
+          0.8220000267028809,
+          25.04400062561035
+        ],
+        [
+          13.79800033569336,
+          4.622000217437744,
+          12.366000175476074,
+          3.0559999942779537,
+          1.8580000400543213,
+          0.8220000267028809,
+          25.04400062561035
+        ],
+        [
+          13.79800033569336,
+          4.622000217437744,
+          12.366000175476074,
+          3.0559999942779537,
+          1.8580000400543213,
+          0.8220000267028809,
+          25.04400062561035
+        ],
+        [
+          13.79800033569336,
+          4.622000217437744,
+          12.366000175476074,
+          3.0559999942779537,
+          1.8580000400543213,
+          0.8220000267028809,
+          25.04400062561035
+        ],
+        [
+          13.79800033569336,
+          4.622000217437744,
+          12.366000175476074,
+          3.0559999942779537,
+          1.8580000400543213,
+          0.8220000267028809,
+          25.04400062561035
+        ],
+        [
+          13.79800033569336,
+          4.622000217437744,
+          12.366000175476074,
+          3.0559999942779537,
+          1.8580000400543213,
+          0.8220000267028809,
+          25.04400062561035
+        ],
+        [
+          13.79800033569336,
+          4.622000217437744,
+          12.366000175476074,
+          3.0559999942779537,
+          1.8580000400543213,
+          0.8220000267028809,
+          25.04400062561035
+        ],
+        [
+          13.79800033569336,
+          4.622000217437744,
+          12.366000175476074,
+          3.0559999942779537,
+          1.8580000400543213,
+          0.8220000267028809,
+          25.04400062561035
+        ],
+        [
+          13.79800033569336,
+          4.622000217437744,
+          12.366000175476074,
+          3.0559999942779537,
+          1.8580000400543213,
+          0.8220000267028809,
+          25.04400062561035
+        ],
+        [
+          13.79800033569336,
+          4.622000217437744,
+          12.366000175476074,
+          3.0559999942779537,
+          1.8580000400543213,
+          0.8220000267028809,
+          25.04400062561035
+        ],
+        [
+          13.79800033569336,
+          4.622000217437744,
+          12.366000175476074,
+          3.0559999942779537,
+          1.8580000400543213,
+          0.8220000267028809,
+          25.04400062561035
+        ],
+        [
+          13.79800033569336,
+          4.622000217437744,
+          12.366000175476074,
+          3.0559999942779537,
+          1.8580000400543213,
+          0.8220000267028809,
+          25.04400062561035
+        ],
+        [
+          13.79800033569336,
+          4.622000217437744,
+          12.366000175476074,
+          3.0559999942779537,
+          1.8580000400543213,
+          0.8220000267028809,
+          25.04400062561035
+        ],
+        [
+          13.79800033569336,
+          4.622000217437744,
+          12.366000175476074,
+          3.0559999942779537,
+          1.8580000400543213,
+          0.8220000267028809,
+          25.04400062561035
+        ],
+        [
+          13.79800033569336,
+          4.622000217437744,
+          12.366000175476074,
+          3.0559999942779537,
+          1.8580000400543213,
+          0.8220000267028809,
+          25.04400062561035
+        ],
+        [
+          13.79800033569336,
+          4.622000217437744,
+          12.366000175476074,
+          3.0559999942779537,
+          1.8580000400543213,
+          0.8220000267028809,
+          25.04400062561035
+        ],
+        [
+          13.79800033569336,
+          4.622000217437744,
+          12.366000175476074,
+          3.0559999942779537,
+          1.8580000400543213,
+          0.8220000267028809,
+          25.04400062561035
+        ],
+        [
+          13.79800033569336,
+          4.622000217437744,
+          12.366000175476074,
+          3.0559999942779537,
+          1.8580000400543213,
+          0.8220000267028809,
+          25.04400062561035
+        ],
+        [
+          13.79800033569336,
+          4.622000217437744,
+          12.366000175476074,
+          3.0559999942779537,
+          1.8580000400543213,
+          0.8220000267028809,
+          25.04400062561035
+        ],
+        [
+          13.79800033569336,
+          4.622000217437744,
+          12.366000175476074,
+          3.0559999942779537,
+          1.8580000400543213,
+          0.8220000267028809,
+          25.04400062561035
+        ],
+        [
+          13.79800033569336,
+          4.622000217437744,
+          12.366000175476074,
+          3.0559999942779537,
+          1.8580000400543213,
+          0.8220000267028809,
+          25.04400062561035
+        ],
+        [
+          13.79800033569336,
+          4.622000217437744,
+          12.366000175476074,
+          3.0559999942779537,
+          1.8580000400543213,
+          0.8220000267028809,
+          25.04400062561035
+        ],
+        [
+          13.79800033569336,
+          4.622000217437744,
+          12.366000175476074,
+          3.0559999942779537,
+          1.8580000400543213,
+          0.8220000267028809,
+          25.04400062561035
+        ],
+        [
+          16.007999420166016,
+          7.234000205993652,
+          10.87399959564209,
+          4.619999885559082,
+          4.538000106811523,
+          1.5529999732971191,
+          26.309999465942383
+        ],
+        [
+          14.53499984741211,
+          6.2290000915527335,
+          9.701000213623049,
+          4.051000118255615,
+          4.295000076293944,
+          1.7970000505447388,
+          25.88800048828125
+        ],
+        [
+          14.401000022888184,
+          4.48799991607666,
+          9.772000312805176,
+          2.061000108718872,
+          4.477000236511231,
+          1.5839999914169312,
+          25.746999740600582
+        ],
+        [
+          14.60200023651123,
+          6.429999828338622,
+          10.30500030517578,
+          4.370999813079834,
+          4.324999809265137,
+          1.5230000019073486,
+          25.395000457763672
+        ],
+        [
+          12.324000358581545,
+          5.1570000648498535,
+          8.598999977111816,
+          3.3050000667572017,
+          4.324999809265137,
+          1.5529999732971191,
+          25.2549991607666
+        ],
+        [
+          13.864999771118164,
+          6.2290000915527335,
+          9.23900032043457,
+          4.122000217437743,
+          4.7820000648498535,
+          1.5529999732971191,
+          25.11400032043457
+        ],
+        [
+          14.60200023651123,
+          4.287000179290772,
+          9.737000465393066,
+          1.4570000171661377,
+          5.1479997634887695,
+          1.7359999418258667,
+          24.691999435424805
+        ],
+        [
+          15.87399959564209,
+          5.894000053405763,
+          10.66100025177002,
+          3.3399999141693115,
+          5.086999893188477,
+          1.919000029563904,
+          25.32500076293945
+        ],
+        [
+          10.381999969482422,
+          3.549999952316284,
+          7.214000225067139,
+          1.8480000495910645,
+          2.6800000667572017,
+          1.4010000228881836,
+          26.309999465942383
+        ],
+        [
+          9.51099967956543,
+          3.6840000152587886,
+          6.822999954223633,
+          2.0969998836517334,
+          2.7109999656677246,
+          1.309999942779541,
+          27.364999771118164
+        ],
+        [
+          10.180999755859377,
+          3.818000078201294,
+          7.0,
+          1.315000057220459,
+          3.0460000038146973,
+          1.4010000228881836,
+          28.70199966430664
+        ],
+        [
+          10.784000396728516,
+          3.818000078201294,
+          7.320000171661378,
+          1.5279999971389768,
+          3.3199999332427983,
+          1.309999942779541,
+          27.364999771118164
+        ],
+        [
+          8.77400016784668,
+          4.48799991607666,
+          6.005000114440918,
+          2.7720000743865967,
+          2.437000036239624,
+          1.1269999742507937,
+          27.71699905395508
+        ],
+        [
+          8.171999931335451,
+          3.818000078201294,
+          5.791999816894531,
+          2.486999988555908,
+          2.4059998989105225,
+          0.944000005722046,
+          28.982999801635746
+        ],
+        [
+          8.439000129699707,
+          3.95199990272522,
+          5.828000068664551,
+          2.630000114440918,
+          2.4670000076293945,
+          1.218000054359436,
+          30.5310001373291
+        ],
+        [
+          9.243000030517578,
+          3.617000102996826,
+          6.928999900817871,
+          1.5279999971389768,
+          2.650000095367432,
+          1.187999963760376,
+          30.5310001373291
+        ],
+        [
+          9.51099967956543,
+          3.4830000400543213,
+          6.610000133514402,
+          1.5989999771118164,
+          2.650000095367432,
+          1.6139999628067017,
+          30.742000579833984
+        ],
+        [
+          9.444000244140623,
+          3.0810000896453857,
+          6.4670000076293945,
+          1.4919999837875366,
+          2.924000024795532,
+          1.218000054359436,
+          30.31999969482422
+        ],
+        [
+          8.305999755859375,
+          4.152999877929688,
+          5.685999870300293,
+          2.736000061035156,
+          2.650000095367432,
+          1.097000002861023,
+          30.108999252319336
+        ],
+        [
+          8.907999992370605,
+          3.884999990463257,
+          5.828000068664551,
+          2.345000028610229,
+          2.9549999237060547,
+          1.0360000133514404,
+          29.05299949645996
+        ],
+        [
+          9.779000282287598,
+          3.818000078201294,
+          6.573999881744385,
+          2.38100004196167,
+          3.259000062942505,
+          1.065999984741211,
+          28.420000076293945
+        ],
+        [
+          9.041999816894531,
+          3.2149999141693115,
+          5.934000015258789,
+          1.8480000495910645,
+          3.0460000038146973,
+          1.097000002861023,
+          27.85700035095215
+        ],
+        [
+          9.3100004196167,
+          4.287000179290772,
+          6.183000087738037,
+          2.38100004196167,
+          2.86299991607666,
+          1.065999984741211,
+          27.645999908447266
+        ],
+        [
+          10.784000396728516,
+          5.090000152587892,
+          7.960000038146973,
+          3.9800000190734863,
+          2.345000028610229,
+          0.975000023841858,
+          26.94300079345703
+        ],
+        [
+          12.123000144958494,
+          6.09499979019165,
+          9.45199966430664,
+          3.9800000190734863,
+          2.2839999198913574,
+          1.065999984741211,
+          26.80200004577637
+        ],
+        [
+          10.91800022125244,
+          5.692999839782715,
+          8.208999633789062,
+          3.908999919891357,
+          2.253999948501587,
+          1.0049999952316284,
+          26.309999465942383
+        ],
+        [
+          10.515999794006348,
+          5.760000228881836,
+          8.564000129699707,
+          4.0869998931884775,
+          2.1630001068115234,
+          1.0360000133514404,
+          25.95800018310547
+        ],
+        [
+          9.57800006866455,
+          4.956999778747559,
+          7.853000164031982,
+          3.233999967575073,
+          2.0710000991821294,
+          1.0049999952316284,
+          25.465999603271484
+        ],
+        [
+          10.381999969482422,
+          4.822999954223633,
+          8.564000129699707,
+          3.4470000267028813,
+          1.9490000009536743,
+          0.944000005722046,
+          24.90299987792969
+        ],
+        [
+          11.052000045776367,
+          5.559000015258789,
+          9.131999969482422,
+          4.051000118255615,
+          2.04099988937378,
+          0.8529999852180481,
+          24.40999984741211
+        ],
+        [
+          12.524999618530272,
+          3.95199990272522,
+          9.23900032043457,
+          2.309999942779541,
+          2.7109999656677246,
+          1.0049999952316284,
+          24.19899940490723
+        ],
+        [
+          11.052000045776367,
+          3.818000078201294,
+          8.35099983215332,
+          2.0969998836517334,
+          2.6800000667572017,
+          1.371000051498413,
+          24.62100028991699
+        ],
+        [
+          10.91800022125244,
+          4.554999828338623,
+          8.456999778747559,
+          2.594000101089477,
+          2.8329999446868896,
+          1.462000012397766,
+          24.832000732421875
+        ],
+        [
+          10.3149995803833,
+          6.36299991607666,
+          7.604000091552732,
+          3.9440000057220463,
+          2.9549999237060547,
+          1.462000012397766,
+          26.23900032043457
+        ],
+        [
+          10.784000396728516,
+          6.296000003814697,
+          7.532999992370605,
+          3.838000059127808,
+          3.1070001125335693,
+          1.4919999837875366,
+          28.06800079345703
+        ],
+        [
+          10.3149995803833,
+          5.290999889373778,
+          7.390999794006348,
+          3.872999906539917,
+          3.2899999618530287,
+          1.3400000333786009,
+          27.71699905395508
+        ],
+        [
+          8.907999992370605,
+          4.554999828338623,
+          5.543000221252441,
+          2.1679999828338623,
+          2.86299991607666,
+          1.309999942779541,
+          28.56100082397461
+        ],
+        [
+          9.243000030517578,
+          4.554999828338623,
+          6.040999889373777,
+          2.630000114440918,
+          2.9549999237060547,
+          1.309999942779541,
+          29.194000244140625
+        ],
+        [
+          8.975000381469727,
+          5.290999889373778,
+          6.040999889373777,
+          3.127000093460083,
+          3.075999975204468,
+          1.371000051498413,
+          31.72599983215332
+        ],
+        [
+          9.845999717712402,
+          5.223999977111816,
+          6.610000133514402,
+          3.127000093460083,
+          2.8940000534057617,
+          1.309999942779541,
+          31.51499938964844
+        ],
+        [
+          9.444000244140623,
+          4.3540000915527335,
+          6.5380001068115225,
+          2.878000020980835,
+          2.8329999446868896,
+          1.3400000333786009,
+          31.72599983215332
+        ],
+        [
+          9.51099967956543,
+          4.689000129699707,
+          6.432000160217285,
+          3.0199999809265137,
+          3.075999975204468,
+          1.2489999532699585,
+          32.570999145507805
+        ],
+        [
+          8.77400016784668,
+          4.287000179290772,
+          5.756999969482423,
+          2.664999961853028,
+          2.984999895095825,
+          1.218000054359436,
+          30.17900085449219
+        ]
+      ],
+      "forecast_output": [
+        30.172935171849353,
+        29.63191417514189,
+        28.909926192222876,
+        28.3020983748441,
+        28.841659390531355,
+        28.9814612813516,
+        27.723149718504537,
+        27.265616348112403,
+        28.110265626683898,
+        27.80778283776756,
+        27.443545936864044,
+        27.088917840834522,
+        27.683563034768355,
+        28.32504804241472,
+        28.370910554585436,
+        28.5493705931556,
+        29.30074828262396,
+        29.44477983897652,
+        29.36640363905506,
+        29.369776424111297,
+        29.23468289744008,
+        28.760230864918697,
+        29.278189734713152,
+        29.122508186661477
+      ],
+      "temperature_metric": 30.172935171849353,
+      "temperature_rise_metric": 0.0,
+      "slope_metric": 0.8446492785714952,
+      "risk_intermediate_values": {
+        "mean": 28.62856187450552,
+        "peak_hour_ahead": 1,
+        "thresholds": {
+          "temperature": {
+            "medium": 32.570999145507805,
+            "high": 37.00299835205078,
+            "medium_quantile": 0.9,
+            "high_quantile": 0.95,
+            "constant": false
+          },
+          "rise": {
+            "medium": 6.120999336242676,
+            "high": 7.176000595092772,
+            "medium_quantile": 0.9,
+            "high_quantile": 0.95,
+            "constant": false
+          },
+          "slope": {
+            "medium": 3.2360000610351634,
+            "high": 3.7280006408691406,
+            "medium_quantile": 0.9,
+            "high_quantile": 0.95,
+            "constant": false
+          },
+          "source": {
+            "data_path": "data/ETTh1.csv",
+            "train_rows": 12194,
+            "forecast_horizon": 24
+          }
+        }
+      },
+      "rag_evidence": [
+        {
+          "id": "KB-THERMAL-001-C1",
+          "score": 0.692829966545105,
+          "accepted": true,
+          "text": "Stable transformer oil temperature with no unusual rise should continue routine trend monitoring and normal inspection."
+        },
+        {
+          "id": "KB-THERMAL-002-C1",
+          "score": 0.6618400812149048,
+          "accepted": true,
+          "text": "A gradual oil-temperature rise should trigger closer monitoring of transformer load, cooling effectiveness, ambient conditions and sensor consistency."
+        },
+        {
+          "id": "KB-LOAD-001-C1",
+          "score": 0.6152894496917725,
+          "accepted": true,
+          "text": "Increased electrical load can raise transformer oil temperature. Compare load trends with thermal trends before attributing a rise to a fault."
+        }
+      ],
+      "react_observations": [
+        {
+          "step": 1,
+          "thought": "Forecast the next oil-temperature horizon.",
+          "action": "Forecast",
+          "observation": {
+            "model": "LSTM",
+            "input_hours": 96,
+            "forecast_hours": 24,
+            "target": "OT",
+            "forecast": [
+              30.172935171849353,
+              29.63191417514189,
+              28.909926192222876,
+              28.3020983748441,
+              28.841659390531355,
+              28.9814612813516,
+              27.723149718504537,
+              27.265616348112403,
+              28.110265626683898,
+              27.80778283776756,
+              27.443545936864044,
+              27.088917840834522,
+              27.683563034768355,
+              28.32504804241472,
+              28.370910554585436,
+              28.5493705931556,
+              29.30074828262396,
+              29.44477983897652,
+              29.36640363905506,
+              29.369776424111297,
+              29.23468289744008,
+              28.760230864918697,
+              29.278189734713152,
+              29.122508186661477
+            ]
+          }
+        },
+        {
+          "step": 2,
+          "thought": "Evaluate forecast thermal indicators against training quantiles.",
+          "action": "Risk",
+          "observation": {
+            "mean": 28.62856187450552,
+            "max": 30.172935171849353,
+            "rise": 0.0,
+            "max_slope": 0.8446492785714952,
+            "risk_level": "LOW",
+            "peak_hour_ahead": 1,
+            "thresholds": {
+              "temperature": {
+                "medium": 32.570999145507805,
+                "high": 37.00299835205078,
+                "medium_quantile": 0.9,
+                "high_quantile": 0.95,
+                "constant": false
+              },
+              "rise": {
+                "medium": 6.120999336242676,
+                "high": 7.176000595092772,
+                "medium_quantile": 0.9,
+                "high_quantile": 0.95,
+                "constant": false
+              },
+              "slope": {
+                "medium": 3.2360000610351634,
+                "high": 3.7280006408691406,
+                "medium_quantile": 0.9,
+                "high_quantile": 0.95,
+                "constant": false
+              },
+              "source": {
+                "data_path": "data/ETTh1.csv",
+                "train_rows": 12194,
+                "forecast_horizon": 24
+              }
+            }
+          }
+        },
+        {
+          "step": 3,
+          "thought": "Retrieve maintenance evidence relevant to the forecast and risk.",
+          "action": "RAG",
+          "observation": [
+            {
+              "id": "KB-THERMAL-001-C1",
+              "score": 0.692829966545105,
+              "accepted": true,
+              "text": "Stable transformer oil temperature with no unusual rise should continue routine trend monitoring and normal inspection."
+            },
+            {
+              "id": "KB-THERMAL-002-C1",
+              "score": 0.6618400812149048,
+              "accepted": true,
+              "text": "A gradual oil-temperature rise should trigger closer monitoring of transformer load, cooling effectiveness, ambient conditions and sensor consistency."
+            },
+            {
+              "id": "KB-LOAD-001-C1",
+              "score": 0.6152894496917725,
+              "accepted": true,
+              "text": "Increased electrical load can raise transformer oil temperature. Compare load trends with thermal trends before attributing a rise to a fault."
+            }
+          ]
+        }
+      ],
+      "risk_level": "LOW",
+      "agent_final_output": "Risk=LOW. A developing thermal risk pattern was detected. Forecast peak=30.17°C, rise=0.00°C, max positive slope=0.84°C/h. Evidence: KB-THERMAL-001-C1: Stable transformer oil temperature with no unusual rise should continue routine trend monitoring and normal inspection.; KB-THERMAL-002-C1: A gradual oil-temperature rise should trigger closer monitoring of transformer load, cooling effectiveness, ambient conditions and sensor consistency.; KB-LOAD-001-C1: Increased electrical load can raise transformer oil temperature. Compare load trends with thermal trends before attributing a rise to a fault. Recommendation: Increase monitoring frequency and review recent load, cooling, ambient conditions, and sensor behavior.",
+      "model": "LSTM",
+      "anomaly": {
+        "status": "WARNING",
+        "score": 0.25,
+        "latest_temperature": 30.17900085449219,
+        "rise_6h": 1.6180000305175817,
+        "rise_12h": 5.980001449584961,
+        "rise_24h": 0.07000160217285512,
+        "slope_6h": 0.2191714695521775,
+        "slope_24h": 0.1836382608828334,
+        "max_abs_jump": 2.5319995880126953,
+        "max_positive_slope": 2.5319995880126953,
+        "reasons": [
+          "12-hour temperature rise >= 5.0 °C was detected."
+        ],
+        "thresholds": {
+          "jump_c_per_hour": 5.0,
+          "rise_6h_c": 3.0,
+          "rise_12h_c": 5.0,
+          "rise_24h_c": 8.0,
+          "slope_6h_c_per_hour": 0.5,
+          "slope_24h_c_per_hour": 0.35
+        }
+      },
+      "diagnosis": {
+        "level": "WARNING",
+        "diagnosis": "A developing thermal risk pattern was detected.",
+        "reason": "A developing thermal risk pattern was detected.",
+        "evidence": [
+          "12-hour temperature rise >= 5.0 °C was detected.",
+          "Forecast peak is 30.17 °C.",
+          "Forecast maximum positive slope is 0.84 °C/h."
+        ],
+        "recommendation": "Increase monitoring frequency and review recent load, cooling, ambient conditions, and sensor behavior."
+      }
+    },
+    "fast_rise": {
+      "case_name": "fast_rise",
+      "raw_input_signal": [
+        [
+          8.572999954223633,
+          1.875,
+          5.507999897003174,
+          0.4620000123977661,
+          3.075999975204468,
+          1.065999984741211,
+          37.354000091552734
+        ],
+        [
+          10.85099983215332,
+          2.1429998874664307,
+          7.14300012588501,
+          0.5329999923706055,
+          3.746000051498413,
+          1.097000002861023,
+          36.018001556396484
+        ],
+        [
+          10.984999656677246,
+          2.1429998874664307,
+          7.2849998474121085,
+          0.6039999723434448,
+          3.746000051498413,
+          1.065999984741211,
+          36.15800094604492
+        ],
+        [
+          12.79300022125244,
+          2.746000051498413,
+          9.80799961090088,
+          1.7059999704360962,
+          3.259000062942505,
+          0.9139999747276306,
+          36.018001556396484
+        ],
+        [
+          16.007999420166016,
+          5.692999839782715,
+          13.112000465393065,
+          3.4820001125335693,
+          2.8329999446868896,
+          1.0049999952316284,
+          36.229000091552734
+        ],
+        [
+          19.1560001373291,
+          6.2290000915527335,
+          13.717000007629396,
+          4.014999866485597,
+          5.026000022888184,
+          1.5230000019073486,
+          36.5099983215332
+        ],
+        [
+          16.812000274658207,
+          5.894000053405763,
+          12.189000129699709,
+          3.4110000133514404,
+          4.873000144958496,
+          1.462000012397766,
+          36.72100067138672
+        ],
+        [
+          17.615999221801758,
+          5.960999965667725,
+          12.722000122070312,
+          3.58899998664856,
+          4.7210001945495605,
+          1.4919999837875366,
+          36.58000183105469
+        ],
+        [
+          16.343000411987305,
+          5.760000228881836,
+          11.371000289916992,
+          2.9489998817443848,
+          4.477000236511231,
+          1.4919999837875366,
+          37.70600128173828
+        ],
+        [
+          18.01799964904785,
+          7.099999904632568,
+          13.468000411987305,
+          3.908999919891357,
+          4.477000236511231,
+          1.5230000019073486,
+          37.70600128173828
+        ],
+        [
+          18.152000427246094,
+          7.0329999923706055,
+          13.397000312805176,
+          4.0869998931884775,
+          4.6599998474121085,
+          1.5230000019073486,
+          37.63600158691406
+        ],
+        [
+          16.208999633789062,
+          4.822999954223633,
+          10.517999649047852,
+          2.700999975204468,
+          5.056000232696533,
+          1.5529999732971191,
+          37.00299835205078
+        ],
+        [
+          13.463000297546388,
+          4.0859999656677255,
+          8.065999984741211,
+          1.4570000171661377,
+          5.238999843597412,
+          1.8279999494552608,
+          38.54999923706055
+        ],
+        [
+          10.3149995803833,
+          3.41599988937378,
+          6.928999900817871,
+          1.315000057220459,
+          2.8020000457763667,
+          1.462000012397766,
+          38.05799865722656
+        ],
+        [
+          8.840999603271484,
+          3.1480000019073486,
+          6.751999855041504,
+          1.4570000171661377,
+          2.04099988937378,
+          1.1269999742507937,
+          37.00299835205078
+        ],
+        [
+          10.248000144958496,
+          3.282000064849853,
+          6.610000133514402,
+          1.1729999780654907,
+          3.1070001125335693,
+          1.309999942779541,
+          37.00299835205078
+        ],
+        [
+          8.572999954223633,
+          2.009000062942505,
+          6.502999782562256,
+          0.8529999852180481,
+          2.1630001068115234,
+          1.065999984741211,
+          29.82699966430664
+        ],
+        [
+          8.77400016784668,
+          2.1429998874664307,
+          5.7210001945495605,
+          0.4259999990463257,
+          2.650000095367432,
+          1.0049999952316284,
+          32.852001190185554
+        ],
+        [
+          9.51099967956543,
+          1.6080000400543213,
+          6.040999889373777,
+          0.4259999990463257,
+          2.86299991607666,
+          1.097000002861023,
+          36.15800094604492
+        ],
+        [
+          8.77400016784668,
+          2.075999975204468,
+          6.040999889373777,
+          0.8169999718666077,
+          2.375999927520752,
+          1.0049999952316284,
+          35.80699920654297
+        ],
+        [
+          9.3100004196167,
+          2.1429998874664307,
+          6.2189998626708975,
+          0.9950000047683716,
+          2.924000024795532,
+          1.1269999742507937,
+          37.7760009765625
+        ],
+        [
+          8.305999755859375,
+          2.2769999504089355,
+          5.7210001945495605,
+          0.9240000247955322,
+          2.61899995803833,
+          1.097000002861023,
+          39.53499984741211
+        ],
+        [
+          8.975000381469727,
+          2.2769999504089355,
+          5.96999979019165,
+          0.7820000052452087,
+          3.015000104904175,
+          1.2790000438690186,
+          38.26900100708008
+        ],
+        [
+          8.840999603271484,
+          2.1429998874664307,
+          5.7210001945495605,
+          0.6039999723434448,
+          3.1070001125335693,
+          1.1269999742507937,
+          34.750999450683594
+        ],
+        [
+          9.041999816894531,
+          2.344000101089477,
+          5.86299991607666,
+          0.6039999723434448,
+          3.441999912261963,
+          1.1269999742507937,
+          33.766998291015625
+        ],
+        [
+          11.253000259399414,
+          2.611999988555908,
+          7.177999973297119,
+          0.8529999852180481,
+          4.111999988555908,
+          1.187999963760376,
+          32.852001190185554
+        ],
+        [
+          11.98900032043457,
+          3.41599988937378,
+          8.598999977111816,
+          2.1679999828338623,
+          3.928999900817871,
+          1.187999963760376,
+          33.132999420166016
+        ],
+        [
+          12.524999618530272,
+          3.818000078201294,
+          9.630000114440918,
+          1.5989999771118164,
+          3.259000062942505,
+          0.975000023841858,
+          34.32899856567383
+        ],
+        [
+          13.597000122070312,
+          4.622000217437744,
+          10.979999542236328,
+          2.8429999351501465,
+          3.1070001125335693,
+          1.065999984741211,
+          35.3849983215332
+        ],
+        [
+          14.60200023651123,
+          5.357999801635742,
+          11.194000244140623,
+          2.878000020980835,
+          2.86299991607666,
+          1.0360000133514404,
+          34.540000915527344
+        ],
+        [
+          13.463000297546388,
+          4.554999828338623,
+          10.87399959564209,
+          2.984999895095825,
+          2.4670000076293945,
+          0.8830000162124634,
+          32.71099853515625
+        ],
+        [
+          12.256999969482422,
+          3.884999990463257,
+          9.52299976348877,
+          2.131999969482422,
+          2.4670000076293945,
+          0.944000005722046,
+          33.90700149536133
+        ],
+        [
+          12.256999969482422,
+          4.689000129699707,
+          10.66100025177002,
+          2.984999895095825,
+          2.253999948501587,
+          0.9139999747276306,
+          34.68099975585937
+        ],
+        [
+          11.588000297546388,
+          3.6840000152587886,
+          8.847999572753906,
+          1.7059999704360962,
+          2.101999998092652,
+          0.8830000162124634,
+          35.66600036621094
+        ],
+        [
+          11.92199993133545,
+          3.3489999771118164,
+          9.274999618530272,
+          1.9900000095367432,
+          2.101999998092652,
+          0.8830000162124634,
+          34.470001220703125
+        ],
+        [
+          11.520999908447266,
+          3.6840000152587886,
+          9.559000015258787,
+          2.2739999294281006,
+          2.5280001163482666,
+          0.944000005722046,
+          35.31399917602539
+        ],
+        [
+          8.77400016784668,
+          2.678999900817871,
+          5.86299991607666,
+          1.1369999647140503,
+          2.315000057220459,
+          1.065999984741211,
+          33.83700180053711
+        ],
+        [
+          7.97100019454956,
+          3.0810000896453857,
+          5.96999979019165,
+          1.5989999771118164,
+          2.375999927520752,
+          1.2790000438690186,
+          35.87699890136719
+        ],
+        [
+          8.305999755859375,
+          2.4110000133514404,
+          5.86299991607666,
+          1.2790000438690186,
+          2.375999927520752,
+          1.156999945640564,
+          35.525001525878906
+        ],
+        [
+          9.376999855041504,
+          2.344000101089477,
+          6.502999782562256,
+          1.1729999780654907,
+          2.8020000457763667,
+          1.2489999532699585,
+          36.58000183105469
+        ],
+        [
+          10.04699993133545,
+          3.1480000019073486,
+          6.857999801635742,
+          0.7820000052452087,
+          3.1679999828338623,
+          1.097000002861023,
+          37.354000091552734
+        ],
+        [
+          8.23900032043457,
+          2.075999975204468,
+          5.685999870300293,
+          0.3910000026226044,
+          2.58899998664856,
+          1.0360000133514404,
+          34.61100006103516
+        ],
+        [
+          8.305999755859375,
+          2.2769999504089355,
+          6.005000114440918,
+          0.8529999852180481,
+          2.650000095367432,
+          0.975000023841858,
+          33.83700180053711
+        ],
+        [
+          7.903999805450439,
+          2.2100000381469727,
+          5.401000022888184,
+          0.7820000052452087,
+          2.4670000076293945,
+          1.0360000133514404,
+          33.20399856567383
+        ],
+        [
+          12.1899995803833,
+          4.689000129699707,
+          10.020999908447266,
+          2.559000015258789,
+          2.253999948501587,
+          0.9139999747276306,
+          34.68099975585937
+        ],
+        [
+          7.836999893188477,
+          1.5410000085830688,
+          5.295000076293945,
+          0.675000011920929,
+          2.4670000076293945,
+          1.2790000438690186,
+          36.72100067138672
+        ],
+        [
+          7.903999805450439,
+          1.6080000400543213,
+          4.619999885559082,
+          -0.1070000007748603,
+          3.1679999828338623,
+          1.1269999742507937,
+          34.750999450683594
+        ],
+        [
+          6.429999828338622,
+          0.9380000233650208,
+          3.9800000190734863,
+          -0.2840000092983246,
+          2.4670000076293945,
+          1.1269999742507937,
+          24.90299987792969
+        ],
+        [
+          7.836999893188477,
+          1.3400000333786009,
+          5.188000202178955,
+          0.0359999984502792,
+          2.7109999656677246,
+          1.065999984741211,
+          32.852001190185554
+        ],
+        [
+          8.975000381469727,
+          1.406999945640564,
+          5.685999870300293,
+          0.0359999984502792,
+          3.259000062942505,
+          0.975000023841858,
+          33.132999420166016
+        ],
+        [
+          8.305999755859375,
+          0.6700000166893005,
+          5.223999977111816,
+          -0.4259999990463257,
+          3.1070001125335693,
+          0.975000023841858,
+          29.968000411987305
+        ],
+        [
+          8.104999542236326,
+          0.8040000200271606,
+          5.436999797821045,
+          -0.3199999928474426,
+          2.650000095367432,
+          0.8830000162124634,
+          30.38999938964844
+        ],
+        [
+          10.11400032043457,
+          2.5450000762939453,
+          7.639999866485598,
+          1.1369999647140503,
+          2.58899998664856,
+          0.9139999747276306,
+          31.375
+        ],
+        [
+          13.19499969482422,
+          4.019000053405762,
+          8.421999931335451,
+          2.0969998836517334,
+          4.7820000648498535,
+          1.462000012397766,
+          31.30400085449219
+        ],
+        [
+          13.32900047302246,
+          4.287000179290772,
+          8.279999732971191,
+          1.9539999961853027,
+          4.447000026702881,
+          1.309999942779541,
+          32.64099884033203
+        ],
+        [
+          13.864999771118164,
+          4.3540000915527335,
+          8.989999771118164,
+          1.812000036239624,
+          4.263999938964844,
+          1.309999942779541,
+          33.34400177001953
+        ],
+        [
+          11.98900032043457,
+          3.2149999141693115,
+          7.710999965667725,
+          1.4210000038146973,
+          4.142000198364259,
+          1.3400000333786009,
+          33.34400177001953
+        ],
+        [
+          11.854999542236328,
+          3.41599988937378,
+          7.10699987411499,
+          0.7820000052452087,
+          4.234000205993652,
+          1.4320000410079956,
+          34.61100006103516
+        ],
+        [
+          11.854999542236328,
+          2.678999900817871,
+          7.498000144958496,
+          0.9589999914169312,
+          4.386000156402588,
+          1.3400000333786009,
+          33.90700149536133
+        ],
+        [
+          11.119000434875488,
+          2.009000062942505,
+          6.361000061035156,
+          0.6039999723434448,
+          4.873000144958496,
+          1.462000012397766,
+          34.540000915527344
+        ],
+        [
+          11.98900032043457,
+          2.9470000267028813,
+          6.005000114440918,
+          0.7820000052452087,
+          4.994999885559082,
+          1.6749999523162842,
+          35.3849983215332
+        ],
+        [
+          8.975000381469727,
+          2.344000101089477,
+          6.183000087738037,
+          0.8880000114440918,
+          2.559000015258789,
+          1.2790000438690186,
+          34.32899856567383
+        ],
+        [
+          9.51099967956543,
+          3.013999938964844,
+          7.035999774932861,
+          1.9539999961853027,
+          2.375999927520752,
+          1.097000002861023,
+          31.586000442504893
+        ],
+        [
+          10.11400032043457,
+          3.549999952316284,
+          6.965000152587893,
+          1.5640000104904177,
+          2.9549999237060547,
+          1.4320000410079956,
+          31.375
+        ],
+        [
+          10.3149995803833,
+          3.617000102996826,
+          7.320000171661378,
+          1.1019999980926514,
+          3.2899999618530287,
+          1.097000002861023,
+          30.742000579833984
+        ],
+        [
+          8.640000343322754,
+          2.2769999504089355,
+          5.7210001945495605,
+          0.3910000026226044,
+          2.58899998664856,
+          0.975000023841858,
+          31.586000442504893
+        ],
+        [
+          8.907999992370605,
+          2.477999925613404,
+          6.111999988555907,
+          0.8169999718666077,
+          2.61899995803833,
+          1.1269999742507937,
+          31.375
+        ],
+        [
+          9.3100004196167,
+          2.5450000762939453,
+          6.361000061035156,
+          0.8169999718666077,
+          2.5280001163482666,
+          1.156999945640564,
+          31.02300071716309
+        ],
+        [
+          8.171999931335451,
+          2.2769999504089355,
+          5.791999816894531,
+          1.065999984741211,
+          2.2239999771118164,
+          1.097000002861023,
+          25.816999435424805
+        ],
+        [
+          7.836999893188477,
+          2.2100000381469727,
+          5.507999897003174,
+          0.7820000052452087,
+          2.6800000667572017,
+          1.156999945640564,
+          24.90299987792969
+        ],
+        [
+          8.505999565124513,
+          2.2100000381469727,
+          5.578999996185303,
+          0.4970000088214874,
+          3.2290000915527344,
+          1.4010000228881836,
+          18.009000778198242
+        ],
+        [
+          7.234000205993652,
+          1.3400000333786009,
+          4.619999885559082,
+          0.0,
+          2.58899998664856,
+          1.097000002861023,
+          22.44099998474121
+        ],
+        [
+          6.966000080108643,
+          1.1390000581741333,
+          4.441999912261963,
+          -0.0359999984502792,
+          2.4670000076293945,
+          0.975000023841858,
+          16.882999420166016
+        ],
+        [
+          7.166999816894531,
+          1.1390000581741333,
+          4.76200008392334,
+          0.0,
+          2.437000036239624,
+          0.8529999852180481,
+          22.089000701904297
+        ],
+        [
+          8.371999740600586,
+          2.9470000267028813,
+          6.2189998626708975,
+          1.2079999446868896,
+          2.437000036239624,
+          1.0360000133514404,
+          24.19899940490723
+        ],
+        [
+          9.109000205993652,
+          2.2100000381469727,
+          7.568999767303468,
+          0.9589999914169312,
+          2.009999990463257,
+          0.8830000162124634,
+          25.746999740600582
+        ],
+        [
+          8.907999992370605,
+          2.678999900817871,
+          7.639999866485598,
+          1.5279999971389768,
+          1.9490000009536743,
+          0.8830000162124634,
+          26.520999908447266
+        ],
+        [
+          8.505999565124513,
+          2.2100000381469727,
+          6.644999980926514,
+          0.7820000052452087,
+          1.6449999809265137,
+          0.8529999852180481,
+          26.94300079345703
+        ],
+        [
+          10.04699993133545,
+          3.0810000896453857,
+          8.031000137329103,
+          1.6699999570846558,
+          1.7359999418258667,
+          0.8220000267028809,
+          27.364999771118164
+        ],
+        [
+          10.85099983215332,
+          3.750999927520752,
+          8.741999626159668,
+          1.9900000095367432,
+          1.462000012397766,
+          0.7609999775886536,
+          28.35000038146973
+        ],
+        [
+          8.907999992370605,
+          2.9470000267028813,
+          7.639999866485598,
+          1.5989999771118164,
+          1.4919999837875366,
+          0.7919999957084656,
+          28.06800079345703
+        ],
+        [
+          9.51099967956543,
+          2.009000062942505,
+          7.320000171661378,
+          1.065999984741211,
+          1.371000051498413,
+          0.6700000166893005,
+          28.35000038146973
+        ],
+        [
+          9.57800006866455,
+          2.477999925613404,
+          7.853000164031982,
+          0.9589999914169312,
+          1.6449999809265137,
+          0.6700000166893005,
+          27.92799949645996
+        ],
+        [
+          9.645000457763672,
+          2.2100000381469727,
+          7.604000091552732,
+          0.7820000052452087,
+          2.1630001068115234,
+          0.7310000061988831,
+          27.71699905395508
+        ],
+        [
+          6.2290000915527335,
+          1.875,
+          4.122000217437743,
+          0.3549999892711639,
+          2.131999969482422,
+          1.0049999952316284,
+          29.89699935913086
+        ],
+        [
+          6.966000080108643,
+          2.746000051498413,
+          4.939000129699707,
+          0.7110000252723694,
+          2.101999998092652,
+          1.065999984741211,
+          30.17900085449219
+        ],
+        [
+          7.301000118255615,
+          1.6080000400543213,
+          5.117000102996826,
+          0.3199999928474426,
+          2.101999998092652,
+          0.975000023841858,
+          31.44499969482422
+        ],
+        [
+          8.840999603271484,
+          2.2769999504089355,
+          6.3959999084472665,
+          0.9589999914169312,
+          2.58899998664856,
+          1.1269999742507937,
+          33.20399856567383
+        ],
+        [
+          9.243000030517578,
+          2.1429998874664307,
+          6.432000160217285,
+          0.9950000047683716,
+          3.015000104904175,
+          1.156999945640564,
+          33.415000915527344
+        ],
+        [
+          6.429999828338622,
+          1.2730000019073486,
+          4.263999938964844,
+          0.2840000092983246,
+          2.345000028610229,
+          1.0049999952316284,
+          32.71099853515625
+        ],
+        [
+          6.697999954223633,
+          2.2769999504089355,
+          4.547999858856201,
+          0.3549999892711639,
+          2.253999948501587,
+          1.0360000133514404,
+          32.852001190185554
+        ],
+        [
+          7.769999980926514,
+          2.678999900817871,
+          4.939000129699707,
+          1.2079999446868896,
+          2.193000078201294,
+          1.097000002861023,
+          33.20399856567383
+        ],
+        [
+          8.104999542236326,
+          2.344000101089477,
+          5.828000068664551,
+          1.065999984741211,
+          2.193000078201294,
+          1.065999984741211,
+          34.04800033569336
+        ],
+        [
+          7.099999904632568,
+          2.1429998874664307,
+          5.329999923706055,
+          1.350000023841858,
+          2.131999969482422,
+          1.065999984741211,
+          35.525001525878906
+        ],
+        [
+          7.836999893188477,
+          2.2100000381469727,
+          5.366000175476074,
+          0.9589999914169312,
+          2.5280001163482666,
+          1.0360000133514404,
+          34.470001220703125
+        ],
+        [
+          7.301000118255615,
+          1.741000056266785,
+          4.477000236511231,
+          0.3549999892711639,
+          2.5280001163482666,
+          1.097000002861023,
+          35.59600067138672
+        ]
+      ],
+      "forecast_output": [
+        33.0105441315367,
+        32.689139311851925,
+        32.02033166008224,
+        31.475113839951305,
+        32.192668138177034,
+        31.985565799837474,
+        31.29552323666474,
+        31.31751749743276,
+        31.871364830465037,
+        32.13835127101879,
+        31.622795846462104,
+        31.816824039837435,
+        32.586245980074345,
+        33.1909946009456,
+        33.32624437643766,
+        33.10350322299815,
+        33.813927797959536,
+        34.051043842916386,
+        33.95712337335982,
+        33.83658487219685,
+        33.77917885637689,
+        33.82423623927335,
+        33.679732950812,
+        32.65605038958879
+      ],
+      "temperature_metric": 34.051043842916386,
+      "temperature_rise_metric": 1.040499711379688,
+      "slope_metric": 0.76942194023691,
+      "risk_intermediate_values": {
+        "mean": 32.718358587760704,
+        "peak_hour_ahead": 18,
+        "thresholds": {
+          "temperature": {
+            "medium": 32.570999145507805,
+            "high": 37.00299835205078,
+            "medium_quantile": 0.9,
+            "high_quantile": 0.95,
+            "constant": false
+          },
+          "rise": {
+            "medium": 6.120999336242676,
+            "high": 7.176000595092772,
+            "medium_quantile": 0.9,
+            "high_quantile": 0.95,
+            "constant": false
+          },
+          "slope": {
+            "medium": 3.2360000610351634,
+            "high": 3.7280006408691406,
+            "medium_quantile": 0.9,
+            "high_quantile": 0.95,
+            "constant": false
+          },
+          "source": {
+            "data_path": "data/ETTh1.csv",
+            "train_rows": 12194,
+            "forecast_horizon": 24
+          }
+        }
+      },
+      "rag_evidence": [
+        {
+          "id": "KB-THERMAL-001-C1",
+          "score": 0.6793982982635498,
+          "accepted": true,
+          "text": "Stable transformer oil temperature with no unusual rise should continue routine trend monitoring and normal inspection."
+        },
+        {
+          "id": "KB-THERMAL-002-C1",
+          "score": 0.6679623126983643,
+          "accepted": true,
+          "text": "A gradual oil-temperature rise should trigger closer monitoring of transformer load, cooling effectiveness, ambient conditions and sensor consistency."
+        },
+        {
+          "id": "KB-LOAD-001-C1",
+          "score": 0.635628342628479,
+          "accepted": true,
+          "text": "Increased electrical load can raise transformer oil temperature. Compare load trends with thermal trends before attributing a rise to a fault."
+        }
+      ],
+      "react_observations": [
+        {
+          "step": 1,
+          "thought": "Forecast the next oil-temperature horizon.",
+          "action": "Forecast",
+          "observation": {
+            "model": "LSTM",
+            "input_hours": 96,
+            "forecast_hours": 24,
+            "target": "OT",
+            "forecast": [
+              33.0105441315367,
+              32.689139311851925,
+              32.02033166008224,
+              31.475113839951305,
+              32.192668138177034,
+              31.985565799837474,
+              31.29552323666474,
+              31.31751749743276,
+              31.871364830465037,
+              32.13835127101879,
+              31.622795846462104,
+              31.816824039837435,
+              32.586245980074345,
+              33.1909946009456,
+              33.32624437643766,
+              33.10350322299815,
+              33.813927797959536,
+              34.051043842916386,
+              33.95712337335982,
+              33.83658487219685,
+              33.77917885637689,
+              33.82423623927335,
+              33.679732950812,
+              32.65605038958879
+            ]
+          }
+        },
+        {
+          "step": 2,
+          "thought": "Evaluate forecast thermal indicators against training quantiles.",
+          "action": "Risk",
+          "observation": {
+            "mean": 32.718358587760704,
+            "max": 34.051043842916386,
+            "rise": 1.040499711379688,
+            "max_slope": 0.76942194023691,
+            "risk_level": "MEDIUM",
+            "peak_hour_ahead": 18,
+            "thresholds": {
+              "temperature": {
+                "medium": 32.570999145507805,
+                "high": 37.00299835205078,
+                "medium_quantile": 0.9,
+                "high_quantile": 0.95,
+                "constant": false
+              },
+              "rise": {
+                "medium": 6.120999336242676,
+                "high": 7.176000595092772,
+                "medium_quantile": 0.9,
+                "high_quantile": 0.95,
+                "constant": false
+              },
+              "slope": {
+                "medium": 3.2360000610351634,
+                "high": 3.7280006408691406,
+                "medium_quantile": 0.9,
+                "high_quantile": 0.95,
+                "constant": false
+              },
+              "source": {
+                "data_path": "data/ETTh1.csv",
+                "train_rows": 12194,
+                "forecast_horizon": 24
+              }
+            }
+          }
+        },
+        {
+          "step": 3,
+          "thought": "Retrieve maintenance evidence relevant to the forecast and risk.",
+          "action": "RAG",
+          "observation": [
+            {
+              "id": "KB-THERMAL-001-C1",
+              "score": 0.6793982982635498,
+              "accepted": true,
+              "text": "Stable transformer oil temperature with no unusual rise should continue routine trend monitoring and normal inspection."
+            },
+            {
+              "id": "KB-THERMAL-002-C1",
+              "score": 0.6679623126983643,
+              "accepted": true,
+              "text": "A gradual oil-temperature rise should trigger closer monitoring of transformer load, cooling effectiveness, ambient conditions and sensor consistency."
+            },
+            {
+              "id": "KB-LOAD-001-C1",
+              "score": 0.635628342628479,
+              "accepted": true,
+              "text": "Increased electrical load can raise transformer oil temperature. Compare load trends with thermal trends before attributing a rise to a fault."
+            }
+          ]
+        }
+      ],
+      "risk_level": "MEDIUM",
+      "agent_final_output": "Risk=MEDIUM. Abnormal historical thermal behavior detected. Forecast peak=34.05°C, rise=1.04°C, max positive slope=0.77°C/h. Evidence: KB-THERMAL-001-C1: Stable transformer oil temperature with no unusual rise should continue routine trend monitoring and normal inspection.; KB-THERMAL-002-C1: A gradual oil-temperature rise should trigger closer monitoring of transformer load, cooling effectiveness, ambient conditions and sensor consistency.; KB-LOAD-001-C1: Increased electrical load can raise transformer oil temperature. Compare load trends with thermal trends before attributing a rise to a fault. Recommendation: Review recent operating conditions, load/cooling behavior, and sensor quality; escalate for engineering inspection if the pattern persists.",
+      "model": "LSTM",
+      "anomaly": {
+        "status": "ANOMALY",
+        "score": 1.0,
+        "latest_temperature": 35.59600067138672,
+        "rise_6h": 2.8850021362304688,
+        "rise_12h": 7.879001617431637,
+        "rise_24h": 13.155000686645508,
+        "slope_6h": 0.5427144731794098,
+        "slope_24h": 0.6037061094201125,
+        "max_abs_jump": 9.847999572753903,
+        "max_positive_slope": 7.949001312255863,
+        "reasons": [
+          "Abrupt temperature jump >= 5.0 °C/h was detected.",
+          "24-hour temperature rise >= 8.0 °C was detected.",
+          "12-hour temperature rise >= 5.0 °C was detected.",
+          "Recent 6-hour trend >= 0.50 °C/h was detected.",
+          "Recent 24-hour trend >= 0.35 °C/h was detected."
+        ],
+        "thresholds": {
+          "jump_c_per_hour": 5.0,
+          "rise_6h_c": 3.0,
+          "rise_12h_c": 5.0,
+          "rise_24h_c": 8.0,
+          "slope_6h_c_per_hour": 0.5,
+          "slope_24h_c_per_hour": 0.35
+        }
+      },
+      "diagnosis": {
+        "level": "ANOMALY",
+        "diagnosis": "Abnormal historical thermal behavior detected.",
+        "reason": "Abnormal historical thermal behavior detected.",
+        "evidence": [
+          "Abrupt temperature jump >= 5.0 °C/h was detected.",
+          "24-hour temperature rise >= 8.0 °C was detected.",
+          "12-hour temperature rise >= 5.0 °C was detected.",
+          "Recent 6-hour trend >= 0.50 °C/h was detected.",
+          "Recent 24-hour trend >= 0.35 °C/h was detected.",
+          "Forecast peak is 34.05 °C.",
+          "Forecast maximum positive slope is 0.77 °C/h."
+        ],
+        "recommendation": "Review recent operating conditions, load/cooling behavior, and sensor quality; escalate for engineering inspection if the pattern persists."
+      }
+    }
+  },
+  "risk_calibration": {
+    "created_utc": "2026-09-28T17:45:34.900232+00:00",
+    "dataset_sha256": "f18de3ad269cef59bb07b5438d79bb3042d3be49bdeecf01c1cd6d29695ee066",
+    "calibration_config": {
+      "train_ratio": 0.7,
+      "forecast_horizon": 24,
+      "quantiles": {
+        "temperature": {
+          "medium": 0.9,
+          "high": 0.95
+        },
+        "rise": {
+          "medium": 0.9,
+          "high": 0.95
+        },
+        "slope": {
+          "medium": 0.9,
+          "high": 0.95
+        }
+      },
+      "target": "OT"
+    },
+    "thresholds": {
+      "temperature": {
+        "medium": 32.570999145507805,
+        "high": 37.00299835205078,
+        "medium_quantile": 0.9,
+        "high_quantile": 0.95,
+        "constant": false
+      },
+      "rise": {
+        "medium": 6.120999336242676,
+        "high": 7.176000595092772,
+        "medium_quantile": 0.9,
+        "high_quantile": 0.95,
+        "constant": false
+      },
+      "slope": {
+        "medium": 3.2360000610351634,
+        "high": 3.7280006408691406,
+        "medium_quantile": 0.9,
+        "high_quantile": 0.95,
+        "constant": false
+      },
+      "source": {
+        "data_path": "data/ETTh1.csv",
+        "train_rows": 12194,
+        "forecast_horizon": 24
+      }
+    },
+    "protocol": "Predeclared q90/q95 for all three 24h indicators; train only; validation audit only; no demo tuning.",
+    "validation": {
+      "row_range_half_open": [
+        12194,
+        14807
+      ],
+      "windows": 2590,
+      "level_counts": {
+        "LOW": 2542,
+        "MEDIUM": 48,
+        "HIGH": 0
+      }
+    },
+    "case_inputs_accessed": false
+  },
+  "input_sha256": {
+    "configs/experiment.yaml": "b4243fa31cb021c1c8bae1000531c298ec95a5aca3786c7e86e4583c4b821059",
+    "agent/models/config.yaml": "64f50d1c63bae6070d6630f22227ded451ed4f3e49ad93a4571e0986156519ee",
+    "configs/risk_thresholds.json": "29e04db940a5ccb37620b1bf2d4b57ee93b4a8d2939391139d020e547b801606",
+    "tests/rag_queries.json": "4977f346ce5925cf235c5477ea71a688d92370d471e5708795a71e40c7df3553",
+    "agent/rag_tool.py": "bbffc359f1dcba415047e58667025b782e60ed130a218b80584cf19270795ede",
+    "agent/models/best_model.pt": "16d08cf1061a534719853bea5ec17c8490a5cbd0c0ba7cfe9908f4c881273ff6",
+    "agent/models/scaler.pkl": "3baa58b6fdfd66ef350b480487a8ef115f51b1c0edf79621f695ca3da16387e1",
+    "data/ETTh1.csv": "f18de3ad269cef59bb07b5438d79bb3042d3be49bdeecf01c1cd6d29695ee066",
+    "agent/models/embedding/tokenizer.json": "da0e79933b9ed51798a3ae27893d3c5fa4a201126cef75586296df9b4d2c62a0",
+    "agent/models/embedding/sentence_bert_config.json": "3084164002c0bca01b0259c5327123803fce32e660a57feb93184ffead186fc8",
+    "agent/models/embedding/config_sentence_transformers.json": "75c970d83efc0ef9423d63acd18c17c088fea5e15121a3288f40d3826b80874c",
+    "agent/models/embedding/README.md": "dcd602d2fd35c203a247304a06fec6654a12f7941b739f9221a064fe8dc3b7f0",
+    "agent/models/embedding/model.safetensors": "1377e9af0ca0b016a9f2aa584d6fc71ab3ea6804fae21ef9fb1416e2944057ac",
+    "agent/models/embedding/modules.json": "3d02572a0455b832de67fb8e63a54981bc7e8b46e337c95e917bd8122a533bfd",
+    "agent/models/embedding/tokenizer_config.json": "4817907ff3846ed899a62cccad0193c21d0792130c6139d8362187153eeff283",
+    "agent/models/embedding/config.json": "bc07d616645604e14676245d40081ed4cb71e12817fb034d874a123576657924",
+    "agent/models/embedding/2_Normalize/config.json": "cdb09dfca347a56aa2d691744e38d5ad3c7cbc2834e7181272b9a15328b82524",
+    "agent/models/embedding/1_Pooling/config.json": "4fef0a7e8c8ee36e74c0fad89bab60ade72324442d43f559ea219bb7c2580710",
+    "tests/cases/stable/input.csv": "133080e652939a366decb12eac0a58074c33b68e55d142ba7219e6dc5af26c36",
+    "tests/cases/slow_rise/input.csv": "575f092cb35e53c749d7bbc0f5cf0fc87601d6802609a50e2008cbe4a81e2984",
+    "tests/cases/fast_rise/input.csv": "8b0edca258ed089fa865fbcc2cf7122a30933943f6c6d16a2e2ad6e616faae04",
+    "agent/predictor_tool.py": "c0cae524ddd451972b4e6c0c62e47bc469aa748de1719506c048ab92ad4b3fbd",
+    "agent/risk_tool.py": "fe9fa725e7993481bb35e68ca2552ee86613d31a9bf7d581d731d0ad8cde4dcb",
+    "agent/agent.py": "0759b6901fd6ee97fbc201dc90a223a2ff5a4abaf438a58b914ed2f4e85cd04c",
+    "calibrate_risk.py": "7e42bef246ab0114ea72ae8b5475d853fefc58c80d7652b91170d3dd75ca92db",
+    "evaluate_final.py": "d9663ac681445d1791f06175ee392ac3af5689f9cbc7543b01fdf45ed48ef739",
+    "tests/evaluate_rag.py": "3208880cf2a569d64d59e133302cd1f0590df7e2339db59553eebcfc00eea4c5",
+    "prepare_embedding.py": "5a8b76b60018482a4d9b4e72dce4bad06f705acb18dfc578c62a98a90b557b70",
+    "models.py": "58e4601b211566d8c21f6c9eafbd8341ee0ce0b2e82105a5e23ad9ad340169b7",
+    "data.py": "9650745543336ae3a38dad90b9e37f7d259d382743c7850dd3bcadfa9c45a86f",
+    "metrics.py": "ebbd5c7ab393602e3d70c6708ec68c3fbe2ed2c1df983c1d180f2c45e55adb3a"
+  },
+  "knowledge_source": "25 manually authored English project demonstration records; not certified SOPs or a curated industry benchmark.",
+  "embedding_model": {
+    "id": "sentence-transformers/all-MiniLM-L6-v2",
+    "revision": "1110a243fdf4706b3f48f1d95db1a4f5529b4d41",
+    "language_scope": "English queries and knowledge"
+  },
+  "metric_definitions": {
+    "retrieval_accuracy": "accepted rank-1 relevant / 9 answerable queries",
+    "Hit@3": "any relevant document in raw top3 / 9 answerable queries",
+    "MRR@3": "mean reciprocal first relevant rank, 0 if absent in top3, denominator 9",
+    "multi_all_evidence": "all annotated relevant documents accepted in top3 / 3 multi queries",
+    "no_answer_rejection": "no top3 document above threshold / 3 unanswerable queries"
+  }
+}

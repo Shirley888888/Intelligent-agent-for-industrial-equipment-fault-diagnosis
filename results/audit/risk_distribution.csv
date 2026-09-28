@@ -1,0 +1,4 @@
+Split,Windows,LOW,MEDIUM,HIGH
+train,12171,9157,1385,1629
+validation,2590,2542,48,0
+test,2590,2581,9,0

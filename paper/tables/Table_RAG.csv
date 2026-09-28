@@ -1,0 +1,3 @@
+Backend,answerable_n,unanswerable_n,retrieval_accuracy_top1_thresholded,Hit@3_raw,MRR@3_raw,Hit@3_thresholded,multi_all_evidence_rate,no_answer_rejection_rate,no_answer_false_accepts,answerable_false_rejections
+tfidf,9,3,0.4444444444444444,0.7777777777777778,0.5925925925925926,0.7777777777777778,0.3333333333333333,0.0,3,0
+embedding,9,3,0.7777777777777778,0.8888888888888888,0.8333333333333334,0.8888888888888888,0.6666666666666666,0.6666666666666666,1,0

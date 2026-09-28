@@ -1,0 +1,21 @@
+{
+  "experiment_sha256": "f88301461a1cfc92c9711284e5331eb7ccf051df10f0ea188793c8b7097d42a6",
+  "artifacts": {
+    "README.md": "84f02a4f2a5a2e1937755823bc8efe7678e78ab7969c428ac0d9dc8ec26ea939",
+    "paper/PAPER_DRAFT.md": "16f396298cdfe0f9edbde691e360a68372ce67b0a2bbd518e059a45d43691d61",
+    "paper/V8_PAPER_RESULTS.md": "b5796c3e3e4f721370a2e0e9a493af2b5e492cff624a4d6424e8318f94084d6a",
+    "paper/tables/Table_RAG.csv": "3f73765c9863e484707d2f00d7934620b89c2d6c16c39b664726017cd9119729",
+    "paper/tables/Table_Case_Studies.csv": "516cc58aef6211c28293367cea326810d19b95889e4c249288ee933f21dfbf3a",
+    "paper/tables/Table_Model_Comparison.csv": "4a86ee0710c62671d5af56f8ae5a3b4cf5e8add736bc31a3ca4ad975070304a9",
+    "paper/tables/Table_RAG.md": "fea7636a3caa2bd678e702a7f79ca3b0ed29db7835aaedec151a114b75ea53c0",
+    "paper/tables/Table_Case_Studies.md": "fc223556c5a17877863278f96bc416293f865e4a1f74bfa4bd11f7951dbd9474",
+    "paper/tables/Table_Model_Comparison.md": "16624f7aac4021a4627316602e2cf85344ce64bd23b756af105baff830116720",
+    "paper/tables/Final_Experiment.xlsx": "f29eccf057377c3f242a0dd2c5054aafade91d983823bdfba42437c91096492e",
+    "paper/figures/Figure_RAG.png": "0cc7f79edf6a16d9a9148f73d110bc7c93874354861edfd675c72b7dfe59e761",
+    "paper/figures/Figure_Case_fast_rise.png": "83e74826d2c2cd2d9b3c84c754cea2ae259c3623e212d87c5275ba0565254861",
+    "paper/figures/Figure_Model_Comparison_MAE.png": "1f60b215c646176a39df8626ba26f00cd70c36320043892d80a17e0fe264d8fa",
+    "paper/figures/Figure_Model_Comparison_MSE.png": "dc8aa8e75be21131a14fdbd10537003ee23959add0c4b7007eb56c78cf6e5d14",
+    "paper/figures/Figure_Case_stable.png": "b37c2c3e2dc6c510c57581bb0bb516140ad9af232250c08cbd2612f3a8809246",
+    "paper/figures/Figure_Case_slow_rise.png": "574ec351a6ab2281062f66b2cfa97d136a97ee7334e816ee6f0ff2a77feaf3a2"
+  }
+}

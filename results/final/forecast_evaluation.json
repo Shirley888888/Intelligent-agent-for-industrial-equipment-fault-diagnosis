@@ -1,0 +1,87 @@
+{
+  "experiment_id": "ETTh1_CLOSEOUT_20260929_v1",
+  "protocol": "Fixed existing four checkpoints; CPU float32 inference, float64 inverse scaling/metrics; no retraining or test-based model selection.",
+  "dataset_sha256": "f18de3ad269cef59bb07b5438d79bb3042d3be49bdeecf01c1cd6d29695ee066",
+  "split_rows": [
+    12194,
+    2613,
+    2613
+  ],
+  "split_windows": [
+    12075,
+    2494,
+    2494
+  ],
+  "deployment_model": "LSTM",
+  "checkpoint_sha256": {
+    "outputs/checkpoints/Linear_best.pt": "00d4243584d94586866d7f28d3ceeb2d5de866778866d16ca744ad542f7db558",
+    "outputs/checkpoints/CNN1D_best.pt": "e2fee5800ca031e3887a59915f51c39faef831efd7b00fa510ccae224c61d974",
+    "outputs/checkpoints/LSTM_best.pt": "16d08cf1061a534719853bea5ec17c8490a5cbd0c0ba7cfe9908f4c881273ff6",
+    "outputs/checkpoints/TCN_best.pt": "2ad024e600461d5c7f24e6a9b793031a5282b087ad7ccb5e40c197fca097428e"
+  },
+  "metrics": [
+    {
+      "Model": "Persistence",
+      "MAE": 1.4596672102391748,
+      "MSE": 3.9941031092386066,
+      "MeanTempError": 0.0047623459312649006,
+      "MaxTempError": 10.904000115498615,
+      "MaxRiseRateError": 3.236000160960428,
+      "PeakError": 2.1673720695367087,
+      "BestEpoch": 0
+    },
+    {
+      "Model": "Linear",
+      "MAE": 1.6198814923912466,
+      "MSE": 4.469733844461999,
+      "MeanTempError": -0.19960563661893904,
+      "MaxTempError": 12.12744679416668,
+      "MaxRiseRateError": 2.8185194839245984,
+      "PeakError": 1.5937538826135182,
+      "BestEpoch": 7,
+      "BestValLoss": 0.04481131886076048
+    },
+    {
+      "Model": "CNN1D",
+      "MAE": 2.1502015606705824,
+      "MSE": 7.759850553354486,
+      "MeanTempError": 0.546788896389077,
+      "MaxTempError": 10.964543547928132,
+      "MaxRiseRateError": 2.8697683507487906,
+      "PeakError": 2.3716945785091976,
+      "BestEpoch": 3,
+      "BestValLoss": 0.15485238360947576
+    },
+    {
+      "Model": "LSTM",
+      "MAE": 1.354184399897416,
+      "MSE": 3.4767743271823854,
+      "MeanTempError": 0.05692135292543393,
+      "MaxTempError": 10.196203904459784,
+      "MaxRiseRateError": 2.713289977251499,
+      "PeakError": 1.3594660329867312,
+      "BestEpoch": 3,
+      "BestValLoss": 0.06016111441416652
+    },
+    {
+      "Model": "TCN",
+      "MAE": 1.5572621839360965,
+      "MSE": 3.9253124782512536,
+      "MeanTempError": -0.5585913826346525,
+      "MaxTempError": 9.775008834675019,
+      "MaxRiseRateError": 2.6386509667321754,
+      "PeakError": 1.5787924587320608,
+      "BestEpoch": 1,
+      "BestValLoss": 0.050575816924680016
+    }
+  ],
+  "environment": {
+    "python": "3.12.14",
+    "torch": "2.14.0+cu130",
+    "numpy": "2.3.5"
+  },
+  "limitations": [
+    "Historical checkpoints; no new training run or confidence intervals.",
+    "Deployment LSTM retained by project design, not selected on final test scores."
+  ]
+}

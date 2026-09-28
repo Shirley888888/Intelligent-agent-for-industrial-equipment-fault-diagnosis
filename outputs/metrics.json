@@ -1,0 +1,56 @@
+{
+  "Persistence": {
+    "Model": "Persistence",
+    "MAE": 1.4596672102391748,
+    "MSE": 3.9941031092386066,
+    "MeanTempError": 0.0047623459312649006,
+    "MaxTempError": 10.904000115498615,
+    "MaxRiseRateError": 3.236000160960428,
+    "PeakError": 2.1673720695367087,
+    "BestEpoch": 0
+  },
+  "Linear": {
+    "Model": "Linear",
+    "MAE": 1.6198814923912466,
+    "MSE": 4.469733844461999,
+    "MeanTempError": -0.19960563661893904,
+    "MaxTempError": 12.12744679416668,
+    "MaxRiseRateError": 2.8185194839245984,
+    "PeakError": 1.5937538826135182,
+    "BestEpoch": 7,
+    "BestValLoss": 0.04481131886076048
+  },
+  "CNN1D": {
+    "Model": "CNN1D",
+    "MAE": 2.1502015606705824,
+    "MSE": 7.759850553354486,
+    "MeanTempError": 0.546788896389077,
+    "MaxTempError": 10.964543547928132,
+    "MaxRiseRateError": 2.8697683507487906,
+    "PeakError": 2.3716945785091976,
+    "BestEpoch": 3,
+    "BestValLoss": 0.15485238360947576
+  },
+  "LSTM": {
+    "Model": "LSTM",
+    "MAE": 1.354184399897416,
+    "MSE": 3.4767743271823854,
+    "MeanTempError": 0.05692135292543393,
+    "MaxTempError": 10.196203904459784,
+    "MaxRiseRateError": 2.713289977251499,
+    "PeakError": 1.3594660329867312,
+    "BestEpoch": 3,
+    "BestValLoss": 0.06016111441416652
+  },
+  "TCN": {
+    "Model": "TCN",
+    "MAE": 1.5572621839360965,
+    "MSE": 3.9253124782512536,
+    "MeanTempError": -0.5585913826346525,
+    "MaxTempError": 9.775008834675019,
+    "MaxRiseRateError": 2.6386509667321754,
+    "PeakError": 1.5787924587320608,
+    "BestEpoch": 1,
+    "BestValLoss": 0.050575816924680016
+  }
+}

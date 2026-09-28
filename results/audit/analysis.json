@@ -1,0 +1,362 @@
+{
+  "experiment_id": "ETTh1_CLOSEOUT_20260929_v1",
+  "model_analysis": [
+    {
+      "Model": "Persistence",
+      "MAE": 1.4596672102391748,
+      "MAE_improvement_pct": 0.0,
+      "MSE_improvement_pct": 0.0,
+      "window_MAE_win_rate": 0.0,
+      "signed_peak_bias": -2.08416116226518,
+      "slope_MAE": 1.2345140425507266
+    },
+    {
+      "Model": "Linear",
+      "MAE": 1.6198814923912466,
+      "MAE_improvement_pct": -10.976082837801071,
+      "MSE_improvement_pct": -11.908323901884987,
+      "window_MAE_win_rate": 0.4085805934242181,
+      "signed_peak_bias": -0.17434839911397096,
+      "slope_MAE": 0.5893819376202951
+    },
+    {
+      "Model": "CNN1D",
+      "MAE": 2.1502015606705824,
+      "MAE_improvement_pct": -47.30765653893532,
+      "MSE_improvement_pct": -94.28267976871886,
+      "window_MAE_win_rate": 0.3440256615878107,
+      "signed_peak_bias": -1.066416216163218,
+      "slope_MAE": 0.7020407297106224
+    },
+    {
+      "Model": "LSTM",
+      "MAE": 1.354184399897416,
+      "MAE_improvement_pct": 7.226497218121031,
+      "MSE_improvement_pct": 12.952314146813283,
+      "window_MAE_win_rate": 0.5605453087409783,
+      "signed_peak_bias": -0.5177505654977395,
+      "slope_MAE": 0.6751054495459432
+    },
+    {
+      "Model": "TCN",
+      "MAE": 1.5572621839360965,
+      "MAE_improvement_pct": -6.686111259629524,
+      "MSE_improvement_pct": 1.722304835552091,
+      "window_MAE_win_rate": 0.43945469125902165,
+      "signed_peak_bias": -0.9308504993681437,
+      "slope_MAE": 0.5770649722495971
+    }
+  ],
+  "rag_categories": [
+    {
+      "Backend": "tfidf",
+      "Category": "direct",
+      "N": 3,
+      "Top1_correct_n": 2,
+      "Hit3_n": 3,
+      "All_evidence_n": "N/A",
+      "Refused_n": 0
+    },
+    {
+      "Backend": "tfidf",
+      "Category": "paraphrase",
+      "N": 3,
+      "Top1_correct_n": 0,
+      "Hit3_n": 1,
+      "All_evidence_n": "N/A",
+      "Refused_n": 0
+    },
+    {
+      "Backend": "tfidf",
+      "Category": "multi",
+      "N": 3,
+      "Top1_correct_n": 2,
+      "Hit3_n": 3,
+      "All_evidence_n": 1,
+      "Refused_n": 0
+    },
+    {
+      "Backend": "tfidf",
+      "Category": "unanswerable",
+      "N": 3,
+      "Top1_correct_n": "N/A",
+      "Hit3_n": "N/A",
+      "All_evidence_n": "N/A",
+      "Refused_n": 0
+    },
+    {
+      "Backend": "embedding",
+      "Category": "direct",
+      "N": 3,
+      "Top1_correct_n": 3,
+      "Hit3_n": 3,
+      "All_evidence_n": "N/A",
+      "Refused_n": 0
+    },
+    {
+      "Backend": "embedding",
+      "Category": "paraphrase",
+      "N": 3,
+      "Top1_correct_n": 2,
+      "Hit3_n": 2,
+      "All_evidence_n": "N/A",
+      "Refused_n": 0
+    },
+    {
+      "Backend": "embedding",
+      "Category": "multi",
+      "N": 3,
+      "Top1_correct_n": 2,
+      "Hit3_n": 3,
+      "All_evidence_n": 2,
+      "Refused_n": 0
+    },
+    {
+      "Backend": "embedding",
+      "Category": "unanswerable",
+      "N": 3,
+      "Top1_correct_n": "N/A",
+      "Hit3_n": "N/A",
+      "All_evidence_n": "N/A",
+      "Refused_n": 2
+    }
+  ],
+  "rag_failures": [
+    {
+      "Backend": "tfidf",
+      "Query": "Q01",
+      "Category": "direct",
+      "Gold": "KB-COOLING-002",
+      "Top1": "KB-SENSOR-001",
+      "Score": 0.2752329371257249,
+      "Accepted": true
+    },
+    {
+      "Backend": "tfidf",
+      "Query": "Q04",
+      "Category": "paraphrase",
+      "Gold": "KB-COOLING-004",
+      "Top1": "KB-OIL-003",
+      "Score": 0.1188726130430123,
+      "Accepted": true
+    },
+    {
+      "Backend": "tfidf",
+      "Query": "Q05",
+      "Category": "paraphrase",
+      "Gold": "KB-SENSOR-004",
+      "Top1": "KB-AMBIENT-001",
+      "Score": 0.16720733277934122,
+      "Accepted": true
+    },
+    {
+      "Backend": "tfidf",
+      "Query": "Q06",
+      "Category": "paraphrase",
+      "Gold": "KB-AMBIENT-001",
+      "Top1": "KB-THERMAL-003",
+      "Score": 0.1228945573254543,
+      "Accepted": true
+    },
+    {
+      "Backend": "tfidf",
+      "Query": "Q08",
+      "Category": "multi",
+      "Gold": "KB-SENSOR-002,KB-SENSOR-003",
+      "Top1": "KB-SENSOR-001",
+      "Score": 0.14714800280416515,
+      "Accepted": true
+    },
+    {
+      "Backend": "tfidf",
+      "Query": "Q10",
+      "Category": "unanswerable",
+      "Gold": "(no answer)",
+      "Top1": "KB-MODEL-001",
+      "Score": 0.11231108514075781,
+      "Accepted": true
+    },
+    {
+      "Backend": "tfidf",
+      "Query": "Q11",
+      "Category": "unanswerable",
+      "Gold": "(no answer)",
+      "Top1": "KB-RISK-001",
+      "Score": 0.23387691057961102,
+      "Accepted": true
+    },
+    {
+      "Backend": "tfidf",
+      "Query": "Q12",
+      "Category": "unanswerable",
+      "Gold": "(no answer)",
+      "Top1": "KB-PROTECTION-001",
+      "Score": 0.13560748007186837,
+      "Accepted": true
+    },
+    {
+      "Backend": "embedding",
+      "Query": "Q06",
+      "Category": "paraphrase",
+      "Gold": "KB-AMBIENT-001",
+      "Top1": "KB-MAINTENANCE-001",
+      "Score": 0.4704430401325226,
+      "Accepted": true
+    },
+    {
+      "Backend": "embedding",
+      "Query": "Q08",
+      "Category": "multi",
+      "Gold": "KB-SENSOR-002,KB-SENSOR-003",
+      "Top1": "KB-SENSOR-001",
+      "Score": 0.6484986543655396,
+      "Accepted": true
+    },
+    {
+      "Backend": "embedding",
+      "Query": "Q11",
+      "Category": "unanswerable",
+      "Gold": "(no answer)",
+      "Top1": "KB-THERMAL-003",
+      "Score": 0.5320150852203369,
+      "Accepted": true
+    }
+  ],
+  "risk_distribution": [
+    {
+      "Split": "train",
+      "Windows": 12171,
+      "LOW": 9157,
+      "MEDIUM": 1385,
+      "HIGH": 1629
+    },
+    {
+      "Split": "validation",
+      "Windows": 2590,
+      "LOW": 2542,
+      "MEDIUM": 48,
+      "HIGH": 0
+    },
+    {
+      "Split": "test",
+      "Windows": 2590,
+      "LOW": 2581,
+      "MEDIUM": 9,
+      "HIGH": 0
+    }
+  ],
+  "risk_agreement_confusion_matrix": [
+    [
+      2485,
+      0,
+      0
+    ],
+    [
+      9,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0
+    ]
+  ],
+  "indicator_distribution": [
+    {
+      "Source": "test_truth_raw_csv",
+      "Indicator": "temperature",
+      "q50": 11.607000350952148,
+      "q90": 14.140000343322756,
+      "q95": 15.54699993133545,
+      "medium_trigger_count": 0
+    },
+    {
+      "Source": "test_truth_raw_csv",
+      "Indicator": "rise",
+      "q50": 1.8994998931884775,
+      "q90": 4.291000366210939,
+      "q95": 4.783000054955483,
+      "medium_trigger_count": 9
+    },
+    {
+      "Source": "test_truth_raw_csv",
+      "Indicator": "slope",
+      "q50": 1.1260004043579102,
+      "q90": 1.8990000486373901,
+      "q95": 2.252000331878664,
+      "medium_trigger_count": 0
+    },
+    {
+      "Source": "LSTM_forecast",
+      "Indicator": "temperature",
+      "q50": 10.794215473304,
+      "q90": 13.675896602383398,
+      "q95": 14.746008027992097,
+      "medium_trigger_count": 0
+    },
+    {
+      "Source": "LSTM_forecast",
+      "Indicator": "rise",
+      "q50": 1.732199308225665,
+      "q90": 2.5980705852801393,
+      "q95": 2.8509842568374784,
+      "medium_trigger_count": 0
+    },
+    {
+      "Source": "LSTM_forecast",
+      "Indicator": "slope",
+      "q50": 0.5643018222088756,
+      "q90": 0.8258532171947639,
+      "q95": 0.9269175047540503,
+      "medium_trigger_count": 0
+    }
+  ],
+  "uploaded_training_comparison": [
+    {
+      "Model": "Linear",
+      "weights_exactly_equal": true,
+      "formal_best_epoch": 7,
+      "new_best_epoch": 7,
+      "formal_val_loss": 0.04481131886076048,
+      "new_val_loss": 0.04481131886076048
+    },
+    {
+      "Model": "CNN1D",
+      "weights_exactly_equal": true,
+      "formal_best_epoch": 3,
+      "new_best_epoch": 3,
+      "formal_val_loss": 0.15485238360947576,
+      "new_val_loss": 0.15485238360947576
+    },
+    {
+      "Model": "LSTM",
+      "weights_exactly_equal": true,
+      "formal_best_epoch": 3,
+      "new_best_epoch": 3,
+      "formal_val_loss": 0.06016111441416652,
+      "new_val_loss": 0.06016111441416652
+    },
+    {
+      "Model": "TCN",
+      "weights_exactly_equal": true,
+      "formal_best_epoch": 1,
+      "new_best_epoch": 1,
+      "formal_val_loss": 0.050575816924680016,
+      "new_val_loss": 0.050575816924680016
+    }
+  ],
+  "performance": {
+    "checks": "PASS",
+    "quantile_loop_vs_vectorized_exact": true,
+    "rag_rank_and_acceptance_equal": true,
+    "max_batch_score_abs_difference": 1.1920928955078125e-07,
+    "timing": {
+      "loop_median_s": 0.10942310100006125,
+      "vectorized_median_s": 0.01792626000008113,
+      "sequential_median_s": 0.1487555290000273,
+      "batch_median_s": 0.0521261809999487
+    },
+    "method": "CPU, two threads, 5 warm repetitions, median. RAG excludes model loading; risk includes CSV loading."
+  }
+}

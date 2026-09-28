@@ -1,0 +1,41 @@
+{
+  "stable": {
+    "case": "stable",
+    "source": "ETTh1.csv real-data window",
+    "start_row": 1392,
+    "end_row": 1487,
+    "start_date": "2016-08-28 00:00:00",
+    "end_date": "2016-08-31 23:00:00",
+    "input_last24_rise": 0.0,
+    "input_last24_slope": 0.0,
+    "input_last24_max_slope": 0.0,
+    "input_last24_mean": 25.04400062561035,
+    "input_last24_max": 25.04400062561035
+  },
+  "slow_rise": {
+    "case": "slow_rise",
+    "source": "ETTh1.csv real-data window",
+    "start_row": 1435,
+    "end_row": 1530,
+    "start_date": "2016-08-29 19:00:00",
+    "end_date": "2016-09-02 18:00:00",
+    "input_last24_rise": 1.1260013580322301,
+    "input_last24_slope": 0.04895658078401,
+    "input_last24_max_slope": 2.5319995880126953,
+    "input_last24_mean": 27.70483334859212,
+    "input_last24_max": 32.570999145507805
+  },
+  "fast_rise": {
+    "case": "fast_rise",
+    "source": "ETTh1.csv real-data window",
+    "start_row": 283,
+    "end_row": 378,
+    "start_date": "2016-07-12 19:00:00",
+    "end_date": "2016-07-16 18:00:00",
+    "input_last24_rise": 18.713001251220703,
+    "input_last24_slope": 0.8136087500530741,
+    "input_last24_max_slope": 5.206001281738281,
+    "input_last24_mean": 29.446083386739094,
+    "input_last24_max": 35.59600067138672
+  }
+}

@@ -1,0 +1,65 @@
+{
+  "created_utc": "2026-09-28T17:45:34.900232+00:00",
+  "dataset_sha256": "f18de3ad269cef59bb07b5438d79bb3042d3be49bdeecf01c1cd6d29695ee066",
+  "calibration_config": {
+    "train_ratio": 0.7,
+    "forecast_horizon": 24,
+    "quantiles": {
+      "temperature": {
+        "medium": 0.9,
+        "high": 0.95
+      },
+      "rise": {
+        "medium": 0.9,
+        "high": 0.95
+      },
+      "slope": {
+        "medium": 0.9,
+        "high": 0.95
+      }
+    },
+    "target": "OT"
+  },
+  "thresholds": {
+    "temperature": {
+      "medium": 32.570999145507805,
+      "high": 37.00299835205078,
+      "medium_quantile": 0.9,
+      "high_quantile": 0.95,
+      "constant": false
+    },
+    "rise": {
+      "medium": 6.120999336242676,
+      "high": 7.176000595092772,
+      "medium_quantile": 0.9,
+      "high_quantile": 0.95,
+      "constant": false
+    },
+    "slope": {
+      "medium": 3.2360000610351634,
+      "high": 3.7280006408691406,
+      "medium_quantile": 0.9,
+      "high_quantile": 0.95,
+      "constant": false
+    },
+    "source": {
+      "data_path": "data/ETTh1.csv",
+      "train_rows": 12194,
+      "forecast_horizon": 24
+    }
+  },
+  "protocol": "Predeclared q90/q95 for all three 24h indicators; train only; validation audit only; no demo tuning.",
+  "validation": {
+    "row_range_half_open": [
+      12194,
+      14807
+    ],
+    "windows": 2590,
+    "level_counts": {
+      "LOW": 2542,
+      "MEDIUM": 48,
+      "HIGH": 0
+    }
+  },
+  "case_inputs_accessed": false
+}

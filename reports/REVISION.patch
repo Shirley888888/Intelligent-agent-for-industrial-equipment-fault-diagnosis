@@ -1,0 +1,421 @@
+--- before/agent/predictor_tool.py
++++ after/agent/predictor_tool.py
+@@ -48,13 +48,17 @@
+         self.model.to(self.device).eval()
+         self.mean = np.asarray(self.scaler["mean"], dtype=float)
+         self.scale = np.asarray(self.scaler["scale"], dtype=float)
+-        # modify:checkpoint-consistency - reject a scaler from another training run.
++        # modify:audit-scaler - validate dimensions and finiteness before broadcasting.
++        if self.mean.shape != (len(self.features),) or self.scale.shape != (len(self.features),):
++            raise ValueError("Scaler dimensions do not match configured features.")
++        if not np.isfinite(self.mean).all() or not np.isfinite(self.scale).all() or (self.scale <= 0).any():
++            raise ValueError("Scaler values must be finite and scales strictly positive.")
+         if not np.allclose(self.mean, ckpt["scaler_mean"], rtol=1e-7) or not np.allclose(self.scale, ckpt["scaler_scale"], rtol=1e-7):
+             raise ValueError("Deployment scaler differs from checkpoint statistics.")
+         if self.cfg["features"] != self.features or self.cfg["target"] != self.target or self.cfg["input_len"] != self.input_len or self.cfg["pred_len"] != self.pred_len:
+             raise ValueError("Deployment input/output config differs from checkpoint.")
+-        if self.mean.shape != (len(self.features),) or self.scale.shape != (len(self.features),):
+-            raise ValueError("Scaler dimensions do not match configured features.")
++        if self.target_idx != self.features.index(self.target):
++            raise ValueError("Checkpoint target index does not match target name.")
+ 
+     def validate(self, history):
+         arr = np.asarray(history, dtype=float)
+--- before/agent/rag_tool.py
++++ after/agent/rag_tool.py
+@@ -51,6 +51,11 @@
+         self.chunks = self._chunk_documents(DEFAULT_KNOWLEDGE)
+         # modify:rag-embedding - keep TF-IDF baseline and add real sentence embeddings.
+         self.backend = self.cfg.get("backend", "tfidf")
++        # modify:audit-config - each backend owns its threshold; reject invalid config.
++        if self.backend == "tfidf":
++            self.threshold = float(self.cfg.get("tfidf_threshold", self.threshold))
++        if self.top_k <= 0 or not np.isfinite(self.threshold) or not -1 <= self.threshold <= 1:
++            raise ValueError("top_k must be positive; cosine threshold must be finite and in [-1, 1].")
+         texts = [x["text"] for x in self.chunks]
+         if self.backend == "tfidf":
+             self.vectorizer = TfidfVectorizer(lowercase=True, ngram_range=(1, 2))
+@@ -80,20 +85,25 @@
+         return chunks
+ 
+     def retrieve(self, query: str) -> list[dict[str, Any]]:
+-        # modify:rag-observation - return accepted and rejected Top-K evidence for auditability.
++        # modify:audit-batch - preserve retrieve API; batch encoder implemented once.
++        return self.retrieve_many([query])[0]
++
++    def retrieve_many(self, queries: list[str]) -> list[list[dict[str, Any]]]:
++        """Encode queries in one batch; identical ranking/filter policy to retrieve."""
++        if not isinstance(queries, (list, tuple)) or any(not isinstance(q, str) or not q.strip() for q in queries):
++            raise ValueError("queries must be a list of nonempty strings")
++        if not queries:
++            return []
+         if self.backend == "tfidf":
+-            q = self.vectorizer.transform([query])
+-            scores = (self.matrix @ q.T).toarray().ravel()
++            q = self.vectorizer.transform(queries)
++            scores = (q @ self.matrix.T).toarray()
+         else:
+-            q = self.encoder.encode([query], normalize_embeddings=True)
+-            scores = (self.matrix @ q.T).ravel()
++            q = self.encoder.encode(queries, normalize_embeddings=True, show_progress_bar=False)
++            scores = q @ self.matrix.T
++        return [self._rank_scores(row) for row in scores]
++
++    def _rank_scores(self, scores):
+         order = np.argsort(-scores, kind="stable")[:self.top_k]
+-        return [
+-            {
+-                "id": self.chunks[int(idx)]["id"],
+-                "score": float(scores[int(idx)]),
+-                "accepted": bool(scores[int(idx)] >= self.threshold),
+-                "text": self.chunks[int(idx)]["text"],
+-            }
+-            for idx in order
+-        ]
++        return [{"id": self.chunks[int(idx)]["id"], "score": float(scores[int(idx)]),
++                 "accepted": bool(scores[int(idx)] >= self.threshold),
++                 "text": self.chunks[int(idx)]["text"]} for idx in order]
+--- before/agent/risk_tool.py
++++ after/agent/risk_tool.py
+@@ -29,18 +29,11 @@
+         raise ValueError("No finite training OT values; cannot fabricate risk thresholds.")  # modify:training-boundary
+     horizon = min(max(1, int(forecast_horizon)), len(train_ot))  # modify:short-training
+ 
+-    peaks, rises, slopes = [], [], []  # modify:dynamic-risk
+-    for start in range(0, len(train_ot) - horizon + 1):  # modify:dynamic-risk
+-        window = train_ot[start:start + horizon]  # modify:dynamic-risk
+-        peaks.append(float(np.max(window)))  # modify:dynamic-risk
+-        rises.append(float(np.max(window) - window[0]))  # modify:dynamic-risk
+-        slopes.append(max(0.0, float(np.max(np.diff(window)))) if len(window) > 1 else 0.0)  # modify:positive-slope
+-
+-    # modify:dynamic-risk - retain a usable path for very short custom datasets.
+-    if not peaks:
+-        peaks = train_ot.tolist()  # modify:dynamic-risk
+-        rises = [0.0]  # modify:dynamic-risk
+-        slopes = [0.0]  # modify:dynamic-risk
++    # modify:audit-vectorize - same 24h windows and quantiles, vectorized without case input.
++    windows = np.lib.stride_tricks.sliding_window_view(train_ot, horizon)
++    peaks = windows.max(axis=1)
++    rises = peaks - windows[:, 0]
++    slopes = np.maximum(np.diff(windows, axis=1).max(axis=1), 0.0) if horizon > 1 else np.zeros(len(windows))
+ 
+     metric_values = {"temperature": peaks, "rise": rises, "slope": slopes}  # modify:dynamic-risk
+     thresholds = {}  # modify:dynamic-risk
+@@ -160,4 +153,12 @@
+         raise ValueError("Risk config differs from frozen calibration.")
+     if hashlib.sha256((root / rc["data_path"]).read_bytes()).hexdigest() != artifact["dataset_sha256"]:
+         raise ValueError("Dataset differs from frozen calibration.")
++    # modify:audit-freeze-integrity - verify stored values as well as configuration/hash.
++    computed = calculate_dynamic_thresholds(root / rc["data_path"], cfg["target"],
++        rc["train_ratio"], rc["forecast_horizon"], rc["quantiles"])
++    for metric in ("temperature", "rise", "slope"):
++        if computed[metric] != artifact["thresholds"][metric]:
++            raise ValueError(f"Frozen {metric} thresholds do not match training quantiles.")
++    if computed["source"]["train_rows"] != artifact["thresholds"]["source"]["train_rows"]:
++        raise ValueError("Frozen calibration row count mismatch.")
+     return artifact["thresholds"]
+--- before/agent/__init__.py
++++ after/agent/__init__.py
+@@ -1,3 +1,8 @@
+-from agent.agent import OilTemperatureAgent
+-from agent.predictor_tool import PredictorTool
+-from agent.risk_tool import analyze
++"""Public Agent interface; heavy dependencies are loaded only when needed."""
++# modify:audit-lazy-import - keep public import compatibility for lightweight RAG/risk use.
++__all__ = ["OilTemperatureAgent"]
++def __getattr__(name):
++    if name == "OilTemperatureAgent":
++        from agent.agent import OilTemperatureAgent
++        return OilTemperatureAgent
++    raise AttributeError(name)
+--- before/calibrate_risk.py
++++ after/calibrate_risk.py
+@@ -11,6 +11,9 @@
+ def main():
+     cfg=yaml.safe_load((ROOT/'agent/models/config.yaml').read_text())
+     r=cfg['risk']; data=ROOT/r['data_path']; out=ROOT/r['frozen_path']
++    experiment=yaml.safe_load((ROOT/'configs/experiment.yaml').read_text())
++    if r['train_ratio'] != experiment['split'][0] or r['forecast_horizon'] != experiment['pred_len']:
++        raise ValueError('Risk calibration split/horizon differs from forecast experiment.')
+     calibration_config={k:r[k] for k in ('train_ratio','forecast_horizon','quantiles')}
+     calibration_config['target']=cfg['target']
+     digest=hashlib.sha256(data.read_bytes()).hexdigest()
+@@ -18,10 +21,12 @@
+         old=json.loads(out.read_text())
+         if old['calibration_config']!=calibration_config or old['dataset_sha256']!=digest:
+             raise ValueError('Frozen calibration differs; create a new experiment version, not case-based retuning.')
++        from agent.risk_tool import load_frozen_thresholds
++        load_frozen_thresholds(cfg)  # modify:audit-freeze-integrity
+         return old
+     thresholds=calculate_dynamic_thresholds(data,cfg['target'],r['train_ratio'],r['forecast_horizon'],r['quantiles'])
+     thresholds['source']['data_path']=r['data_path']
+-    df=pd.read_csv(data); a=int(len(df)*r['train_ratio']); b=a+int(len(df)*0.15)
++    df=pd.read_csv(data); a=int(len(df)*r['train_ratio']); b=a+int(len(df)*experiment['split'][1])
+     values=df[cfg['target']].to_numpy()[a:b]; h=r['forecast_horizon']
+     levels=[analyze(values[i:i+h],thresholds=thresholds)['risk_level'] for i in range(len(values)-h+1)]
+     artifact={'created_utc':datetime.now(timezone.utc).isoformat(),'dataset_sha256':digest,
+--- before/data.py
++++ after/data.py
+@@ -10,9 +10,18 @@
+ 
+ def load_splits(path, features, target, split, input_len, pred_len, stride=1):
+     df=pd.read_csv(path,parse_dates=["date"])
++    # modify:audit-time-grid - do not silently train on irregular hourly samples.
++    if df["date"].isna().any() or df["date"].duplicated().any() or not df["date"].diff().iloc[1:].eq(pd.Timedelta(hours=1)).all():
++        raise ValueError("Dataset must have unique, chronological hourly timestamps.")
++    if len(split)!=3 or not np.isclose(sum(split),1.0) or min(split)<=0:
++        raise ValueError("split must contain three positive fractions summing to 1")
++    if input_len<=0 or pred_len<=0 or stride<=0:
++        raise ValueError("input_len, pred_len and stride must be positive")
+     if list(df.columns)!=["date"]+features:
+         missing=[c for c in ["date"]+features if c not in df.columns]
+         if missing: raise ValueError(f"Missing columns: {missing}")
++    if not np.isfinite(df[features].to_numpy(dtype=float)).all():
++        raise ValueError("Dataset features contain nonfinite values")
+     n=len(df); a=int(n*split[0]); b=a+int(n*split[1])
+     raw=[df.iloc[:a].copy(),df.iloc[a:b].copy(),df.iloc[b:].copy()]
+     scaler=StandardScaler().fit(raw[0][features].values)
+--- before/evaluate_final.py
++++ after/evaluate_final.py
+@@ -9,7 +9,9 @@
+ from metrics import regression_metrics
+ ROOT=Path(__file__).resolve().parent
+ 
+-def main():
++def main(output_dir=None):
++    from experiment_paths import reproduction_dir
++    out = reproduction_dir("forecast", output_dir)  # modify:audit-output-isolation
+     torch.set_num_threads(2);torch.manual_seed(42)
+     cfg=yaml.safe_load((ROOT/'configs/experiment.yaml').read_text())
+     df,raw,splits,scaler=load_splits(ROOT/'data/ETTh1.csv',cfg['features'],cfg['target'],cfg['split'],96,24,1)
+@@ -29,7 +31,6 @@
+         rows.append({'Model':name,**regression_metrics(truth,pred),'BestEpoch':c['best_epoch'],'BestValLoss':c['best_val_loss']})
+         hashes[str(path.relative_to(ROOT))]=hashlib.sha256(path.read_bytes()).hexdigest()
+         print(name,rows[-1]['MAE'],flush=True)
+-    out=ROOT/'results/final';out.mkdir(parents=True,exist_ok=True)
+     np.savez_compressed(out/'predictions.npz',truth=truth,**preds)
+     result={'experiment_id':'ETTh1_CLOSEOUT_20260929_v1','protocol':'Fixed existing four checkpoints; CPU float32 inference, float64 inverse scaling/metrics; no retraining or test-based model selection.',
+      'dataset_sha256':hashlib.sha256((ROOT/'data/ETTh1.csv').read_bytes()).hexdigest(),
+@@ -38,5 +39,9 @@
+      'environment':{'python':platform.python_version(),'torch':torch.__version__,'numpy':np.__version__},
+      'limitations':['Historical checkpoints; no new training run or confidence intervals.','Deployment LSTM retained by project design, not selected on final test scores.']}
+     (out/'forecast_evaluation.json').write_text(json.dumps(result,indent=2),encoding='utf-8')
++    print(f"Reproduction saved to: {out}")
+     return result
+-if __name__=='__main__':main()
++if __name__=='__main__':
++    import argparse
++    ap=argparse.ArgumentParser();ap.add_argument('--output-dir');args=ap.parse_args()
++    main(args.output_dir)
+--- before/render_results.py
++++ after/render_results.py
+@@ -15,6 +15,9 @@
+     def val(v):return f'{v:.6f}' if isinstance(v,float) else str(v)
+     return '| '+' | '.join(cols)+' |\n| '+' | '.join(['---']*len(cols))+' |\n'+'\n'.join('| '+' | '.join(val(r.get(c,'')) for c in cols)+' |' for r in rows)+'\n'
+ def assemble():
++    # modify:audit-freeze-integrity - this private helper must not rewrite an existing formal run.
++    if (FINAL/'experiment.json').exists():
++        raise FileExistsError('Formal experiment already frozen; use reproduction outputs for comparisons.')
+     f=json.loads((FINAL/'forecast_evaluation.json').read_text());r=json.loads((FINAL/'rag_evaluation.json').read_text());c=json.loads((ROOT/'output/all_case_results.json').read_text())
+     frozen=json.loads((ROOT/'configs/risk_thresholds.json').read_text())
+     hashes={}
+@@ -63,8 +66,7 @@
+     for dst,rows in [('outputs/metrics.csv',modelrows),('results/model_comparison.csv',modelrows),('results/case_study_results.csv',caserows)]:
+         p=ROOT/dst;p.parent.mkdir(parents=True,exist_ok=True);pd.DataFrame(rows).to_csv(p,index=False)
+     save_json(ROOT/'outputs/metrics.json',{r['Model']:r for r in modelrows})
+-    for n,v in cases.items():save_json(ROOT/f'output/case_{n}.json',v)
+-    save_json(ROOT/'output/all_case_results.json',cases)
++    # modify:audit-output-isolation - rendering must not overwrite live case outputs.
+     summary='\n'.join([table(modelrows,['Model','MAE','MSE','PeakError']),table(caserows,list(caserows[0])),table(ragrows,['Backend','retrieval_accuracy_top1_thresholded','Hit@3_raw','MRR@3_raw','no_answer_rejection_rate'])])
+     (ROOT/'paper/V8_PAPER_RESULTS.md').write_text('# 正式实验结果\n\n数据源：`results/final/experiment.json`，实验编号 '+d['experiment_id']+'。\n\n'+summary,encoding='utf-8')
+     lstm=next(r for r in modelrows if r['Model']=='LSTM');base=modelrows[0]
+@@ -103,6 +105,9 @@
+ 人工标注12条Query，直接问法、同义改写、多知识点、无答案各3条。先固定标注再运行测试。每条保存两个后端各自的Top-3、分数、阈值通过标记和相关性标记。多知识点Query标注全部必需知识ID。
+ 检索正确率定义为9条有答案问题中“Top-1相关且过阈值”的比例。Hit@3为原始前三名至少命中一条标注知识的比例；MRR@3为前三名首次相关结果名次倒数的平均，未命中计0，分母都是9。额外报告过阈值Hit@3、多知识点全证据覆盖率、无答案拒答率以及有答案误拒数。MRR只检查Top-3，不能表述为全排名MRR。无答案拒答指无任何候选通过阈值，不等同于生成答案事实核验。
+ 这12条属于小规模人工测试，不足以证明跨领域泛化；两个后端阈值不同，拒答率不是等误报率条件下的对比。无答案题包含主题相关但缺少具体数值的难负例，如特定设备保护动作值。
++
++## 本轮实现审计
++本轮保持冻结实验数值和阈值不变，新增复跑输出隔离、严格时间戳检查、后端阈值选择修复，以及语义检索批处理和分位数计算向量化。实现修补前源码保留用于原结果追溯；等价性测试采用独立复跑记录，不改写原始实验数值。详细分析见reports/AUDIT_AND_ANALYSIS.md。性能优化不等于检索正确率或预测精度提高。
+ 
+ ## 三案例与有效性边界
+ 保留原包stable、slow_rise、fast_rise输入文件，名称描述历史趋势，不预设预测risk应为LOW/MEDIUM/HIGH。它们位于训练时段，只是阈值冻结后独立执行的固定展示，并非未见样本测试集。模型评价只使用时间末段测试集。ETTh1没有本项目所需的故障类型标签，因此不能报告真实故障诊断准确率。规则单元测试仅验证代码逻辑。
+@@ -147,6 +152,14 @@
+ ```
+ `calibrate_risk.py`已有冻结结果时校验后复用，不根据案例调参。`render_results.py`只从正式源重新生成Markdown、CSV和PNG，不把临时复跑结果自动提升为新正式实验。Excel是同一源的冻结导出副本，非另一次实验。原GPU训练入口保留，新训练输出到独立training_runs目录。
+ 
++## 本轮审计与优化
++
++详见 `reports/AUDIT_AND_ANALYSIS.md` 和 `reports/REVISION_CHANGELOG.md`。
++普通复跑的预测评价、RAG记录写入 `results/reruns/` 独立目录，不覆盖正式结果。
++原正式实验对应的旧源码存于 `archive/closeout_v1_source/`，映射见 `results/final/source_snapshot.json`；当前修补源码及实测记录见 `results/audit/`。
++运行 `python tests/test_revision.py` 检查修补行为，运行 `python analyze_results.py` 重建详细分析。
++新上传包中的 `outputs/training_runs/20260929_035240/` 仅为训练运行记录，不作为第二套正式实验。
++
+ ## 当前正式结果
+ {summary}
+ ## 阅读入口
+--- before/run_agent.py
++++ after/run_agent.py
+@@ -1,54 +1,48 @@
+-import argparse, json
+-from pathlib import Path
+-import pandas as pd
+-from agent.agent import OilTemperatureAgent
+-
+-FEATURES = ["HUFL","HULL","MUFL","MULL","LUFL","LULL","OT"]
+-
+-def load_history(csv_path):
+-    df = pd.read_csv(csv_path)
+-    missing = [c for c in FEATURES if c not in df.columns]
+-    if missing:
+-        raise ValueError(f"Input CSV missing columns: {missing}")
+-    if "date" in df.columns:
+-        df["date"] = pd.to_datetime(df["date"], errors="raise")
+-        if not df["date"].is_monotonic_increasing:
+-            raise ValueError("Input dates must be chronological.")
+-    if len(df) != 96:
+-        raise ValueError(f"Input CSV must contain exactly 96 rows, got {len(df)}")
+-    return df[FEATURES].values
+-
+-ap = argparse.ArgumentParser(description="Industrial oil-temperature forecasting Agent")
+-ap.add_argument("--checkpoint", default=None)  # modify:model-unification - use config by default.
+-ap.add_argument("--scaler", default=None)  # modify:model-unification
+-ap.add_argument("--config", default="agent/models/config.yaml")
+-ap.add_argument("--input", default=None,  # modify:run-all-cases - no input means all demo cases.
+-                help="CSV containing exactly the 96-hour history; if it has >96 rows, the last 96 are used.")
+-ap.add_argument("--case", default=None, help="Optional test case name under tests/cases/")
+-ap.add_argument("--device", default="cuda:0")
+-args = ap.parse_args()
+-agent = OilTemperatureAgent(args.checkpoint, args.scaler, args.config, args.device)  # modify:run-all-cases
+-if args.case == "all" or (args.case is None and args.input is None):  # modify:run-all-cases
+-    import runpy  # modify:run-all-cases - reuse the existing runner without a new module.
+-    runner = runpy.run_path(str(Path(__file__).resolve().parent / "tests/run_agent_cases.py"))  # modify:run-all-cases
+-    runner["main"](agent=agent)  # modify:run-all-cases
+-    raise SystemExit(0)  # modify:run-all-cases
+-
+-input_path = Path(args.input or "data/ETTh1.csv")  # modify:run-all-cases
+-if args.case:
+-    input_path = Path("tests/cases") / args.case / "input.csv"
+-if not input_path.is_absolute():  # modify:portable-paths
+-    input_path = Path(__file__).resolve().parent / input_path  # modify:portable-paths
+-
+-df = pd.read_csv(input_path)
+-missing = [c for c in FEATURES if c not in df.columns]
+-if missing:
+-    raise ValueError(f"Input CSV missing columns: {missing}")
+-if "date" in df.columns:
+-    df["date"] = pd.to_datetime(df["date"], errors="raise")
+-    if len(df) >= 2 and not df["date"].is_monotonic_increasing:
+-        raise ValueError("Input dates must be chronological.")
+-history = df.tail(96)[FEATURES].values
+-
+-result = agent.run(history)
+-print(json.dumps(result, indent=2, ensure_ascii=False))
++import argparse, json
++from pathlib import Path
++import pandas as pd
++
++FEATURES = ["HUFL","HULL","MUFL","MULL","LUFL","LULL","OT"]
++
++def load_history(csv_path):
++    df = pd.read_csv(csv_path)
++    missing = [c for c in FEATURES if c not in df.columns]
++    if missing:
++        raise ValueError(f"Input CSV missing columns: {missing}")
++    if "date" not in df.columns:
++        raise ValueError("CSV must include date timestamps to verify hourly continuity.")
++    if "date" in df.columns:
++        df["date"] = pd.to_datetime(df["date"], errors="raise")
++        # modify:audit-time-grid - duplicates/gaps break hourly slope interpretation.
++        if df["date"].isna().any() or df["date"].duplicated().any() or not df["date"].diff().iloc[1:].eq(pd.Timedelta(hours=1)).all():
++            raise ValueError("Input dates must be unique, chronological and exactly hourly.")
++    if len(df) != 96:
++        raise ValueError(f"Input CSV must contain exactly 96 rows, got {len(df)}")
++    return df[FEATURES].values
++
++def main():
++    # modify:audit-cli - import-safe CLI; consistent strict input validation.
++    from agent.agent import OilTemperatureAgent
++    ap = argparse.ArgumentParser(description="Industrial oil-temperature forecasting Agent")
++    ap.add_argument("--checkpoint", default=None)
++    ap.add_argument("--scaler", default=None)
++    ap.add_argument("--config", default="agent/models/config.yaml")
++    ap.add_argument("--input", default=None, help="CSV with exactly 96 hourly rows")
++    ap.add_argument("--case", choices=["all", "stable", "slow_rise", "fast_rise"])
++    ap.add_argument("--device", default="cuda:0")
++    args = ap.parse_args()
++    if args.input and args.case:
++        ap.error("Use either --input or --case, not both.")
++    root=Path(__file__).resolve().parent
++    if args.case == "all" or (args.case is None and args.input is None):
++        agent=OilTemperatureAgent(args.checkpoint,args.scaler,args.config,args.device)
++        import runpy
++        runpy.run_path(str(root / "tests/run_agent_cases.py"))["main"](agent=agent)
++        return
++    input_path=Path(args.input) if args.input else root / "tests/cases" / args.case / "input.csv"
++    if not input_path.is_absolute(): input_path=root/input_path
++    history=load_history(input_path)
++    agent=OilTemperatureAgent(args.checkpoint,args.scaler,args.config,args.device)
++    print(json.dumps(agent.run(history),indent=2,ensure_ascii=False))
++
++if __name__ == "__main__": main()
+--- before/tests/evaluate_rag.py
++++ after/tests/evaluate_rag.py
+@@ -11,8 +11,11 @@
+     cfg['backend']=backend
+     cfg['similarity_threshold']=cfg['tfidf_threshold'] if backend=='tfidf' else cfg['similarity_threshold']
+     rag=RAGTool(cfg); records=[]
+-    for q in json.loads((ROOT/'tests/rag_queries.json').read_text()):
+-        hits=rag.retrieve(q['query']); relevant=set(q['relevant_ids'])
++    queries=json.loads((ROOT/'tests/rag_queries.json').read_text())
++    # modify:audit-batch - one batch for the frozen query list, no threshold tuning.
++    batches=rag.retrieve_many([q['query'] for q in queries])
++    for q,hits in zip(queries,batches):
++        relevant=set(q['relevant_ids'])
+         for hit in hits:
+             hit['document_id']=hit['id'].rsplit('-C',1)[0]
+             hit['relevant']=hit['document_id'] in relevant
+@@ -36,9 +39,13 @@
+       'answerable_false_rejections':sum(r['refused'] for r in answerable)}
+     return {'backend':backend,'config':cfg,'metrics':metrics,'records':records}
+ 
+-def main():
+-    out=ROOT/'results/final';out.mkdir(parents=True,exist_ok=True)
++def main(output_dir=None):
++    from experiment_paths import reproduction_dir
++    out=reproduction_dir('rag',output_dir)  # modify:audit-output-isolation
+     results={backend:evaluate(backend) for backend in ('tfidf','embedding')}
+     (out/'rag_evaluation.json').write_text(json.dumps(results,indent=2,ensure_ascii=False),encoding='utf-8')
+     print(json.dumps({k:v['metrics'] for k,v in results.items()},indent=2));return results
+-if __name__=='__main__':main()
++if __name__=='__main__':
++    import argparse
++    ap=argparse.ArgumentParser();ap.add_argument('--output-dir');args=ap.parse_args()
++    main(args.output_dir)
+--- before/tests/run_agent_cases.py
++++ after/tests/run_agent_cases.py
+@@ -18,8 +18,8 @@
+ 
+     for case_name in case_order:
+         input_path=cases_root/case_name/"input.csv"
+-        df=pd.read_csv(input_path)
+-        history=df[FEATURES].tail(96).values
++        from run_agent import load_history  # modify:audit-time-grid
++        history=load_history(input_path)
+         result=agent.run(history)  # modify:full-react-case - complete Forecast/Risk/RAG/ReAct path.
+         risk=result["risk"]
+         payload={
+--- before/tests/test_closeout.py
++++ after/tests/test_closeout.py
+@@ -11,8 +11,10 @@
+ 
+ def main():
+     d=json.loads((ROOT/'results/final/experiment.json').read_text())
++    source_map=json.loads((ROOT/'results/final/source_snapshot.json').read_text())
+     for rel,h in {**d['input_sha256'],**d['checkpoint_sha256']}.items():
+-        assert hashlib.sha256((ROOT/rel).read_bytes()).hexdigest()==h,rel
++        assert hashlib.sha256((ROOT/source_map.get(rel,rel)).read_bytes()).hexdigest()==h,rel
++    # modify:audit-provenance - source snapshot preserves experiment history; runtime tested separately.
+     assert (ROOT/'agent/models/best_model.pt').read_bytes()==(ROOT/'outputs/checkpoints/LSTM_best.pt').read_bytes()
+     assert len(DEFAULT_KNOWLEDGE)==25 and len({x['id'] for x in DEFAULT_KNOWLEDGE})==25
+     cfg=yaml.safe_load((ROOT/'agent/models/config.yaml').read_text());frozen=load_frozen_thresholds(cfg)
