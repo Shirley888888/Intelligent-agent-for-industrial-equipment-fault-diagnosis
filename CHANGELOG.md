@@ -1,3 +1,16 @@
+# GPU 实际验证与 torch 元数据规范化（2026-10）
+
+修改基线：版本切换一致性修复后的 `online_loop_minimal`。在本机 `etth1_gpu` 环境（Python 3.11.16、torch 2.7.1+cu128、RTX 5060）实际运行 torch 后端。
+
+| 位置 | 修改 |
+|---|---|
+| `minimal_loop.py` ForecastModel | `.pt` 加载时对 metadata 做 JSON 往返规范化：`torch.save` 保留 tuple 而 JSON sidecar 为 list，统一两侧比较语义；兼容旧 checkpoint |
+| `test_torch_version_checks.py` | 新增 torch 后端版本一致性测试：bootstrap 绑定、同 seed 逐 tensor 复现、gate 输出合法 JSON、升级/回滚/陈旧门禁/损坏检测、sidecar 篡改拒绝、CPU/GPU 跨设备预测一致 |
+| `smoke_torch.py` | 新增 `--version-checks`：受控门禁分数演练升级/回滚/陈旧门禁拒绝/损坏检测；损坏检查在临时副本上执行，正式产物不受影响 |
+| 验证记录 | `test_results_gpu.txt`：`python -O -m unittest -v test_loop test_torch_version_checks` 共 27 项通过（1 项因 CUDA 可达跳过） |
+
+GPU 全量回放与既有结果一致（默认规则 0 次自然重训；演练候选近期无足够改善被门禁拒绝）。演练中的受控门禁分数是测试输入，不是模型精度收益。
+
 # 版本切换一致性修复
 
 修改基线：最新上传的 `online_loop_minimal.zip`。保留类名、函数签名、数据结构、模型后端和原实验记录。
