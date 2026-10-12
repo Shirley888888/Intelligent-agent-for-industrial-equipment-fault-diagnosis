@@ -1,0 +1,52 @@
+{
+  "scope": "Single-writer synchronous activation I/O failures; no process/power-failure recovery",
+  "command": "python -O -m unittest -v test_loop",
+  "tests_passed": 20,
+  "new_fault_and_commit_tests": 7,
+  "covered": [
+    "upgrade event failure and retry",
+    "rollback event failure",
+    "partial event write restores exact bytes",
+    "pointer replace failure restores event and removes temp",
+    "bootstrap failure and retry",
+    "simulator activation failure retains pointer/labels/forecasts",
+    "successful simulator upgrade uses prepared candidate with no postcommit load"
+  ],
+  "full_numpy_regression": {
+    "backend": "numpy",
+    "model_name": "Linear",
+    "complete_episodes": 108,
+    "pending_episodes": 1,
+    "baseline_mae": 1.3505053022379934,
+    "prequential_mae": 1.4156144410444684,
+    "retrain_attempts": 0,
+    "upgrades": 0,
+    "candidate_errors": [],
+    "current": {
+      "model_version": "M0",
+      "activation_id": 0,
+      "activated_as_of": "2018-03-09T23:00:00",
+      "action": "bootstrap",
+      "baseline_mae": 1.3505053022379934
+    },
+    "observed_end": 17420,
+    "anchor": [
+      12914,
+      14087
+    ],
+    "final_as_of": "2018-06-26T20:00:00",
+    "engineering_exercise_at": null
+  },
+  "regression_matches_results_default_v2": true,
+  "historical_artifacts_preserved": true,
+  "gpu_rerun_this_fix": false,
+  "controlled_gate_scores_are_accuracy_results": false,
+  "sha256": {
+    "minimal_loop.py": "9f6d7c66479c1ac75b1be2ede97239a4f9d8e5c05747257eceaaa6e715abaad1",
+    "test_loop.py": "32af1add166fba54ef68e2c56797014f098087225dcde940a3552949d718e5b5",
+    "tool_catalog.py": "7140bb39d17dace4c34f04e1d584e3f42c89f5239ff9c149cb1aa6b0e0c0d959",
+    "tool_catalog.json": "a6c390f418a64b3683835177345efc3a043652aad1f440a988e950b9f3a9b611",
+    "ETTh1.csv": "f18de3ad269cef59bb07b5438d79bb3042d3be49bdeecf01c1cd6d29695ee066",
+    "models.py": "a28d4e9c3568fc290f23ad14c2916711ae05465934d3167efcb87b9092a2e573"
+  }
+}

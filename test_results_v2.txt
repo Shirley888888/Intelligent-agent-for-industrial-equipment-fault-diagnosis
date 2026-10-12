@@ -1,0 +1,18 @@
+test_candidate_target_ranges_are_disjoint (__main__.LoopTests.test_candidate_target_ranges_are_disjoint) ... ok
+test_catalog_and_custom_configuration (__main__.LoopTests.test_catalog_and_custom_configuration) ... ok
+test_failed_candidate_keeps_active_model (__main__.LoopTests.test_failed_candidate_keeps_active_model) ... ok
+test_feedback_alignment_and_delayed_release (__main__.LoopTests.test_feedback_alignment_and_delayed_release) ... ok
+test_future_perturbation_does_not_change_prefix (__main__.LoopTests.test_future_perturbation_does_not_change_prefix) ... ok
+test_gate_requires_both_conditions (__main__.LoopTests.test_gate_requires_both_conditions) ... ok
+test_invalid_feedback_never_becomes_a_score (__main__.LoopTests.test_invalid_feedback_never_becomes_a_score) ... ok
+test_invalid_ranges_and_candidate_config (__main__.LoopTests.test_invalid_ranges_and_candidate_config) ... ok
+test_monitor_two_blocks_and_version_filter (__main__.LoopTests.test_monitor_two_blocks_and_version_filter) ... ok
+test_rollback_clock_and_manifest_are_checked (__main__.LoopTests.test_rollback_clock_and_manifest_are_checked) ... ok
+test_rolling_monitor_and_batched_feedback (__main__.LoopTests.test_rolling_monitor_and_batched_feedback) ... ok
+test_runtime_checks_survive_python_optimization (__main__.LoopTests.test_runtime_checks_survive_python_optimization) ... ok
+test_version_upgrade_rollback_and_corruption (__main__.LoopTests.test_version_upgrade_rollback_and_corruption) ... ok
+
+----------------------------------------------------------------------
+Ran 13 tests in 3.723s
+
+OK

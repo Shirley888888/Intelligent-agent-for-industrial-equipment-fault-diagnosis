@@ -1,0 +1,82 @@
+{
+  "revision": "v2",
+  "source_archive_sha256": "a91894ce4231913f8ce10a0b6e4b821a90289d87b2431bcd325d6cc77fbdc24e",
+  "preserved_files": {
+    "models.py": "a28d4e9c3568fc290f23ad14c2916711ae05465934d3167efcb87b9092a2e573",
+    "ETTh1.csv": "f18de3ad269cef59bb07b5438d79bb3042d3be49bdeecf01c1cd6d29695ee066"
+  },
+  "original_public_names_preserved": true,
+  "v1_records_preserved": true,
+  "removable_assert_checks": 0,
+  "tests": {
+    "count": 13,
+    "status": "passed",
+    "mode": "python -O"
+  },
+  "numpy_default": {
+    "backend": "numpy",
+    "model_name": "Linear",
+    "complete_episodes": 108,
+    "pending_episodes": 1,
+    "baseline_mae": 1.3505053022379934,
+    "prequential_mae": 1.4156144410444684,
+    "retrain_attempts": 0,
+    "upgrades": 0,
+    "candidate_errors": [],
+    "current": {
+      "model_version": "M0",
+      "activation_id": 0,
+      "activated_as_of": "2018-03-09T23:00:00",
+      "action": "bootstrap",
+      "baseline_mae": 1.3505053022379934
+    },
+    "observed_end": 17420,
+    "anchor": [
+      12914,
+      14087
+    ],
+    "final_as_of": "2018-06-26T20:00:00",
+    "engineering_exercise_at": null
+  },
+  "numpy_exercise": {
+    "backend": "numpy",
+    "model_name": "Linear",
+    "complete_episodes": 108,
+    "pending_episodes": 1,
+    "baseline_mae": 1.3505053022379934,
+    "prequential_mae": 1.4156144410444684,
+    "retrain_attempts": 1,
+    "upgrades": 0,
+    "candidate_errors": [],
+    "current": {
+      "model_version": "M0",
+      "activation_id": 0,
+      "activated_as_of": "2018-03-09T23:00:00",
+      "action": "bootstrap",
+      "baseline_mae": 1.3505053022379934
+    },
+    "observed_end": 17420,
+    "anchor": [
+      12914,
+      14087
+    ],
+    "final_as_of": "2018-06-26T20:00:00",
+    "engineering_exercise_at": 60
+  },
+  "cli_rollback": {
+    "model_version": "M0",
+    "activation_id": 1,
+    "activated_as_of": "2018-03-11T23:00:00",
+    "action": "rollback",
+    "baseline_mae": 1.3505053022379934
+  },
+  "pytorch": {
+    "installed": false,
+    "execution": "not run; syntax checked only"
+  },
+  "limitations": [
+    "No GPU performance claim",
+    "No production service integration or automatic rollback policy",
+    "No training latency simulation"
+  ]
+}

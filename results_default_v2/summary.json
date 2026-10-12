@@ -1,0 +1,25 @@
+{
+  "backend": "numpy",
+  "model_name": "Linear",
+  "complete_episodes": 108,
+  "pending_episodes": 1,
+  "baseline_mae": 1.3505053022379934,
+  "prequential_mae": 1.4156144410444684,
+  "retrain_attempts": 0,
+  "upgrades": 0,
+  "candidate_errors": [],
+  "current": {
+    "model_version": "M0",
+    "activation_id": 0,
+    "activated_as_of": "2018-03-09T23:00:00",
+    "action": "bootstrap",
+    "baseline_mae": 1.3505053022379934
+  },
+  "observed_end": 17420,
+  "anchor": [
+    12914,
+    14087
+  ],
+  "final_as_of": "2018-06-26T20:00:00",
+  "engineering_exercise_at": null
+}

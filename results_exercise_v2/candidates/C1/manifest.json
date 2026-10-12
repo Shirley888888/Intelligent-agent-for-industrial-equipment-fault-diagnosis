@@ -1,0 +1,58 @@
+{
+  "candidate_id": "C1",
+  "checkpoint_path": "/workspace/scratch/2fc2bfd74ec1/code_revision/online_loop_minimal/results_exercise_v2/candidates/C1/checkpoint.npz",
+  "checkpoint_sha256": "901a9ede22e883f9c8e002f67439006c6c0d2c8429139820da99bdd1f4dce315",
+  "data_version": "D16247_b320087101fb",
+  "trained_as_of": "2018-05-08T23:00:00",
+  "train_config": {
+    "backend": "numpy",
+    "model_name": "Linear",
+    "ridge": 1.0,
+    "epochs": 10,
+    "patience": 3,
+    "lr": 0.001,
+    "batch_size": 128,
+    "weight_decay": 1e-05,
+    "grad_clip": 1.0,
+    "train_stride": 1,
+    "hidden_size": 128,
+    "num_layers": 2,
+    "dropout": 0.1,
+    "seed": 42,
+    "device": "cpu"
+  },
+  "validation_metrics": {
+    "MAE": 1.6392432197558908,
+    "unit": "degC",
+    "windows": 30,
+    "best_epoch": 0
+  },
+  "manifest": {
+    "data_version": "D16247_b320087101fb",
+    "observed_end": 16247,
+    "as_of": "2018-05-08T23:00:00",
+    "train_ranges": [
+      [
+        0,
+        12914
+      ],
+      [
+        14087,
+        14807
+      ]
+    ],
+    "validation_range": [
+      14807,
+      15527
+    ],
+    "historical_range": [
+      12914,
+      14087
+    ],
+    "recent_range": [
+      15527,
+      16247
+    ],
+    "snapshot_sha256": "b320087101fb246b96a31dddc6cebeed519f66649e4cb216619d97fa80f2bb93"
+  }
+}

@@ -1,0 +1,56 @@
+$ python minimal_loop.py tools --out tool_catalog.json
+{
+  "saved_to": "/workspace/scratch/2fc2bfd74ec1/code_revision/online_loop_minimal/tool_catalog.json",
+  "tool_count": 10
+}
+
+
+$ python minimal_loop.py simulate --out results_cli_v2 --train-config configs/train_numpy.json --gate-config configs/gate.json --max-episodes 2 --monitor-n 2 --monitor-relative 0.30 --recent-gain 0.10
+{
+  "backend": "numpy",
+  "model_name": "Linear",
+  "complete_episodes": 2,
+  "pending_episodes": 0,
+  "baseline_mae": 1.3505053022379934,
+  "prequential_mae": 1.250318941755979,
+  "retrain_attempts": 0,
+  "upgrades": 0,
+  "candidate_errors": [],
+  "current": {
+    "model_version": "M0",
+    "activation_id": 0,
+    "activated_as_of": "2018-03-09T23:00:00",
+    "action": "bootstrap",
+    "baseline_mae": 1.3505053022379934
+  },
+  "observed_end": 14855,
+  "anchor": [
+    12914,
+    14087
+  ],
+  "final_as_of": "2018-03-11T23:00:00",
+  "engineering_exercise_at": null
+}
+
+
+$ python minimal_loop.py versions --out results_cli_v2
+[
+  {
+    "model_version": "M0",
+    "model_name": "Linear",
+    "baseline_mae": 1.3505053022379934,
+    "activated_as_of": "2018-03-09T23:00:00",
+    "current": true
+  }
+]
+
+
+$ python minimal_loop.py rollback --out results_cli_v2 --version M0
+{
+  "model_version": "M0",
+  "activation_id": 1,
+  "activated_as_of": "2018-03-11T23:00:00",
+  "action": "rollback",
+  "baseline_mae": 1.3505053022379934
+}
+

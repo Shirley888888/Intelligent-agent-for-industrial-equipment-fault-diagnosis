@@ -1,0 +1,17 @@
+{
+  "backend": "torch",
+  "model_name": "LSTM",
+  "ridge": 1.0,
+  "epochs": 10,
+  "patience": 3,
+  "lr": 0.001,
+  "batch_size": 128,
+  "weight_decay": 1e-05,
+  "grad_clip": 1.0,
+  "train_stride": 1,
+  "hidden_size": 128,
+  "num_layers": 2,
+  "dropout": 0.1,
+  "seed": 42,
+  "device": "cuda:0"
+}

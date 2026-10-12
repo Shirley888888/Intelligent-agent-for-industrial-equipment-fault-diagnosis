@@ -1,0 +1,15 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+
+# Local experiment outputs (keep results_* records, exclude ad-hoc runs)
+run_torch_gpu*/
+run_gpu_version_checks_v1/
+
+# Archives and IDE
+*.zip
+.codebuddy/
+.idea/
+.vscode/
