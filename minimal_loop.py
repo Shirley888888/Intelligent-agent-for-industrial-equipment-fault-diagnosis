@@ -642,7 +642,7 @@ class VersionManager:
         return model, manifest
 
     def publish(self, candidate: CandidateResult, gate: GateResult | None, as_of: str,
-                baseline_mae: float) -> VersionPointer:
+                baseline_mae: float, *, allow_ungated: bool = False) -> VersionPointer:
         # modify:publication-binding - stale gates after rollback must never activate.
         datetime.fromisoformat(as_of)
         validate_candidate(candidate, self.device)
@@ -650,23 +650,29 @@ class VersionManager:
                     if p.is_dir() and p.name.startswith("M") and p.name[1:].isdigit()]
         current = self.current() if (self.root/"current.json").exists() else None
         if current is not None:
-            require(gate and gate["allow_upgrade"], 'Invalid input or state: gate and gate["allow_upgrade"]')
-            require(gate["incumbent_version"] == current["model_version"], 'Invalid input or state: gate["incumbent_version"] == current["model_version"]')
-            require(gate["candidate_id"] == candidate["candidate_id"], 'Invalid input or state: gate["candidate_id"] == candidate["candidate_id"]')
-            require(gate["checkpoint_sha256"] == candidate["checkpoint_sha256"], 'Invalid input or state: gate["checkpoint_sha256"] == candidate["checkpoint_sha256"]')
-            require(gate["evaluated_as_of"] <= as_of, 'Invalid input or state: gate["evaluated_as_of"] <= as_of')
-            require(as_of >= current["activated_as_of"], "Activation clock cannot move backwards")
-            require(gate["incumbent_activation_id"] == current["activation_id"], "Stale gate activation")
-            incumbent, _ = self.load(current["model_version"])
-            require(gate["incumbent_checkpoint_sha256"] == digest(incumbent.checkpoint), "Stale incumbent weights")
-            require(gate["snapshot_sha256"] == candidate["manifest"]["snapshot_sha256"], "Gate/snapshot mismatch")
-            require(gate["evaluated_as_of"] == candidate["trained_as_of"], "Gate/candidate clock mismatch")
-            calculated = model_gate(gate["incumbent_recent_mae"], gate["candidate_recent_mae"],
-                                    gate["incumbent_historical_mae"], gate["candidate_historical_mae"],
-                                    **gate["gate_config"])
-            require(calculated["allow_upgrade"] and gate["recent_ok"] and gate["historical_ok"],
-                    "Both quantitative gate conditions must pass")
-            require(baseline_mae == gate["candidate_recent_mae"], "New baseline must equal the gate's recent MAE")
+            if gate is None:
+                # modify:controlled-ungated-arms - explicit opt-in only for periodic/no-gate experiments.
+                # Production/default publication still requires a valid bound two-condition gate.
+                require(allow_ungated, "Ungated publication requires explicit experiment opt-in")
+                require(as_of >= current["activated_as_of"], "Activation clock cannot move backwards")
+            else:
+                require(gate["allow_upgrade"], 'Invalid input or state: gate["allow_upgrade"]')
+                require(gate["incumbent_version"] == current["model_version"], 'Invalid input or state: gate["incumbent_version"] == current["model_version"]')
+                require(gate["candidate_id"] == candidate["candidate_id"], 'Invalid input or state: gate["candidate_id"] == candidate["candidate_id"]')
+                require(gate["checkpoint_sha256"] == candidate["checkpoint_sha256"], 'Invalid input or state: gate["checkpoint_sha256"] == candidate["checkpoint_sha256"]')
+                require(gate["evaluated_as_of"] <= as_of, 'Invalid input or state: gate["evaluated_as_of"] <= as_of')
+                require(as_of >= current["activated_as_of"], "Activation clock cannot move backwards")
+                require(gate["incumbent_activation_id"] == current["activation_id"], "Stale gate activation")
+                incumbent, _ = self.load(current["model_version"])
+                require(gate["incumbent_checkpoint_sha256"] == digest(incumbent.checkpoint), "Stale incumbent weights")
+                require(gate["snapshot_sha256"] == candidate["manifest"]["snapshot_sha256"], "Gate/snapshot mismatch")
+                require(gate["evaluated_as_of"] == candidate["trained_as_of"], "Gate/candidate clock mismatch")
+                calculated = model_gate(gate["incumbent_recent_mae"], gate["candidate_recent_mae"],
+                                        gate["incumbent_historical_mae"], gate["candidate_historical_mae"],
+                                        **gate["gate_config"])
+                require(calculated["allow_upgrade"] and gate["recent_ok"] and gate["historical_ok"],
+                        "Both quantitative gate conditions must pass")
+                require(baseline_mae == gate["candidate_recent_mae"], "New baseline must equal the gate's recent MAE")
         else:
             require(gate is None and not versions, 'Invalid input or state: gate is None and not versions')
         require(candidate["trained_as_of"] <= as_of, 'Invalid input or state: candidate["trained_as_of"] <= as_of')
@@ -686,7 +692,9 @@ class VersionManager:
             shutil.copy2(cp, staged/filename)
             require(digest(staged/filename) == candidate["checkpoint_sha256"], "Copied checkpoint checksum mismatch")
             write_json(staged/"manifest.json", manifest)
-            write_json(staged/"gate.json", gate or {"bootstrap": True})
+            write_json(staged/"gate.json", gate if gate is not None else
+                       ({"bootstrap": True} if current is None else
+                        {"ungated_experiment": True, "policy_opt_in": bool(allow_ungated)}))
             os.replace(staged, destination)
         try:
             return self.activate(version, as_of, "bootstrap" if current is None else "upgrade")
@@ -760,8 +768,14 @@ def simulate(values: np.ndarray, times: list[datetime], out: str | Path,
              max_episodes: int | None = None, train_end: int = 12194,
              online_start: int = 14807, monitor_relative: float = 0.20,
              monitor_absolute: float = 0.10, cooldown_episodes: int | None = None,
-             gate_config: GateConfig | None = None) -> dict:
+             gate_config: GateConfig | None = None, strategy: str = "react",
+             periodic_k: int = 30, candidate_validation_hours: int = 720) -> dict:
     config = config or TrainConfig()
+    # modify:react-experiment-policy - one simulator supports the four explicit experimental policies.
+    require(strategy in ("react", "frozen", "periodic", "no_gate"), "Unknown experiment strategy")
+    require(type(periodic_k) is int and periodic_k > 0, "periodic_k must be positive")
+    require(type(candidate_validation_hours) is int and candidate_validation_hours >= H,
+            "candidate_validation_hours must be at least one forecast horizon")
     # modify:config-entry - tune on development data, then freeze the replay settings.
     config.validate()
     gate_config = gate_config or GateConfig()
@@ -800,9 +814,20 @@ def simulate(values: np.ndarray, times: list[datetime], out: str | Path,
                                           monitor=dict(n=monitor_n, relative=monitor_relative,
                                                        absolute=monitor_absolute, patience=patience,
                                                        cooldown_episodes=cooldown),
-                                          train_end=train_end, online_start=online_start))
+                                          train_end=train_end, online_start=online_start,
+                                          strategy=strategy, periodic_k=periodic_k,
+                                          candidate_validation_hours=candidate_validation_hours))
     pending, complete, events = [], [], []
     attempt = 0
+    last_periodic_count = 0
+    trace_path = root/"react_trace.jsonl"
+    current_observation = {}
+    def trace(now_value, step, thought, tool_name, tool_input, obs, next_action, result=None):
+        # modify:react-trace - digest tool inputs rather than duplicating large histories into trace.
+        blob = json.dumps(tool_input, sort_keys=True, ensure_ascii=False, default=str).encode()
+        append_json(trace_path, dict(as_of=iso(now_value), step=step, thought=thought,
+            tool_name=tool_name, tool_input_digest=hashlib.sha256(blob).hexdigest(),
+            observation_summary={**current_observation, **obs}, next_action=next_action, tool_result=result or {}))
     stop = min(len(values), online_start + max_episodes*H) if max_episodes is not None else len(values)
     for t in range(online_start, stop+1):
         now = times[t-1] + timedelta(hours=1)
@@ -810,27 +835,114 @@ def simulate(values: np.ndarray, times: list[datetime], out: str | Path,
         require(observed_times[-1] < now, 'Invalid input or state: observed_times[-1] < now')
         matured = [ep for ep in pending if ep["target_end_idx"] <= t]
         pending = [ep for ep in pending if ep["target_end_idx"] > t]
+        # Thought/Action/Observation: release all feedback only after its full 24h target matures.
         for ep in matured:
             finished = complete_feedback(ep, observed, observed_times, now)
             complete.append(finished)
             append_json(root/"feedback.jsonl", finished)
+            trace(now, 1, "Episode targets are fully observed; release the timestamp-aligned truth.",
+                  "release_matured_feedback", {"episode_id": ep["episode_id"], "observed_end": t},
+                  {"matured": 1, "complete_count": len(complete)}, "inspect_recent_errors",
+                  {"MAE": finished["MAE"], "status": finished["status"]})
         decision = monitor.run(complete, state["model_version"], state["activation_id"],
                                state["baseline_mae"], iso(now))
         active_eps = [ep for ep in complete if ep["activation_id"] == state["activation_id"]]
+        # modify:explicit-react-observation - capture only causal, currently available state.
+        current_observation.clear()
+        current_observation.update({
+            "observed_prefix": {"start_idx": 0, "end_idx_exclusive": t,
+                                "last_observed_time": iso(observed_times[-1]),
+                                "rows": len(observed)},
+            "pending_episode_ids": [ep["episode_id"] for ep in pending],
+            "just_matured_episode_ids": [ep["episode_id"] for ep in matured],
+            "monitor_state": {"n": monitor.n, "checked": monitor.checked,
+                              "streak": monitor.streak, "last_attempt_count": monitor.last_attempt_count,
+                              "degraded": decision["degraded"], "trigger_retrain": decision["trigger_retrain"],
+                              "reason": decision["reason"]},
+            "model_version": state["model_version"], "activation_id": state["activation_id"],
+            "baseline_mae": state["baseline_mae"],
+            "recent_n_complete_mae": [ep["MAE"] for ep in active_eps[-monitor_n:]],
+        })
         exercise = exercise_at is not None and len(complete) == exercise_at and bool(matured)
         if decision["evaluated_blocks"] or exercise:
             append_json(root/"monitor.jsonl", {**decision, "engineering_exercise": exercise})
-        if decision["trigger_retrain"] or exercise:
+        daily_tick = (t-online_start) % H == 0
+        periodic_due = (strategy == "periodic" and len(complete) >= periodic_k and
+                        len(complete) % periodic_k == 0 and len(complete) != last_periodic_count)
+        if periodic_due:
+            last_periodic_count = len(complete)
+        should_attempt = (strategy == "react" and decision["trigger_retrain"]) or \
+                         (strategy == "no_gate" and decision["trigger_retrain"]) or periodic_due or exercise
+        if strategy == "frozen":
+            should_attempt = False
+        rolled_back = False
+        # modify:counterfactual-rollback - on a sustained trigger, roll back only if the parent
+        # demonstrably beats the current activation on the same already-matured recent episodes.
+        if should_attempt and strategy in ("react", "no_gate") and state["model_version"] != "M0":
+            try:
+                _, active_manifest = manager.load(state["model_version"])
+                parent_version = active_manifest.get("parent_version")
+                recent_eps_for_rollback = active_eps[-monitor_n:]
+                if parent_version and len(recent_eps_for_rollback) == monitor_n:
+                    parent_model, _ = manager.load(parent_version)
+                    histories = np.asarray([ep["history"] for ep in recent_eps_for_rollback], dtype=float)
+                    truths = np.asarray([ep["truth"] for ep in recent_eps_for_rollback], dtype=float)
+                    parent_preds = parent_model.predict_batch(histories)
+                    parent_recent_mae = float(np.mean(np.abs(parent_preds-truths)))
+                    current_recent_mae = float(np.mean([ep["MAE"] for ep in recent_eps_for_rollback]))
+                    required_gain = max(gate_config.recent_gain*current_recent_mae, gate_config.min_recent_gain)
+                    if parent_recent_mae <= current_recent_mae-required_gain:
+                        old_version = state["model_version"]
+                        state = manager.activate(parent_version, iso(now), "rollback")
+                        model = parent_model
+                        monitor.reset()
+                        rolled_back = True
+                        should_attempt = False
+                        rollback_event = dict(as_of=iso(now), strategy=strategy, action="rollback",
+                            previous_version=old_version, new_version=parent_version,
+                            candidate_id=None, incumbent_recent_mae=current_recent_mae,
+                            parent_counterfactual_recent_mae=parent_recent_mae,
+                            required_gain=required_gain, trigger=decision)
+                        events.append(rollback_event)
+                        append_json(root/"retrain_events.jsonl", rollback_event)
+                        trace(now, 3, "The current activation remains degraded and its parent is materially better on the same mature windows; roll back safely.",
+                              "rollback", {"from_version": old_version, "to_version": parent_version,
+                              "recent_episode_ids": [ep["episode_id"] for ep in recent_eps_for_rollback]},
+                              {"current_recent_mae": current_recent_mae,
+                               "parent_counterfactual_recent_mae": parent_recent_mae,
+                               "required_gain": required_gain}, "issue_prediction", state)
+            except Exception as exc:
+                # modify:rollback-failure-isolation - a failed rollback check leaves the incumbent active.
+                trace(now, 3, "Rollback evaluation failed safely; continue with the normal candidate policy.",
+                      "rollback", {"model_version": state["model_version"]},
+                      {"error": f"{type(exc).__name__}: {exc}"}, "maybe_train_candidate", {})
+        if matured:
+            trace(now, 2, ("Rollback selected after counterfactual comparison." if rolled_back else
+                           ("Recent feedback is stable or insufficient; keep the incumbent model." if not should_attempt
+                           else "Feedback policy requests candidate training.")),
+                  "inspect_recent_errors", {"n": monitor_n, "strategy": strategy,
+                  "active_feedback": len(active_eps), "periodic_due": periodic_due},
+                  {"recent_mae": decision["recent_mae"], "baseline_mae": state["baseline_mae"],
+                   "trigger": decision["trigger_retrain"], "reason": decision["reason"]},
+                  ("rollback" if rolled_back else ("maybe_train_candidate" if should_attempt else ("issue_prediction" if daily_tick else "wait"))),
+                  {"should_attempt": should_attempt, "rolled_back": rolled_back})
+        if should_attempt:
             monitor.after_attempt(len(active_eps))
             attempt += 1
-            event = dict(as_of=iso(now), engineering_exercise=exercise,
+            event = dict(as_of=iso(now), strategy=strategy, engineering_exercise=exercise,
                          trigger=decision, candidate_id=f"C{attempt}")
+            trace(now, 3, "The configured policy requests a candidate; train only on the observed prefix.",
+                  "maybe_train_candidate", {"observed_end": t, "recent_n": monitor_n,
+                  "candidate_id": event["candidate_id"]}, {"observed_rows": len(observed),
+                  "active_feedback": len(active_eps)}, "run_gate" if strategy == "react" else
+                  ("publish_or_reject" if strategy in ("periodic", "no_gate") else "run_gate"), {})
             try:
-                # modify:failure-retention - range failures also leave the active model intact.
+                # modify:causal-candidate-ranges - validation, frozen history, and recent gate targets stay disjoint.
                 require(len(active_eps) >= monitor_n, "Candidate requires enough mature feedback in this activation")
                 recent_eps = active_eps[-monitor_n:]
                 recent = (recent_eps[0]["origin_idx"], recent_eps[-1]["target_end_idx"])
-                validation = (recent[0]-720, recent[0])
+                # modify:candidate-validation-config - short independent holdout lets drift-era observations enter training sooner.
+                validation = (recent[0]-candidate_validation_hours, recent[0])
                 require(validation[0] >= anchor[1], "Not enough past data for isolated candidate validation")
                 ranges = [(0, anchor[0])]
                 if validation[0]-anchor[1] >= L+H:
@@ -838,36 +950,79 @@ def simulate(values: np.ndarray, times: list[datetime], out: str | Path,
                 version = make_version(observed, observed_times, now, ranges, validation, anchor, recent)
                 candidate = train_candidate_tool(version, config, observed, observed_times,
                                                   root/"candidates"/f"C{attempt}")
-                gate = model_gate_tool(candidate, model, state["model_version"],
-                                       observed, observed_times, config.device,
-                                       incumbent_activation_id=state["activation_id"], gate_config=gate_config)
-                event["gate"] = gate
-                write_json(root/"candidates"/f"C{attempt}"/"gate.json", gate)
-                if gate["allow_upgrade"]:
-                    # modify:prepare-before-commit - no checkpoint I/O after activation.
+                event["candidate_validation_mae"] = candidate["validation_metrics"]["MAE"]
+                gate = None
+                if strategy == "react":
+                    gate = model_gate_tool(candidate, model, state["model_version"],
+                                           observed, observed_times, config.device,
+                                           incumbent_activation_id=state["activation_id"], gate_config=gate_config)
+                    event["gate"] = gate
+                    write_json(root/"candidates"/f"C{attempt}"/"gate.json", gate)
+                    trace(now, 4, "The candidate is trained; both recent and frozen-history gate conditions must be evaluated.",
+                          "run_gate", {"candidate_id": candidate["candidate_id"], "incumbent": state["model_version"]},
+                          {"recent_ok": gate["recent_ok"], "historical_ok": gate["historical_ok"],
+                           "allow_upgrade": gate["allow_upgrade"]},
+                          "publish_or_reject" if gate["allow_upgrade"] else "reject_candidate", gate)
+                    allow_publish = gate["allow_upgrade"]
+                    publish_baseline = gate["candidate_recent_mae"] if allow_publish else None
+                else:
+                    # modify:ablation-policy - periodic and no-gate arms deliberately bypass validation gate.
+                    allow_publish = True
+                    publish_baseline = candidate["validation_metrics"]["MAE"]
+                    event["gate"] = None
+                    event["gate_bypassed"] = True
+                    trace(now, 4, "This control arm intentionally omits the validation gate.",
+                          "publish_or_reject", {"candidate_id": candidate["candidate_id"], "gate": "disabled"},
+                          {"candidate_ready": True, "validation_mae": publish_baseline}, "publish_candidate", {})
+                if allow_publish:
+                    # modify:prepare-before-commit - validate candidate before changing current pointer.
                     prepared_model = ForecastModel(candidate["checkpoint_path"], config.device)
                     prepared_model.predict_batch(np.zeros((1, L, 7)))
-                    state = manager.publish(candidate, gate, iso(now), gate["candidate_recent_mae"])
+                    state = manager.publish(candidate, gate, iso(now), publish_baseline,
+                                            allow_ungated=(strategy != "react"))
                     model = prepared_model
                     monitor.reset()
                     event["new_version"] = state["model_version"]
+                    event["publish_baseline_mae"] = publish_baseline
+                    trace(now, 5, "Candidate passed the configured publication policy; activate the immutable version.",
+                          "publish_or_reject", {"version": state["model_version"], "strategy": strategy},
+                          {"activation_id": state["activation_id"], "model_version": state["model_version"]},
+                          "reset_monitor_then_issue_prediction", state)
                 else:
                     event["new_version"] = None
+                    trace(now, 5, "The validation gate rejected the candidate; preserve the incumbent.",
+                          "publish_or_reject", {"candidate_id": candidate["candidate_id"]},
+                          {"model_version": state["model_version"]}, "issue_prediction", {"published": False})
             except Exception as exc:
                 # Failed candidate never changes the active model; retain the failure.
                 event["error"] = f"{type(exc).__name__}: {exc}"
+                trace(now, 6, "Candidate workflow failed safely; retain the current model and log the failure.",
+                      "maybe_train_candidate", {"candidate_id": event["candidate_id"]},
+                      {"error": event["error"], "model_version": state["model_version"]},
+                      "issue_prediction", {"published": False})
             events.append(event)
             append_json(root/"retrain_events.jsonl", event)
-        if t < stop and (t-online_start) % H == 0:
+        if t < stop and daily_tick:
             ep = predict_tool(model, observed[t-L:t].tolist(), observed_times[t-L:t],
                               now, state["model_version"], state["activation_id"], t)
             pending.append(ep)
             append_json(root/"predictions.jsonl", ep)
+            trace(now, 7, "Publish the next 24-hour forecast using only the observed 96-hour history.",
+                  "issue_prediction", {"origin_idx": t, "model_version": state["model_version"],
+                  "activation_id": state["activation_id"]}, {"history_rows": L, "forecast_hours": H},
+                  "wait_for_matured_feedback", {"episode_id": ep["episode_id"], "status": "pending"})
+        else:
+            # modify:per-clock-observation - trace every hourly logical clock, including wait-only decisions.
+            trace(now, 1, "No prediction origin or newly matured feedback at this hourly clock; preserve state.",
+                  "observe_clock", {"observed_end": t, "strategy": strategy},
+                  {"pending_count": len(pending), "complete_count": len(complete),
+                   "model_version": state["model_version"], "activation_id": state["activation_id"]},
+                  "wait_for_next_clock", {})
     mae = float(np.mean([e["MAE"] for e in complete])) if complete else None
     summary = dict(backend=config.backend, model_name=config.model_name,
                    complete_episodes=len(complete), pending_episodes=len(pending),
                    baseline_mae=baseline["MAE"], prequential_mae=mae,
-                   retrain_attempts=len(events), upgrades=sum("new_version" in e and e["new_version"] is not None for e in events),
+                   strategy=strategy, retrain_attempts=len(events), upgrades=sum("new_version" in e and e["new_version"] is not None and e.get("action") != "rollback" for e in events),
                    candidate_errors=[e["error"] for e in events if "error" in e],
                    current=state, observed_end=stop, anchor=list(anchor),
                    final_as_of=iso(now), engineering_exercise_at=exercise_at)

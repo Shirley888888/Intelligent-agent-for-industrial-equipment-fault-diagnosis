@@ -1,0 +1,5 @@
+﻿arm,overall_prequential_mae,overall_prequential_mse,worst_10_episode_mae,retrain_triggers,actual_activations,rollback_count,recovery_episodes,mean_decision_steps_per_episode,complete_episodes
+Arm 1 - Frozen Model,1.670402747201652,5.366424405825487,2.7821987856198804,0,0,0,15,1.0,108
+Arm 2 - Periodic Retrain,1.6386602126235223,5.222720512122291,2.7312383691359603,3,3,0,11,1.0,108
+Arm 3 - Feedback-Triggered ReAct,1.6502232479279864,5.278552387618989,2.7412945883409714,8,1,0,12,26.18348623853211,108
+Arm 4 - Feedback-Triggered No-Gate,1.640981222103697,5.206773630449141,2.7412945883409714,3,3,0,11,26.045871559633028,108

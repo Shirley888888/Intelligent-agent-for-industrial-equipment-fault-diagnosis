@@ -1,0 +1,3 @@
+{"model_version": "M0", "activation_id": 0, "activated_as_of": "2018-03-09T23:00:00", "action": "bootstrap", "baseline_mae": 1.5170467843384368, "previous": null}
+{"model_version": "M1", "activation_id": 1, "activated_as_of": "2018-05-11T23:00:00", "action": "upgrade", "baseline_mae": 1.9654820436873346, "previous": {"model_version": "M0", "activation_id": 0, "activated_as_of": "2018-03-09T23:00:00", "action": "bootstrap", "baseline_mae": 1.5170467843384368}}
+{"model_version": "M0", "activation_id": 2, "activated_as_of": "2018-06-22T23:00:00", "action": "rollback", "baseline_mae": 1.5170467843384368, "previous": {"model_version": "M1", "activation_id": 1, "activated_as_of": "2018-05-11T23:00:00", "action": "upgrade", "baseline_mae": 1.9654820436873346}}

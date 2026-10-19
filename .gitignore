@@ -4,8 +4,9 @@ __pycache__/
 *.egg-info/
 .venv/
 
-# Local experiment outputs (keep results_* records, exclude ad-hoc runs)
-run_torch_gpu*/
+# Local ad-hoc runs (regenerable with documented commands; not experiment records)
+run_torch_gpu_v2/
+run_torch_gpu_exercise_v2/
 run_gpu_version_checks_v1/
 
 # Archives and IDE

@@ -1,0 +1,14 @@
+{
+  "enabled": true,
+  "cutoff_idx": 16247,
+  "cutoff_episode": 60,
+  "reference_range": [
+    15527,
+    16247
+  ],
+  "reference_mean_ot": 9.202855559521252,
+  "mean_shift_c": 2.0,
+  "variance_scale": 1.5,
+  "affected_channel": "OT",
+  "original_csv_modified": false
+}

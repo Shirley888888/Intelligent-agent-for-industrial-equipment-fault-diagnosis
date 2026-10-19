@@ -1,0 +1,26 @@
+{
+  "backend": "torch",
+  "model_name": "LSTM",
+  "complete_episodes": 108,
+  "pending_episodes": 1,
+  "baseline_mae": 1.5170467843384368,
+  "prequential_mae": 1.5294478961405034,
+  "strategy": "no_gate",
+  "retrain_attempts": 4,
+  "upgrades": 3,
+  "candidate_errors": [],
+  "current": {
+    "model_version": "M2",
+    "activation_id": 4,
+    "activated_as_of": "2018-06-22T23:00:00",
+    "action": "rollback",
+    "baseline_mae": 1.919881185700982
+  },
+  "observed_end": 17420,
+  "anchor": [
+    12914,
+    14087
+  ],
+  "final_as_of": "2018-06-26T20:00:00",
+  "engineering_exercise_at": null
+}

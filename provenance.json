@@ -38,5 +38,16 @@
       "cli_smoke_v2.txt"
     ],
     "validation": "NumPy replay, 13 tests under python -O, CLI rollback; PyTorch not executed"
+  },
+  "latest_actual_upload_audit": {
+    "report": "GPU_ACCEPTANCE_AUDIT.json",
+    "notes": "GPU_ACCEPTANCE_AUDIT.md",
+    "runtime_sources_unchanged": true,
+    "original_records_unchanged": true,
+    "real_small_prefix_gate_acceptance": true,
+    "M2_M3_are_controlled_C0_fixtures": true,
+    "local_tests": "20 passed, 7 skipped; no PyTorch",
+    "user_reported_tests": "26 passed, 1 skipped; full log not attached",
+    "post_M1_predictions": 0
   }
 }

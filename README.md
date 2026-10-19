@@ -1,3 +1,20 @@
+# 最新实际运行包核验
+
+本包当前源码包含20项核心测试和7项Torch测试。新增GPU小前缀记录真实C1通过门禁并发布M1，随后回滚M0；M2/M3为复用C0的受控状态演练。完整核验见 **GPU_ACCEPTANCE_AUDIT.md / GPU_ACCEPTANCE_AUDIT.json**。
+
+用户报告27项运行中26项通过、1项跳过，完整日志未随附件提供；本次独立复跑为20项通过、7项因无PyTorch跳过。保存结果见 audit_rerun_cpu.txt。源码和原运行产物均未修改。下方历史v2说明中的测试数及未执行GPU字段只对应原阶段。
+
+## 可运行入口
+
+```powershell
+python -O -m unittest -v test_loop test_torch_version_checks
+python smoke_torch.py --device cuda:0 --out run_gpu_version_checks_new --version-checks
+```
+
+必须使用新out目录。这个上传版本的受控检查在原注册目录中追加演练事件，最终M3及其基线0.90不代表真实性能优选。M1上线后没有新预测，不能据此声称在线精度收益。
+
+## 历史使用说明
+
 # 时间序列 Agent 在线学习最小闭环：版本切换一致性修复
 
 本次基于最新上传的 `online_loop_minimal.zip` 修复版本切换失败的一致性问题，保留原结构及 GPU checkpoint 元数据归一化修复。详情见 CHANGELOG.md。
@@ -8,16 +25,6 @@
 - `test_results_activation_fix.txt` 与 `verification_activation_fix.json` 是本次验证记录；旧 v1/v2 记录及 `run_torch_gpu_v2` 原样保留。
 
 以下 v2 说明中的“未执行 GPU”指 v2 初次修订时的验证范围。最新上传包已包含用户 GPU 默认回放结果：108 个成熟窗口、1 个未成熟窗口、M0 基线 MAE≈1.586035、前序 MAE≈1.351492、自然重训 0 次。本次修复在 NumPy 后端执行故障测试，未重新运行 GPU。
-
-## 本次 GPU 实际验证更新（2026-10）
-
-在 `etth1_gpu` 环境（Python 3.11.16、torch 2.7.1+cu128、RTX 5060）完成 torch 后端实际运行：
-
-- 修复 `ForecastModel` 加载 `.pt` checkpoint 时的 metadata 规范化：`torch.save` 保留 tuple 而 JSON sidecar 为 list，统一两侧比较语义后 `validate_candidate` 绑定校验通过，且兼容旧 checkpoint。
-- 新增 `test_torch_version_checks.py`（torch 后端版本一致性 8 项测试）与 `smoke_torch.py --version-checks`（升级/回滚/陈旧门禁拒绝/损坏检测演练，损坏检查在临时副本上执行，不破坏正式产物）。
-- `python -O -m unittest -v test_loop test_torch_version_checks`：27 项测试通过（1 项因 CUDA 可达跳过），记录见 `test_results_gpu.txt`。
-- GPU 全量回放与前次结果一致：默认规则 0 次自然重训；`--train-config configs/train_lstm.json --exercise-at 60` 的候选 C1 近期无足够改善，双条件门禁拒绝，版本保持 M0。小前缀 smoke 中候选以真实分数通过门禁升级，属正常门禁行为。
-- 受控门禁分数仅验证版本操作，不作为 ETTh1 性能收益。
 
 ## 原 v2 使用说明
 
@@ -47,8 +54,6 @@ python minimal_loop.py rollback --out run_exercise --version M0
 conda activate etth1_gpu
 python -m pip install -r requirements.txt
 python smoke_torch.py --device cuda:0 --out run_gpu_smoke
-python smoke_torch.py --device cuda:0 --out run_gpu_version_checks --version-checks
-python -O -m unittest -v test_loop test_torch_version_checks
 python minimal_loop.py simulate --out run_lstm --train-config configs/train_lstm.json
 python minimal_loop.py simulate --out run_lstm_exercise --train-config configs/train_lstm.json --exercise-at 60
 python minimal_loop.py versions --out run_lstm_exercise --device cuda:0
@@ -56,9 +61,9 @@ python minimal_loop.py rollback --out run_lstm_exercise --version M0 --device cu
 ```
 
 你的环境需已安装可使用该 GPU 的 PyTorch；requirements.txt 不重复安装或替换 PyTorch。
-`smoke_torch.py` 在真实 ETTh1 前缀上执行一次小规模初始化、候选训练、门禁和回滚，保存 torch_smoke.json；`--version-checks` 额外以受控门禁分数演练升级/回滚/陈旧门禁拒绝/损坏检测。它是执行检查，不能作为模型精度实验。
+`smoke_torch.py` 在真实 ETTh1 前缀上执行一次小规模初始化、候选训练、门禁和回滚，保存 torch_smoke.json。它是执行检查，不能作为模型精度实验。
 完整 GPU 回放使用原 LSTMModel，默认两层、128 隐藏单元、dropout=0.1。
-GPU 分支已在 `etth1_gpu` 环境（RTX 5060、torch 2.7.1+cu128）实际训练验证，记录见 `test_results_gpu.txt` 与本文“本次 GPU 实际验证更新”一节。
+初次 v2 修订时未执行 PyTorch；本包现含用户 GPU 完整回放、候选拒绝与小前缀真实接受记录。最新核验范围见 GPU_ACCEPTANCE_AUDIT.md。
 
 ## 3. Tool 参数与输出
 
@@ -86,13 +91,12 @@ NumPy 后端只支持 Linear，Torch 后端只支持 LSTM，模型类型与版�
 ## 5. 本版实际验证
 
 - `test_results_v2.txt`：13 项 unittest 在 `python -O` 下通过，含未来扰动、旧门禁拒绝、损坏产物/时钟倒退保护及训练失败保留现役模型。
-- `test_results_gpu.txt`：`etth1_gpu` 环境（torch 2.7.1+cu128、RTX 5060）`python -O` 下 27 项 unittest 通过，含 torch 后端版本一致性 8 项（1 项因 CUDA 可达跳过）。
 - `results_default_v2`：108 个完整日窗口、1 个待成熟窗口，prequential MAE≈1.415614 ℃，0 次自然重训。
 - `results_exercise_v2`：第 60 个反馈后实际训练候选 C1；近期 MAE 未改善，双条件门禁拒绝，版本仍为 M0。
 - `verification_v2.json`：本版验证摘要与代码/数据校验信息；`cli_smoke_v2.txt`：命令行运行和回滚记录。
 - `results_default_v1/results_exercise_v1/test_results.txt`：上传包中的历史记录，未覆盖。
 
-所有实跑预测结果属于 NumPy Linear 参考后端，不是原论文的正式 LSTM/Linear checkpoint 结果。受控测试中的升级分数仅验证版本操作，不作为 ETTh1 性能收益。
+results_*_v1/v2 属于 NumPy Linear 参考后端；run_torch_gpu* 与 run_gpu_version_checks_v1 属于独立协议的 LSTM GPU 执行记录，均不并入原正式模型对比表。受控测试中的升级分数仅验证版本操作，不作为 ETTh1 性能收益。
 候选 manifest 的 checkpoint_path 记录运行机器上的绝对路径；打包结果用于审计，移到另一机器后用 VersionManager.load() 读取 versions/ 下相对命名的保存版本。重跑会产生当前机器的有效候选路径。
 
 ## 6. 接入既有 Agent

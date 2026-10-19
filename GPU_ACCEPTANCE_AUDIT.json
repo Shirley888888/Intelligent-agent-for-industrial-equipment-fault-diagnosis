@@ -1,0 +1,201 @@
+{
+  "source_archive_sha256": "c827874b32d495eb1a00f61f192802e0fb5d4c8c7434f95ce8f5e5bed610fb99",
+  "verified_record_checks": {
+    "candidate_checkpoint_snapshot_and_time_splits": true,
+    "gate_formulas_same_windows_and_artifact_bindings": true,
+    "feedback_truth_history_times_and_MAE": true,
+    "version_events_previous_pointers_and_final_current": true,
+    "published_hashes_and_controlled_version_origin": true,
+    "tool_catalog_matches_current_source": true
+  },
+  "real_gate": {
+    "allow_upgrade": true,
+    "recent_ok": true,
+    "historical_ok": true,
+    "recent_limit": 14.865972795302003,
+    "historical_limit": 12.851693665115441,
+    "incumbent_recent_mae": 15.648392416107372,
+    "candidate_recent_mae": 12.588465642083547,
+    "incumbent_historical_mae": 12.599699671681805,
+    "candidate_historical_mae": 9.57661791140428,
+    "incumbent_version": "M0",
+    "candidate_id": "C1",
+    "incumbent_activation_id": 0,
+    "incumbent_checkpoint_sha256": "3d993200203270f9e3e0d2c205c241e920e5689b8e6dbb3c6583f4f4b91b3034",
+    "checkpoint_sha256": "9d5590a57d4bc3fb6f9b9c2207c26f355b9255a68b8a67e0ef0c08cd92c4eaf2",
+    "snapshot_sha256": "7041ddf7c00ecd9faa276bd82a9055d27c39defe998eaa6294e8843140698a57",
+    "gate_config": {
+      "recent_gain": 0.05,
+      "old_tolerance": 0.02,
+      "min_recent_gain": 0.01,
+      "min_old_tolerance": 0.01
+    },
+    "evaluated_as_of": "2016-11-05T00:00:00",
+    "recent": {
+      "incumbent": {
+        "MAE": 15.648392416107372,
+        "windows": 1,
+        "target_range": [
+          3024,
+          3048
+        ],
+        "origins": [
+          3024
+        ]
+      },
+      "candidate": {
+        "MAE": 12.588465642083547,
+        "windows": 1,
+        "target_range": [
+          3024,
+          3048
+        ],
+        "origins": [
+          3024
+        ]
+      }
+    },
+    "historical": {
+      "incumbent": {
+        "MAE": 12.599699671681805,
+        "windows": 15,
+        "target_range": [
+          1920,
+          2280
+        ],
+        "origins": [
+          1920,
+          1944,
+          1968,
+          1992,
+          2016,
+          2040,
+          2064,
+          2088,
+          2112,
+          2136,
+          2160,
+          2184,
+          2208,
+          2232,
+          2256
+        ]
+      },
+      "candidate": {
+        "MAE": 9.57661791140428,
+        "windows": 15,
+        "target_range": [
+          1920,
+          2280
+        ],
+        "origins": [
+          1920,
+          1944,
+          1968,
+          1992,
+          2016,
+          2040,
+          2064,
+          2088,
+          2112,
+          2136,
+          2160,
+          2184,
+          2208,
+          2232,
+          2256
+        ]
+      }
+    }
+  },
+  "recent_relative_reduction": 0.1955425639041457,
+  "historical_relative_reduction": 0.2399328427702121,
+  "versions": {
+    "M0": {
+      "checkpoint_sha256": "3d993200203270f9e3e0d2c205c241e920e5689b8e6dbb3c6583f4f4b91b3034",
+      "candidate_id": "C0",
+      "baseline_mae": 17.182045348210895,
+      "role": "bootstrap"
+    },
+    "M1": {
+      "checkpoint_sha256": "9d5590a57d4bc3fb6f9b9c2207c26f355b9255a68b8a67e0ef0c08cd92c4eaf2",
+      "candidate_id": "C1",
+      "baseline_mae": 12.588465642083547,
+      "role": "real_gate_acceptance"
+    },
+    "M2": {
+      "checkpoint_sha256": "3d993200203270f9e3e0d2c205c241e920e5689b8e6dbb3c6583f4f4b91b3034",
+      "candidate_id": "C0",
+      "baseline_mae": 0.9,
+      "role": "controlled_state_fixture"
+    },
+    "M3": {
+      "checkpoint_sha256": "3d993200203270f9e3e0d2c205c241e920e5689b8e6dbb3c6583f4f4b91b3034",
+      "candidate_id": "C0",
+      "baseline_mae": 0.9,
+      "role": "controlled_state_fixture"
+    }
+  },
+  "activation_chain": [
+    [
+      "M0",
+      0
+    ],
+    [
+      "M1",
+      1
+    ],
+    [
+      "M0",
+      2
+    ],
+    [
+      "M2",
+      3
+    ],
+    [
+      "M0",
+      4
+    ],
+    [
+      "M3",
+      5
+    ]
+  ],
+  "user_reported_tests": {
+    "total": 27,
+    "passed": 26,
+    "skipped": 1,
+    "exit_code": 0,
+    "source": "user execution summary; full 27-test log not attached"
+  },
+  "audit_host_tests": {
+    "total": 27,
+    "passed": 20,
+    "skipped": 7,
+    "torch_installed": false,
+    "exit_code": 0,
+    "log": "audit_rerun_cpu.txt"
+  },
+  "gpu_record_environment": {
+    "device": "cuda:0",
+    "torch_version": "2.7.1+cu128",
+    "cuda_available": true,
+    "gpu_model": "RTX 5060 reported by user; name not recorded in torch_smoke.json"
+  },
+  "post_M1_predictions": 0,
+  "natural_retraining_verified": false,
+  "gpu_IO_fault_injection_verified": false,
+  "power_or_process_crash_recovery_verified": false,
+  "fresh_gate_and_corruption_rejection": "saved smoke results plus inspected source; corruption scratch copy was deleted",
+  "gate_MAE_recomputed_by_audit_inference": false,
+  "core_source_matches_prior_activation_fix": true,
+  "source_hashes": {
+    "minimal_loop.py": "9f6d7c66479c1ac75b1be2ede97239a4f9d8e5c05747257eceaaa6e715abaad1",
+    "models.py": "a28d4e9c3568fc290f23ad14c2916711ae05465934d3167efcb87b9092a2e573",
+    "test_loop.py": "32af1add166fba54ef68e2c56797014f098087225dcde940a3552949d718e5b5",
+    "test_torch_version_checks.py": "abf8689a2930a16592132e2abdd625fdec8a2802f09d2fb302fd8c75fdcec147",
+    "smoke_torch.py": "fc4eed8e1d6803c61daa312003e786e581284a04b2189c7dd81a0d3e6667c49e",
+    "ETTh1.csv": "f18de3ad269cef59bb07b5438d79bb3042d3be49bdeecf01c1cd6d29695ee066"
+  }
+}

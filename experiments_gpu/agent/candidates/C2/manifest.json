@@ -1,0 +1,58 @@
+{
+  "candidate_id": "C2",
+  "checkpoint_path": "C:\\Users\\limin\\Desktop\\我的\\论文\\6\\online_loop_minimal\\experiments_gpu\\agent\\candidates\\C2\\checkpoint.pt",
+  "checkpoint_sha256": "f8724ed0116e9ff493be70bf5fff3c499aeb76715f99376190b94e4547352a1c",
+  "data_version": "D16319_22685b26114e",
+  "trained_as_of": "2018-05-11T23:00:00",
+  "train_config": {
+    "backend": "torch",
+    "model_name": "LSTM",
+    "ridge": 1.0,
+    "epochs": 10,
+    "patience": 3,
+    "lr": 0.001,
+    "batch_size": 128,
+    "weight_decay": 1e-05,
+    "grad_clip": 1.0,
+    "train_stride": 1,
+    "hidden_size": 128,
+    "num_layers": 2,
+    "dropout": 0.1,
+    "seed": 42,
+    "device": "cuda:0"
+  },
+  "validation_metrics": {
+    "MAE": 1.0277454384357803,
+    "unit": "degC",
+    "windows": 7,
+    "best_epoch": 3
+  },
+  "manifest": {
+    "data_version": "D16319_22685b26114e",
+    "observed_end": 16319,
+    "as_of": "2018-05-11T23:00:00",
+    "train_ranges": [
+      [
+        0,
+        12914
+      ],
+      [
+        14087,
+        15983
+      ]
+    ],
+    "validation_range": [
+      15983,
+      16151
+    ],
+    "historical_range": [
+      12914,
+      14087
+    ],
+    "recent_range": [
+      16151,
+      16319
+    ],
+    "snapshot_sha256": "22685b26114e2f451e694de89a6f3848370bfe0213948f7c3bcea4148c2d2ab4"
+  }
+}

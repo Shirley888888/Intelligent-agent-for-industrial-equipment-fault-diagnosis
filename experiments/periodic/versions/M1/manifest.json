@@ -1,0 +1,63 @@
+{
+  "candidate_id": "C1",
+  "checkpoint_path": "/mnt/data/online_loop_work/src/online_loop_minimal/experiments/periodic/candidates/C1/checkpoint.npz",
+  "checkpoint_sha256": "e065d70b80c9968b63ea7d23e1af2c853d368d7ea38e2484c14bd0bb3fa9dd86",
+  "data_version": "D15527_d83f37533981",
+  "trained_as_of": "2018-04-08T23:00:00",
+  "train_config": {
+    "backend": "numpy",
+    "model_name": "Linear",
+    "ridge": 1.0,
+    "epochs": 10,
+    "patience": 3,
+    "lr": 0.001,
+    "batch_size": 128,
+    "weight_decay": 1e-05,
+    "grad_clip": 1.0,
+    "train_stride": 1,
+    "hidden_size": 128,
+    "num_layers": 2,
+    "dropout": 0.1,
+    "seed": 42,
+    "device": "cpu"
+  },
+  "validation_metrics": {
+    "MAE": 1.5412774592550453,
+    "unit": "degC",
+    "windows": 7,
+    "best_epoch": 0
+  },
+  "manifest": {
+    "data_version": "D15527_d83f37533981",
+    "observed_end": 15527,
+    "as_of": "2018-04-08T23:00:00",
+    "train_ranges": [
+      [
+        0,
+        12914
+      ],
+      [
+        14087,
+        15191
+      ]
+    ],
+    "validation_range": [
+      15191,
+      15359
+    ],
+    "historical_range": [
+      12914,
+      14087
+    ],
+    "recent_range": [
+      15359,
+      15527
+    ],
+    "snapshot_sha256": "d83f375339816ec6fd33dd1552636f13c1185b25d9279820fb565ea6d000cd4e"
+  },
+  "model_version": "M1",
+  "checkpoint_filename": "M1_checkpoint.npz",
+  "parent_version": "M0",
+  "activated_as_of": "2018-04-08T23:00:00",
+  "baseline_mae": 1.5412774592550453
+}

@@ -384,6 +384,30 @@ else:
         self.assertEqual(len((out/"version_events.jsonl").read_text().splitlines()), 1)
         self.assertFalse((out/"versions"/"M1").exists())
 
+
+    # modify:react-tests - assert the ReAct trace schema and explicit ungated policy guard.
+    def test_react_trace_has_structured_decision_fields(self):
+        trace_path = self.a/"react_trace.jsonl"
+        self.assertTrue(trace_path.exists())
+        records = [json.loads(line) for line in trace_path.read_text().splitlines()]
+        self.assertTrue(records)
+        required = {"as_of", "step", "thought", "tool_name", "tool_input_digest",
+                    "observation_summary", "next_action", "tool_result"}
+        self.assertTrue(all(required.issubset(r) for r in records))
+        self.assertIn("issue_prediction", {r["tool_name"] for r in records})
+
+    def test_ungated_publication_requires_explicit_experiment_opt_in(self):
+        registry = VersionManager(self.root/"ungated_registry")
+        candidate = json.loads((self.a/"candidates"/"C0"/"manifest.json").read_text())
+        now = "2099-01-01T00:00:00"
+        registry.publish(candidate, None, now, 1.0)
+        with self.assertRaises(ValueError):
+            registry.publish(candidate, None, now, 1.0)
+        published = registry.publish(candidate, None, now, 1.0, allow_ungated=True)
+        self.assertEqual(published["model_version"], "M1")
+        sidecar = json.loads((self.root/"ungated_registry"/"versions"/"M1"/"gate.json").read_text())
+        self.assertTrue(sidecar["ungated_experiment"])
+
     def test_simulator_successful_activation_uses_prepared_candidate(self):
         import minimal_loop
         actual_gate, actual_load = minimal_loop.model_gate_tool, VersionManager.load

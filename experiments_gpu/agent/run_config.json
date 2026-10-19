@@ -1,0 +1,37 @@
+{
+  "train_config": {
+    "backend": "torch",
+    "model_name": "LSTM",
+    "ridge": 1.0,
+    "epochs": 10,
+    "patience": 3,
+    "lr": 0.001,
+    "batch_size": 128,
+    "weight_decay": 1e-05,
+    "grad_clip": 1.0,
+    "train_stride": 1,
+    "hidden_size": 128,
+    "num_layers": 2,
+    "dropout": 0.1,
+    "seed": 42,
+    "device": "cuda:0"
+  },
+  "gate_config": {
+    "recent_gain": 0.05,
+    "old_tolerance": 0.02,
+    "min_recent_gain": 0.01,
+    "min_old_tolerance": 0.01
+  },
+  "monitor": {
+    "n": 7,
+    "relative": 0.1,
+    "absolute": 0.1,
+    "patience": 1,
+    "cooldown_episodes": 7
+  },
+  "train_end": 12194,
+  "online_start": 14807,
+  "strategy": "react",
+  "periodic_k": 30,
+  "candidate_validation_hours": 168
+}
