@@ -93,13 +93,17 @@ class TrainConfig:
     hidden_size: int = 128
     num_layers: int = 2
     dropout: float = 0.1
+    # TCN-specific settings; defaults do not change existing LSTM checkpoints.
+    tcn_channels: tuple[int, ...] = (64, 64, 128)
+    kernel_size: int = 5
     seed: int = 42
     device: str = "cpu"
 
     def validate(self) -> None:
         # modify:train-config - reject invalid settings before allocating a run directory.
-        require((self.backend, self.model_name) in [("numpy", "Linear"), ("torch", "LSTM")],
-                "Supported backend/model pairs are numpy/Linear and torch/LSTM")
+        require((self.backend, self.model_name) in [("numpy", "Linear"),
+                ("torch", "LSTM"), ("torch", "TCN")],
+                "Supported backend/model pairs are numpy/Linear, torch/LSTM and torch/TCN")
         for name in ("epochs", "patience", "batch_size", "train_stride", "hidden_size", "num_layers"):
             value = getattr(self, name)
             require(type(value) is int and value > 0, f"{name} must be a positive integer")
@@ -109,6 +113,11 @@ class TrainConfig:
         require(np.isfinite(self.weight_decay) and self.weight_decay >= 0,
                 "weight_decay must be finite and nonnegative")
         require(np.isfinite(self.dropout) and 0 <= self.dropout < 1, "dropout must be in [0,1)")
+        require(isinstance(self.tcn_channels, (list, tuple)) and 1 <= len(self.tcn_channels) <= 8
+                and all(type(x) is int and 1 <= x <= 1024 for x in self.tcn_channels),
+                "tcn_channels must contain 1..8 positive integer channel widths")
+        require(type(self.kernel_size) is int and 1 <= self.kernel_size <= 31,
+                "kernel_size must be an integer in [1,31]")
         require(type(self.seed) is int and 0 <= self.seed < 2**32, "seed must be an unsigned 32-bit integer")
         require(isinstance(self.device, str) and bool(self.device), "device must be a nonempty string")
 
@@ -279,7 +288,7 @@ class ForecastModel:
         elif self.checkpoint.suffix == ".pt":
             os.environ.setdefault("CUBLAS_WORKSPACE_CONFIG", ":4096:8")
             import torch
-            from models import LSTMModel
+            from models import LSTMModel, TCNModel
             payload = torch.load(self.checkpoint, map_location="cpu", weights_only=True)
             # modify:meta-normalize - torch.save preserves tuples while JSON sidecars
             # store lists; round-trip so both backends compare equal.
@@ -287,8 +296,15 @@ class ForecastModel:
             self.mean = np.array(payload["mean"])
             self.scale = np.array(payload["scale"])
             cfg = self.meta["train_config"]
-            self.net = LSTMModel(L, 7, H, hidden_size=cfg["hidden_size"],
-                                 num_layers=cfg["num_layers"], dropout=cfg["dropout"])
+            model_name = self.meta.get("model_name", cfg.get("model_name", "LSTM"))
+            if model_name == "LSTM":
+                self.net = LSTMModel(L, 7, H, hidden_size=cfg.get("hidden_size", 128),
+                                     num_layers=cfg.get("num_layers", 2), dropout=cfg.get("dropout", 0.1))
+            elif model_name == "TCN":
+                self.net = TCNModel(L, 7, H, channels=cfg.get("tcn_channels", (64, 64, 128)),
+                                    kernel_size=cfg.get("kernel_size", 5), dropout=cfg.get("dropout", 0.1))
+            else:
+                raise ValueError(f"Unsupported Torch checkpoint model_name: {model_name}")
             self.net.load_state_dict(payload["model_state"])
             if device.startswith("cuda") and not torch.cuda.is_available():
                 raise RuntimeError("Requested CUDA device is unavailable")
@@ -477,18 +493,22 @@ def train_candidate_tool(data_version: DataVersion, train_config: TrainConfig,
         checkpoint = out/"checkpoint.npz"
         np.savez(checkpoint, mean=mean, scale=scale, w=w, metadata=json.dumps(meta))
     elif cfg.backend == "torch":
-        if cfg.model_name != "LSTM":
-            raise ValueError("Torch adapter preserves the deployed LSTM only")
         os.environ.setdefault("CUBLAS_WORKSPACE_CONFIG", ":4096:8")
         import torch
-        from models import LSTMModel
+        from models import LSTMModel, TCNModel
         from torch.utils.data import DataLoader, TensorDataset
         torch.manual_seed(cfg.seed)
         if cfg.device.startswith("cuda") and not torch.cuda.is_available():
             raise RuntimeError("Requested CUDA device is unavailable")
         torch.use_deterministic_algorithms(True)
-        net = LSTMModel(L, 7, H, hidden_size=cfg.hidden_size, num_layers=cfg.num_layers,
-                        dropout=cfg.dropout).to(cfg.device)
+        if cfg.model_name == "LSTM":
+            net = LSTMModel(L, 7, H, hidden_size=cfg.hidden_size, num_layers=cfg.num_layers,
+                            dropout=cfg.dropout).to(cfg.device)
+        elif cfg.model_name == "TCN":
+            net = TCNModel(L, 7, H, channels=tuple(cfg.tcn_channels),
+                           kernel_size=cfg.kernel_size, dropout=cfg.dropout).to(cfg.device)
+        else:  # TrainConfig.validate should make this unreachable.
+            raise ValueError(f"Unsupported Torch model_name: {cfg.model_name}")
         loader = DataLoader(TensorDataset(torch.tensor(xz, dtype=torch.float32),
                                          torch.tensor(yz, dtype=torch.float32)),
                             batch_size=cfg.batch_size, shuffle=True, num_workers=0)
@@ -566,7 +586,9 @@ def validate_candidate(candidate: CandidateResult, device: str = "cpu") -> Forec
     require(digest(Path(candidate["checkpoint_path"])) == candidate["checkpoint_sha256"],
             "Candidate checkpoint checksum mismatch")
     model = ForecastModel(candidate["checkpoint_path"], device)
-    require(model.meta["train_config"] == candidate["train_config"], "Candidate configuration mismatch")
+    # JSON metadata normalizes tuples to lists; compare the same serialized representation.
+    candidate_cfg = json.loads(json.dumps(candidate["train_config"]))
+    require(model.meta["train_config"] == candidate_cfg, "Candidate configuration mismatch")
     require(model.meta["data_version"] == json.loads(json.dumps(candidate["manifest"])), "Candidate data manifest mismatch")
     require(candidate["manifest"]["data_version"] == candidate["data_version"] and
             candidate["manifest"]["as_of"] == candidate["trained_as_of"], "Candidate provenance mismatch")

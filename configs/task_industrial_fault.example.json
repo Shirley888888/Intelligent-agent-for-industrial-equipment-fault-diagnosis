@@ -1,0 +1,5 @@
+{
+  "task_type": "industrial_fault_diagnosis",
+  "model_root": "industrial_fault_lstm_registry",
+  "input_json": "examples/industrial_fault_input.template.json"
+}

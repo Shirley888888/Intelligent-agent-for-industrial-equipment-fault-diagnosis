@@ -4,10 +4,13 @@ __pycache__/
 *.egg-info/
 .venv/
 
-# Local ad-hoc runs (regenerable with documented commands; not experiment records)
-run_torch_gpu_v2/
-run_torch_gpu_exercise_v2/
+# Local experiment outputs (keep results_* records, exclude ad-hoc runs)
+run_torch_gpu*/
 run_gpu_version_checks_v1/
+
+# Official ETT-small CSVs (CC BY-ND 4.0): re-download with download_ett.py, do not redistribute
+data/ett/*.csv
+*.csv.part
 
 # Archives and IDE
 *.zip

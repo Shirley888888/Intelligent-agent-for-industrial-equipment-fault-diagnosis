@@ -1,0 +1,12 @@
+test_bootstrap_summary_and_version_binding (test_torch_version_checks.TorchVersionChecks.test_bootstrap_summary_and_version_binding) ... ok
+test_gate_tool_produces_valid_json_on_torch_checkpoints (test_torch_version_checks.TorchVersionChecks.test_gate_tool_produces_valid_json_on_torch_checkpoints) ... ok
+test_predictions_are_stable_across_devices (test_torch_version_checks.TorchVersionChecks.test_predictions_are_stable_across_devices) ... skipped 'CUDA device unavailable; cross-device check skipped'
+test_same_seed_reproduces_training (test_torch_version_checks.TorchVersionChecks.test_same_seed_reproduces_training) ... ok
+test_unavailable_cuda_device_is_rejected (test_torch_version_checks.TorchVersionChecks.test_unavailable_cuda_device_is_rejected) ... ok
+test_upgrade_rollback_stale_gate_and_corruption (test_torch_version_checks.TorchVersionChecks.test_upgrade_rollback_stale_gate_and_corruption) ... ok
+test_validate_candidate_rejects_tampered_sidecar (test_torch_version_checks.TorchVersionChecks.test_validate_candidate_rejects_tampered_sidecar) ... ok
+
+----------------------------------------------------------------------
+Ran 7 tests in 2.066s
+
+OK (skipped=1)

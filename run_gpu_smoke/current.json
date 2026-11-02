@@ -1,0 +1,7 @@
+{
+  "model_version": "M0",
+  "activation_id": 2,
+  "activated_as_of": "2016-11-05T00:00:00",
+  "action": "rollback",
+  "baseline_mae": 17.182045789559684
+}

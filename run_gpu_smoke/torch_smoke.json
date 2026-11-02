@@ -1,0 +1,39 @@
+{
+  "torch_version": "2.12.0.dev20260408+cu128",
+  "cuda_available": true,
+  "device": "cuda:0",
+  "summary": {
+    "backend": "torch",
+    "model_name": "LSTM",
+    "complete_episodes": 2,
+    "pending_episodes": 0,
+    "baseline_mae": 17.182045789559684,
+    "prequential_mae": 15.923981348673504,
+    "strategy": "react",
+    "retrain_attempts": 1,
+    "upgrades": 1,
+    "candidate_errors": [],
+    "current": {
+      "model_version": "M1",
+      "activation_id": 1,
+      "activated_as_of": "2016-11-05T00:00:00",
+      "action": "upgrade",
+      "baseline_mae": 12.588465332984924
+    },
+    "observed_end": 3048,
+    "anchor": [
+      1920,
+      2280
+    ],
+    "final_as_of": "2016-11-05T00:00:00",
+    "engineering_exercise_at": 2
+  },
+  "rollback": {
+    "model_version": "M0",
+    "activation_id": 2,
+    "activated_as_of": "2016-11-05T00:00:00",
+    "action": "rollback",
+    "baseline_mae": 17.182045789559684
+  },
+  "scope": "execution smoke only; no claimed performance gain"
+}

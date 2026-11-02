@@ -1,0 +1,77 @@
+{
+  "release": "Dual-task unified model-Agent V2",
+  "created_local_date": "2026-11-02",
+  "test_totals": {
+    "executed": 87,
+    "passed": 86,
+    "skipped": 1,
+    "failed": 0
+  },
+  "suites": [
+    {
+      "name": "tests_dual_task",
+      "tests": 9,
+      "passed": 9,
+      "skipped": 0,
+      "failed": 0
+    },
+    {
+      "name": "tests_integration",
+      "tests": 8,
+      "passed": 8,
+      "skipped": 0,
+      "failed": 0
+    },
+    {
+      "name": "tests_agent",
+      "tests": 29,
+      "passed": 29,
+      "skipped": 0,
+      "failed": 0
+    },
+    {
+      "name": "tests_dual",
+      "tests": 12,
+      "passed": 12,
+      "skipped": 0,
+      "failed": 0
+    },
+    {
+      "name": "test_loop + test_torch_version_checks",
+      "tests": 29,
+      "passed": 28,
+      "skipped": 1,
+      "failed": 0
+    }
+  ],
+  "compileall": "passed",
+  "runtime": {
+    "python": "3.13.5",
+    "torch": "2.10.0+cpu",
+    "cuda_available": false,
+    "device_used_for_smoke": "cpu"
+  },
+  "cli_smoke": {
+    "industrial_train_entrypoint": "passed",
+    "synthetic_dataset_only": true,
+    "test_only_relaxed_gate_thresholds": true,
+    "industrial_candidate_activated_for_smoke": true,
+    "multi_task_bundle": "passed",
+    "episode_count": 2,
+    "episodes": [
+      "CLI-FORECAST-001",
+      "CLI-FAULT-002"
+    ],
+    "same_agent_workspace_and_episode_store": true,
+    "both_decisions": "human_review",
+    "human_review_reason": "OOD/drift detectors were not connected; fail-closed behavior is expected"
+  },
+  "scope_and_limitations": [
+    "ETTh1 LSTM checkpoint remains a 24-step OT regression model, not an industrial fault classifier.",
+    "Industrial fault LSTM/TCN architecture and NPZ training path are implemented, but no real industrial labelled dataset or field-trained checkpoint was supplied.",
+    "Synthetic industrial data validates only model wiring, serialization, bridge, routing, and gates; it does not establish field accuracy.",
+    "Group/time separation is declared and documented but must be verified by the data owner from original equipment/event identifiers.",
+    "No runtime OOD/drift detector is bundled; missing scores deliberately force human review.",
+    "One CUDA cross-device test was skipped because the current environment has CPU-only PyTorch."
+  ]
+}

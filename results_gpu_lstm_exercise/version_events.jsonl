@@ -1,0 +1,2 @@
+{"model_version": "M0", "activation_id": 0, "activated_as_of": "2018-03-09T23:00:00", "action": "bootstrap", "baseline_mae": 1.586034563763274, "previous": null}
+{"model_version": "M0", "activation_id": 1, "activated_as_of": "2018-06-26T20:00:00", "action": "rollback", "baseline_mae": 1.586034563763274, "previous": {"model_version": "M0", "activation_id": 0, "activated_as_of": "2018-03-09T23:00:00", "action": "bootstrap", "baseline_mae": 1.586034563763274}}

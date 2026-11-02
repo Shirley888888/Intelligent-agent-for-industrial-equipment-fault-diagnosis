@@ -1,0 +1,37 @@
+{
+  "agent_tests": {
+    "tests": 29,
+    "passed": 29,
+    "failed": 0,
+    "status": "PASS"
+  },
+  "dual_evolution_v0_tests": {
+    "tests": 12,
+    "passed": 12,
+    "failed": 0,
+    "status": "PASS"
+  },
+  "original_model_loop_tests": {
+    "tests": 29,
+    "passed": 28,
+    "skipped": 1,
+    "failed": 0,
+    "status": "PASS"
+  },
+  "demo_default": {
+    "decision": "human_review",
+    "runtime_mode": "human_review",
+    "model_fault_label": "bearing_fault_candidate",
+    "citation_count": 1,
+    "episode_stored": true,
+    "review_ticket_created": true
+  },
+  "demo_calibrated": {
+    "decision": "provisional_model_result",
+    "runtime_mode": "normal",
+    "model_fault_label": "bearing_fault_candidate",
+    "citation_count": 1,
+    "episode_stored": true,
+    "review_ticket_created": false
+  }
+}

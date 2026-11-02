@@ -1,0 +1,24 @@
+{
+  "allow_upgrade": true,
+  "recent_ok": true,
+  "historical_ok": true,
+  "recent_limit": 0.95,
+  "historical_limit": 1.02,
+  "incumbent_recent_mae": 1.0,
+  "candidate_recent_mae": 0.9,
+  "incumbent_historical_mae": 1.0,
+  "candidate_historical_mae": 1.0,
+  "incumbent_version": "M0",
+  "incumbent_activation_id": 4,
+  "incumbent_checkpoint_sha256": "451d8f4ed2545cf055168753308145f92debcb102a0e6878698ced3248f46bf2",
+  "candidate_id": "C0",
+  "checkpoint_sha256": "451d8f4ed2545cf055168753308145f92debcb102a0e6878698ced3248f46bf2",
+  "snapshot_sha256": "905adf87905977dc6d8ae1193627b3eb517cb55c76b10f079c9a02eb71cf86b3",
+  "gate_config": {
+    "recent_gain": 0.05,
+    "old_tolerance": 0.02,
+    "min_recent_gain": 0.01,
+    "min_old_tolerance": 0.01
+  },
+  "evaluated_as_of": "2016-11-03T00:00:00"
+}

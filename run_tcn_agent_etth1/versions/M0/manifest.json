@@ -1,0 +1,65 @@
+{
+  "candidate_id": "C0",
+  "checkpoint_path": "/mnt/data/work_latest/online_loop_minimal111/run_tcn_agent_etth1/candidates/C0/checkpoint.pt",
+  "checkpoint_sha256": "24759aacc30e6e7b7fdebc84f1a4e5b97bffc84a517fe967a5a6e3258d7d25f9",
+  "data_version": "D14807_59d7444fcc2b",
+  "trained_as_of": "2018-03-09T23:00:00",
+  "train_config": {
+    "backend": "torch",
+    "model_name": "TCN",
+    "ridge": 1.0,
+    "epochs": 1,
+    "patience": 1,
+    "lr": 0.001,
+    "batch_size": 128,
+    "weight_decay": 1e-05,
+    "grad_clip": 1.0,
+    "train_stride": 24,
+    "hidden_size": 128,
+    "num_layers": 2,
+    "dropout": 0.1,
+    "tcn_channels": [
+      16,
+      32,
+      64
+    ],
+    "kernel_size": 5,
+    "seed": 2026,
+    "device": "cpu"
+  },
+  "validation_metrics": {
+    "MAE": 3.2214816940633706,
+    "unit": "degC",
+    "windows": 30,
+    "best_epoch": 1
+  },
+  "manifest": {
+    "data_version": "D14807_59d7444fcc2b",
+    "observed_end": 14807,
+    "as_of": "2018-03-09T23:00:00",
+    "train_ranges": [
+      [
+        0,
+        9600
+      ]
+    ],
+    "validation_range": [
+      9600,
+      10320
+    ],
+    "historical_range": [
+      10320,
+      14087
+    ],
+    "recent_range": [
+      14087,
+      14807
+    ],
+    "snapshot_sha256": "59d7444fcc2b5808624448d6277182511668cca066ce95915e2a52e7bae91f37"
+  },
+  "model_version": "M0",
+  "checkpoint_filename": "M0_checkpoint.pt",
+  "parent_version": null,
+  "activated_as_of": "2018-03-09T23:00:00",
+  "baseline_mae": 13.347678261522196
+}

@@ -1,0 +1,7 @@
+{
+  "model_version": "M3",
+  "activation_id": 5,
+  "activated_as_of": "2016-11-05T00:00:00",
+  "action": "upgrade",
+  "baseline_mae": 0.9
+}

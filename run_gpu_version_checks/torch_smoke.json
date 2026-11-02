@@ -1,0 +1,110 @@
+{
+  "torch_version": "2.12.0.dev20260408+cu128",
+  "cuda_available": true,
+  "device": "cuda:0",
+  "summary": {
+    "backend": "torch",
+    "model_name": "LSTM",
+    "complete_episodes": 2,
+    "pending_episodes": 0,
+    "baseline_mae": 17.182045789559684,
+    "prequential_mae": 15.923981348673504,
+    "strategy": "react",
+    "retrain_attempts": 1,
+    "upgrades": 1,
+    "candidate_errors": [],
+    "current": {
+      "model_version": "M1",
+      "activation_id": 1,
+      "activated_as_of": "2016-11-05T00:00:00",
+      "action": "upgrade",
+      "baseline_mae": 12.588465332984924
+    },
+    "observed_end": 3048,
+    "anchor": [
+      1920,
+      2280
+    ],
+    "final_as_of": "2016-11-05T00:00:00",
+    "engineering_exercise_at": 2
+  },
+  "rollback": {
+    "model_version": "M0",
+    "activation_id": 2,
+    "activated_as_of": "2016-11-05T00:00:00",
+    "action": "rollback",
+    "baseline_mae": 17.182045789559684
+  },
+  "scope": "execution smoke only; no claimed performance gain",
+  "version_checks": {
+    "listing_before": [
+      {
+        "model_version": "M0",
+        "model_name": "LSTM",
+        "baseline_mae": 17.182045789559684,
+        "activated_as_of": "2016-11-03T00:00:00",
+        "current": true
+      },
+      {
+        "model_version": "M1",
+        "model_name": "LSTM",
+        "baseline_mae": 12.588465332984924,
+        "activated_as_of": "2016-11-05T00:00:00",
+        "current": false
+      }
+    ],
+    "upgrade": {
+      "model_version": "M2",
+      "activation_id": 3,
+      "activated_as_of": "2016-11-05T00:00:00",
+      "action": "upgrade",
+      "baseline_mae": 0.9
+    },
+    "rollback": {
+      "model_version": "M0",
+      "activation_id": 4,
+      "activated_as_of": "2016-11-05T00:00:00",
+      "action": "rollback",
+      "baseline_mae": 17.182045789559684
+    },
+    "stale_gate_rejected": "ValueError: Stale gate activation",
+    "fresh_upgrade": {
+      "model_version": "M3",
+      "activation_id": 5,
+      "activated_as_of": "2016-11-05T00:00:00",
+      "action": "upgrade",
+      "baseline_mae": 0.9
+    },
+    "corruption_rejected": "ValueError: Checkpoint checksum mismatch; current pointer unchanged",
+    "listing_after": [
+      {
+        "model_version": "M0",
+        "model_name": "LSTM",
+        "baseline_mae": 17.182045789559684,
+        "activated_as_of": "2016-11-03T00:00:00",
+        "current": false
+      },
+      {
+        "model_version": "M1",
+        "model_name": "LSTM",
+        "baseline_mae": 12.588465332984924,
+        "activated_as_of": "2016-11-05T00:00:00",
+        "current": false
+      },
+      {
+        "model_version": "M2",
+        "model_name": "LSTM",
+        "baseline_mae": 0.9,
+        "activated_as_of": "2016-11-05T00:00:00",
+        "current": false
+      },
+      {
+        "model_version": "M3",
+        "model_name": "LSTM",
+        "baseline_mae": 0.9,
+        "activated_as_of": "2016-11-05T00:00:00",
+        "current": true
+      }
+    ]
+  }
+}

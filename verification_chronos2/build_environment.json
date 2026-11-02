@@ -1,0 +1,13 @@
+{
+  "python": "3.13.5",
+  "platform": "Linux-6.18.57-x86_64-with-glibc2.41",
+  "torch": "2.10.0+cpu",
+  "cuda_available": false,
+  "cuda_device": null,
+  "optional_modules": {
+    "chronos": false,
+    "transformers": false,
+    "peft": false,
+    "accelerate": false
+  }
+}

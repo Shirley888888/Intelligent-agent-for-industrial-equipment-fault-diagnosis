@@ -4,7 +4,7 @@ The raw ETTh1.csv is read-only. Drift is applied to a copy of the loaded ndarray
 only from online_start + offset_episodes*24 onward, and is shared by all arms.
 """
 from __future__ import annotations
-import csv, json, math, os, shutil, sys
+import csv, json, math, shutil, sys
 from pathlib import Path
 import numpy as np
 import matplotlib
@@ -17,8 +17,7 @@ from minimal_loop import (GateConfig, TrainConfig, load_csv, simulate, write_jso
                           append_json, FEATURES, H, TARGET)
 
 # modify:canonical-config - experiments/config.yaml is the single user-editable source of thresholds.
-# EXPERIMENTS_CONFIG lets a second variant (e.g. GPU) reuse this driver without editing the default config.
-CONFIG_PATH = Path(os.environ.get("EXPERIMENTS_CONFIG") or (HERE / "experiments" / "config.yaml"))
+CONFIG_PATH = HERE / "experiments" / "config.yaml"
 # JSON is a valid YAML subset; standard-library parsing avoids a PyYAML dependency.
 CONFIG = json.loads("\n".join(line for line in CONFIG_PATH.read_text(encoding="utf-8").splitlines() if not line.lstrip().startswith("#")))
 
@@ -203,12 +202,8 @@ def conclusion(results: dict[str, dict], drift: dict, out: Path):
 
 
 def main():
-    # EXPERIMENTS_ROOT keeps variant runs in their own directory so the default records survive.
-    out = HERE / (os.environ.get("EXPERIMENTS_ROOT") or CONFIG["output"]["root"])
-    out = out.resolve()
-    require_outside = HERE.resolve() / "experiments"
-    if out == require_outside and str(CONFIG_PATH) != str(HERE / "experiments" / "config.yaml"):
-        raise SystemExit("A non-default config must write to its own EXPERIMENTS_ROOT")
+    out=HERE/CONFIG["output"]["root"]
+    if out.exists():
         # modify:preserve-config-and-entrypoints - reruns clear only generated results.
         keep = {"config.yaml", "README.md", "minimal_loop.py", "run_experiments.py"}
         for child in list(out.iterdir()):

@@ -1,0 +1,18 @@
+{
+  "task_type": "multi_task_bundle",
+  "tasks": [
+    {
+      "task_type": "etth1_forecast",
+      "model_root": "results_gpu_lstm_default",
+      "csv": "ETTh1.csv",
+      "equipment_id": "ETTH1-FORECAST-REPLAY",
+      "operating_condition": "historical_dataset_replay",
+      "episode_id": "BUNDLE-ETTH1-001"
+    },
+    {
+      "task_type": "industrial_fault_diagnosis",
+      "model_root": "industrial_fault_lstm_registry",
+      "input_json": "examples/industrial_fault_input.template.json"
+    }
+  ]
+}

@@ -513,3 +513,14 @@ python -O test_loop.py
 所有运行边界使用 require() 显式校验，文档伪代码中的 assert 表达约束，交付代码不依赖 assert 执行。版本切换之前校验产物；GateResult 新增现役 checkpoint hash、activation_id、数据快照 hash 和冻结容差配置。新 publish 不接受缺少绑定字段或回滚前的旧 gate。训练参数与门禁参数可通过 JSON 和 CLI 配置，run_config.json 记录本次冻结设置。
 
 results_default_v2/results_exercise_v2 是本次代码重新运行结果；原 v1 记录未覆盖。13 项测试新增了优化模式保护、批量反馈与滚动 MAE、非法反馈/配置/切分、时钟与 sidecar 一致性、接口目录及候选训练失败保留现役模型。GPU/LSTM 尚未在当前环境执行，用户可运行 smoke_torch.py 检查自己的训练环境。
+
+
+## 2026-11 模型—Agent 接入增补：PyTorch TCN 与版本化 Agent Bridge
+
+前文描述的是原始在线学习实现的历史状态。2026-11 接入增补已将根目录 `minimal_loop.py` 的 PyTorch 在线训练和 checkpoint 加载扩展为 `LSTM` 与 `TCN` 两种结构；旧 LSTM checkpoint 的元数据仍可按默认 TCN 参数兼容加载。TCN 的 `tcn_channels` 与 `kernel_size` 随 checkpoint 保存，并参与版本/候选配置绑定。训练配置见 `configs/train_tcn.json`。
+
+新增 `diagnostic_agent.model_bridge.VersionedForecastModelBridge` 从 `VersionManager.current()` 加载当前激活版本，将最近 96×7 输入送入 LSTM/TCN，获取 24 步 OT 回归预测，并将模型版本、activation_id、checkpoint SHA-256、输入时间窗口与预测值写入 Agent 诊断上下文及 Episode。
+
+随包 `run_tcn_agent_etth1/` 是使用 ETTh1 数据训练一轮并登记为 M0 的 TCN 接入演示，仅用于验证模型加载、推理与 Agent 连接，不作为与 LSTM 的性能比较结论。当前 ETTh1 模型属于回归预测，不是故障分类器；在没有故障分类输出与校准置信度时，Agent 保持 `fault_type=null` 并请求人工复核。真实设备故障分类/RUL/幅值模型可通过 `StructuredPredictorBridge` 接入其原生推理结果。
+
+人工反馈方面，只有已核实（`verified`）的 Episode 进入 `StrategyCandidateGenerator`。同一失败类别至少积累 2 个已核实案例（可通过 `AGENT_STRATEGY_MIN_SUPPORT` 调整）后，自动生成 Prompt、只读工具路由或 RAG 检索候选；候选记录写入工作目录 `strategy_candidates.jsonl`，必须经过冻结案例回放和人工批准，不会自动覆盖线上策略。

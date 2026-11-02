@@ -1,0 +1,48 @@
+test_checkpoint_integrity_failure_is_rejected (test_chronos2_ett.Chronos2OilTests.test_checkpoint_integrity_failure_is_rejected) ... ok
+test_chronos2_bridge_writes_probabilistic_forecast_into_agent_episode (test_chronos2_ett.Chronos2OilTests.test_chronos2_bridge_writes_probabilistic_forecast_into_agent_episode) ... ok
+test_chronos_inputs_use_ot_target_and_only_past_load_covariates (test_chronos2_ett.Chronos2OilTests.test_chronos_inputs_use_ot_target_and_only_past_load_covariates) ... ok
+test_cross_station_holdout_separates_training_and_evaluation_sources (test_chronos2_ett.Chronos2OilTests.test_cross_station_holdout_separates_training_and_evaluation_sources) ... [DATA] train_series=['ETTh1'] eval_series=['ETTh2'] overlap=[]
+[LOAD] amazon/chronos-2 device_map=cpu
+[EVAL] zero-shot foundation model on reserved gate-validation 70%-80%
+[EVAL] zero-shot foundation model on untouched final test 80%-100%
+[FIT] mode=lora steps=2 context=96
+[EVAL] fine-tuned candidate on reserved gate-validation 70%-80%
+[EVAL] fine-tuned candidate on untouched final test 80%-100%
+{
+  "frequency": "hourly",
+  "zero_shot_gate_MAE": 0.3940097755855984,
+  "candidate_gate_MAE": 0.3940097755855984,
+  "zero_shot_test_MAE": 0.38977354102664524,
+  "candidate_test_MAE": 0.38977354102664524,
+  "gate_passed": true,
+  "model_dir": "/tmp/tmpt6mls29z/loso/finetuned-ckpt"
+}
+ok
+test_gate_and_test_rolling_windows_are_disjoint (test_chronos2_ett.Chronos2OilTests.test_gate_and_test_rolling_windows_are_disjoint) ... ok
+test_gate_rejects_candidate_with_tail_or_station_regression (test_chronos2_ett.Chronos2OilTests.test_gate_rejects_candidate_with_tail_or_station_regression) ... ok
+test_gate_rejects_undercovered_or_excessively_wide_intervals (test_chronos2_ett.Chronos2OilTests.test_gate_rejects_undercovered_or_excessively_wide_intervals) ... ok
+test_lora_refuses_silent_full_finetune_fallback_when_peft_missing (test_chronos2_ett.Chronos2OilTests.test_lora_refuses_silent_full_finetune_fallback_when_peft_missing) ... ok
+test_metrics_include_tail_errors (test_chronos2_ett.Chronos2OilTests.test_metrics_include_tail_errors) ... ok
+test_train_frequency_orchestration_records_gate_and_final_test_separately (test_chronos2_ett.Chronos2OilTests.test_train_frequency_orchestration_records_gate_and_final_test_separately) ... [DATA] train_series=['ETTh-test'] eval_series=['ETTh-test'] overlap=['ETTh-test']
+[LOAD] amazon/chronos-2 device_map=cpu
+[EVAL] zero-shot foundation model on reserved gate-validation 70%-80%
+[EVAL] zero-shot foundation model on untouched final test 80%-100%
+[FIT] mode=lora steps=2 context=96
+[EVAL] fine-tuned candidate on reserved gate-validation 70%-80%
+[EVAL] fine-tuned candidate on untouched final test 80%-100%
+{
+  "frequency": "hourly",
+  "zero_shot_gate_MAE": 0.3940097755855984,
+  "candidate_gate_MAE": 0.3940097755855984,
+  "zero_shot_test_MAE": 0.38977354102664524,
+  "candidate_test_MAE": 0.38977354102664524,
+  "gate_passed": true,
+  "model_dir": "/tmp/tmpjn9ag9t4/chronos_run/finetuned-ckpt"
+}
+ok
+test_train_validation_cutoffs_do_not_reach_test_tail (test_chronos2_ett.Chronos2OilTests.test_train_validation_cutoffs_do_not_reach_test_tail) ... ok
+
+----------------------------------------------------------------------
+Ran 11 tests in 0.289s
+
+OK

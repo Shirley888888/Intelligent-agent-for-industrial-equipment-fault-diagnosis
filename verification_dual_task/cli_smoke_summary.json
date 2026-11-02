@@ -1,0 +1,532 @@
+{
+  "workflow": "CLI smoke: synthetic industrial training -> multi_task_bundle -> shared DiagnosticAgent/EpisodeStore",
+  "industrial_training": {
+    "model_root": "/mnt/data/dual_task_cli_smoke_final/industrial_fault_registry",
+    "model_version": "M0",
+    "active": true,
+    "checkpoint_sha256": "19c91b7d29a0ab0378ace9542eb3fa65216e5bbd6d66a8cb9512b134b0069e8a",
+    "release_gate": {
+      "passed": true,
+      "accuracy_ok": true,
+      "per_class_recall_ok": true,
+      "confidence_calibration_ok": true,
+      "rul_gate_ok": true,
+      "amplitude_gate_ok": true,
+      "anomaly_gate_ok": true,
+      "min_val_accuracy": 0.0,
+      "min_class_recall": 0.0,
+      "min_class_support": 1,
+      "max_rul_mae": 10000.0,
+      "max_amplitude_mae": 10000.0,
+      "min_anomaly_auroc": 0.0
+    },
+    "metadata": {
+      "schema_version": 1,
+      "task_type": "industrial_fault_diagnosis",
+      "model_name": "LSTM",
+      "model_version": "M0",
+      "input_len": 12,
+      "n_features": 4,
+      "fault_classes": [
+        "normal",
+        "bearing_fault",
+        "imbalance_fault"
+      ],
+      "train_config": {
+        "model_name": "LSTM",
+        "fault_classes": [
+          "normal",
+          "bearing_fault",
+          "imbalance_fault"
+        ],
+        "n_features": 4,
+        "input_len": 12,
+        "hidden_size": 16,
+        "num_layers": 1,
+        "tcn_channels": [
+          8,
+          16
+        ],
+        "kernel_size": 3,
+        "dropout": 0.0,
+        "epochs": 3,
+        "patience": 2,
+        "batch_size": 15,
+        "learning_rate": 0.01,
+        "weight_decay": 0.0,
+        "seed": 42,
+        "device": "cpu",
+        "split_policy": "chronological_disjoint",
+        "rul_unit": "hour",
+        "amplitude_unit": "dataset_native",
+        "calibration_min_samples": 20,
+        "calibration_max_ece": 0.15,
+        "require_confidence_calibration": true,
+        "min_val_accuracy": 0.0,
+        "min_class_recall": 0.0,
+        "min_class_support": 1,
+        "max_rul_mae": 10000.0,
+        "max_amplitude_mae": 10000.0,
+        "min_anomaly_auroc": 0.0
+      },
+      "feature_mean": [
+        0.6005418300628662,
+        0.6020081639289856,
+        0.5912860035896301,
+        9.204659727402031e-05
+      ],
+      "feature_scale": [
+        0.8593073487281799,
+        0.8626090288162231,
+        0.8659456968307495,
+        0.150117889046669
+      ],
+      "rul_scale": 24.0,
+      "amplitude_scale": 0.4000000059604645,
+      "has_anomaly_head_targets": true,
+      "has_rul_targets": true,
+      "has_amplitude_targets": true,
+      "temperature": 0.3729628324508667,
+      "confidence_calibrated": true,
+      "calibration_id": "fault-temp-v1-e5132c063d31f331",
+      "calibration_ece": 0.0057446956634521484,
+      "calibration_samples": 45,
+      "validation_split_sha256": "10212e5962fa676b6538e1eae65954692c5f1aadbf0929acdf3018c35f45afa4",
+      "calibration_uses_disjoint_fit_eval": true,
+      "split_policy_asserted": "chronological_disjoint",
+      "rul_unit": "hour",
+      "amplitude_unit": "dataset_native",
+      "release_gate": {
+        "passed": true,
+        "accuracy_ok": true,
+        "per_class_recall_ok": true,
+        "confidence_calibration_ok": true,
+        "rul_gate_ok": true,
+        "amplitude_gate_ok": true,
+        "anomaly_gate_ok": true,
+        "min_val_accuracy": 0.0,
+        "min_class_recall": 0.0,
+        "min_class_support": 1,
+        "max_rul_mae": 10000.0,
+        "max_amplitude_mae": 10000.0,
+        "min_anomaly_auroc": 0.0
+      },
+      "created_by": "diagnostic_agent.industrial_fault.train_industrial_fault_model"
+    },
+    "validation_metrics": {
+      "accuracy": 1.0,
+      "per_class": {
+        "normal": {
+          "support": 15,
+          "recall": 1.0
+        },
+        "bearing_fault": {
+          "support": 15,
+          "recall": 1.0
+        },
+        "imbalance_fault": {
+          "support": 15,
+          "recall": 1.0
+        }
+      },
+      "cross_entropy": 0.19601957499980927,
+      "best_epoch": 3,
+      "calibration_ece": 0.0057446956634521484,
+      "anomaly_auroc": 1.0,
+      "rul_mae": 16.68856430053711,
+      "amplitude_mae": 0.13006487488746643
+    },
+    "candidate_path": null
+  },
+  "bundle": {
+    "task_type": "multi_task_bundle",
+    "task_count": 2,
+    "episode_ids": [
+      "CLI-FORECAST-001",
+      "CLI-FAULT-002"
+    ],
+    "results": [
+      {
+        "episode_id": "CLI-FORECAST-001",
+        "equipment_id": "ETTH1-CLI-01",
+        "prediction_time": "2018-06-26T20:00:00",
+        "decision": "human_review",
+        "manual_review_requested": true,
+        "diagnosis": {
+          "fault_type": null,
+          "fault_type_source": "independent_time_series_model",
+          "fault_type_overridable_by_agent": false,
+          "model_version": "M0",
+          "activation_id": 0,
+          "prediction": {
+            "confidence": null,
+            "confidence_calibrated": false,
+            "ood_score": null,
+            "drift_score": null,
+            "prediction_task": "time_series_forecasting",
+            "prediction_kind": "regression",
+            "target_name": "OT",
+            "target_unit": "dataset_native",
+            "forecast_horizon": 24,
+            "forecast_values": [
+              9.599867898282788,
+              9.39598209617862,
+              8.888796930906523,
+              8.702899149899716,
+              8.39164851313875,
+              8.244151616695952,
+              8.311643643183496,
+              8.13959328952177,
+              8.669346954858867,
+              8.598239808360468,
+              8.412813261854732,
+              8.724461487175734,
+              8.930247653123185,
+              9.268817450753502,
+              9.684011371559482,
+              9.686121228248542,
+              10.258040678081116,
+              10.212360290332143,
+              10.55445364815473,
+              10.501824168740022,
+              10.537830067397323,
+              10.427026265858899,
+              10.17726750182211,
+              9.955487726477713
+            ],
+            "forecast_times": [
+              "2018-06-26T20:00:00",
+              "2018-06-26T21:00:00",
+              "2018-06-26T22:00:00",
+              "2018-06-26T23:00:00",
+              "2018-06-27T00:00:00",
+              "2018-06-27T01:00:00",
+              "2018-06-27T02:00:00",
+              "2018-06-27T03:00:00",
+              "2018-06-27T04:00:00",
+              "2018-06-27T05:00:00",
+              "2018-06-27T06:00:00",
+              "2018-06-27T07:00:00",
+              "2018-06-27T08:00:00",
+              "2018-06-27T09:00:00",
+              "2018-06-27T10:00:00",
+              "2018-06-27T11:00:00",
+              "2018-06-27T12:00:00",
+              "2018-06-27T13:00:00",
+              "2018-06-27T14:00:00",
+              "2018-06-27T15:00:00",
+              "2018-06-27T16:00:00",
+              "2018-06-27T17:00:00",
+              "2018-06-27T18:00:00",
+              "2018-06-27T19:00:00"
+            ],
+            "forecast_summary": {
+              "first": 9.599867898282788,
+              "last": 9.955487726477713,
+              "min": 8.13959328952177,
+              "max": 10.55445364815473,
+              "mean": 9.344705529191925
+            }
+          }
+        },
+        "summary": "独立模型完成 time_series_forecasting，目标变量为 OT；当前模型未输出故障类别，Agent 不从回归预测推断故障类别，已请求人工复核。",
+        "observations": [
+          "已读取独立模型输出和传感器统计摘要；Agent 未重新判定故障类别。"
+        ],
+        "suggested_checks": [],
+        "limitations": [
+          "未检索到适用于该设备且已审核的维修知识；不生成维修步骤。"
+        ],
+        "citations": [],
+        "runtime_safety": {
+          "mode": "human_review",
+          "allow_definitive_diagnosis": false,
+          "allow_automatic_control": false,
+          "request_human_review": true,
+          "reasons": [
+            "missing_runtime_signal",
+            "confidence_not_calibrated",
+            "calibration_not_configured"
+          ],
+          "config": {
+            "ood_warn": 0.7,
+            "ood_critical": 0.9,
+            "drift_warn": 0.2,
+            "drift_critical": 0.3,
+            "min_calibrated_confidence": 0.7,
+            "calibration_id": "UNSET"
+          },
+          "decision_source": "deterministic_runtime_guard",
+          "note": "OOD/drift/confidence scores are external signals; calibrate thresholds for each task and equipment family."
+        },
+        "failure_categories": [
+          "model_uncertainty_or_ood",
+          "retrieval_miss"
+        ],
+        "tool_calls": [
+          {
+            "name": "search_knowledge",
+            "success": true,
+            "started_at": "2026-11-02T02:09:17.161892+00:00",
+            "finished_at": "2026-11-02T02:09:17.165274+00:00",
+            "call_id": "offline-search-1",
+            "arguments": {
+              "query": "ETTH1-CLI-01 dataset_replay OT 设备检查 维修手册",
+              "top_k": 5
+            },
+            "result": {
+              "hits": [],
+              "count": 0,
+              "scope_equipment": "ETTH1-CLI-01",
+              "note": "Only approved and effective documents are returned."
+            }
+          },
+          {
+            "name": "summarize_sensor_window",
+            "success": true,
+            "started_at": "2026-11-02T02:09:17.170561+00:00",
+            "finished_at": "2026-11-02T02:09:17.170767+00:00",
+            "call_id": "offline-sensors-1",
+            "arguments": {
+              "metrics": [
+                "HUFL",
+                "HULL",
+                "MUFL",
+                "MULL",
+                "LUFL",
+                "LULL",
+                "OT"
+              ]
+            },
+            "result": {
+              "metrics": {
+                "HUFL": {
+                  "count": 96,
+                  "min": -15.270999908447266,
+                  "max": 18.152000427246094,
+                  "mean": 6.512427063969274,
+                  "last": 10.11400032043457
+                },
+                "HULL": {
+                  "count": 96,
+                  "min": 1.0720000267028809,
+                  "max": 6.966000080108643,
+                  "mean": 4.420604187995195,
+                  "last": 3.5499999523162837
+                },
+                "MUFL": {
+                  "count": 96,
+                  "min": -17.554000854492188,
+                  "max": 12.331000328063965,
+                  "mean": 2.6880937640865645,
+                  "last": 6.183000087738037
+                },
+                "MULL": {
+                  "count": 96,
+                  "min": -0.035999998450279236,
+                  "max": 4.3350000381469735,
+                  "mean": 2.4815312426847718,
+                  "last": 1.5640000104904177
+                },
+                "LUFL": {
+                  "count": 96,
+                  "min": 2.131999969482422,
+                  "max": 5.879000186920166,
+                  "mean": 3.7306041618188224,
+                  "last": 3.7160000801086426
+                },
+                "LULL": {
+                  "count": 96,
+                  "min": 0.8830000162124634,
+                  "max": 2.2839999198913574,
+                  "mean": 1.383354167143504,
+                  "last": 1.462000012397766
+                },
+                "OT": {
+                  "count": 96,
+                  "min": 5.3460001945495605,
+                  "max": 12.380999565124512,
+                  "mean": 8.631395861506462,
+                  "last": 9.56700038909912
+                }
+              },
+              "count": 7,
+              "note": "Descriptive statistics only; no fault classification is performed."
+            }
+          }
+        ],
+        "human_review_ticket": {
+          "ticket_id": "5fe1d0c7-7e28-40a7-9bcc-39e60f5045f6",
+          "episode_id": "CLI-FORECAST-001",
+          "reason": "missing_runtime_signal;confidence_not_calibrated;calibration_not_configured;independent_model_fault_label_missing",
+          "priority": "high",
+          "status": "open",
+          "created_at": "2026-11-02T02:09:17.172907+00:00"
+        },
+        "provider_error": null,
+        "versions": {
+          "release_id": "local-unreleased",
+          "policy_version": "diagnostic-policy-v1.0.0",
+          "prompt_version": "diagnostic-agent-prompt-v1.0.0",
+          "tool_schema_version": "diagnostic-tools-v1.0.0",
+          "kb_version": "knowledge-catalog-current",
+          "retrieval_config_version": "tfidf-v0",
+          "risk_policy_version": "runtime-guard-v0",
+          "prompt_sha256": "703c5e01887a1bca3165c957fc35fe2862a786d48293a00410cfdbef609be384",
+          "tool_schema_sha256": "88060997971e7d302f7ab947c551fecf94f4ddb8fb202b9566a87bd3a0d7e11c"
+        },
+        "episode_persistence": {
+          "stored": true,
+          "episode_id": "CLI-FORECAST-001",
+          "event_hash": "9358064cb0e54e99315759ecaeadfcd5604e3fc203a5263a126ec5f524f44b83"
+        },
+        "model_input_provenance": {
+          "source": "VersionedForecastModelBridge",
+          "model_root": "/mnt/data/work_both/online_loop_minimal111/results_gpu_lstm_default",
+          "source_data": {
+            "path_name": "ETTh1.csv",
+            "history_rows": 96,
+            "history_start": "2018-06-22T20:00:00",
+            "history_end": "2018-06-26T19:00:00"
+          },
+          "model_checkpoint_sha256": "e840b9da5dfab53fbb1742ae1825b9430778813c875c6460f533127e4ddfde05"
+        }
+      },
+      {
+        "episode_id": "CLI-FAULT-002",
+        "equipment_id": "PUMP-CLI-01",
+        "prediction_time": "2026-11-02T10:00:00+08:00",
+        "decision": "human_review",
+        "manual_review_requested": true,
+        "diagnosis": {
+          "fault_type": "normal",
+          "fault_type_source": "independent_industrial_fault_model",
+          "fault_type_overridable_by_agent": false,
+          "model_version": "M0",
+          "activation_id": 1,
+          "prediction": {
+            "fault_class_index": 0,
+            "fault_probabilities": {
+              "normal": 0.9933890104293823,
+              "bearing_fault": 0.005446323659271002,
+              "imbalance_fault": 0.0011646474013105035
+            },
+            "anomaly_score": 0.33130213618278503,
+            "confidence": 0.9933890104293823,
+            "confidence_calibrated": true,
+            "calibration_id": "fault-temp-v1-e5132c063d31f331",
+            "ood_score": null,
+            "drift_score": null,
+            "rul_hours": 39.51154804229736,
+            "rul_unit": "hour",
+            "fault_amplitude": 0.12102215470406641,
+            "fault_amplitude_unit": "dataset_native",
+            "prediction_task": "industrial_fault_diagnosis",
+            "prediction_kind": "multi_task_classification_regression"
+          }
+        },
+        "summary": "独立工业故障模型输出类别：normal。Agent 未重新分类；当前处理状态：human_review。",
+        "observations": [
+          "已读取独立模型输出和传感器统计摘要；Agent 未重新判定故障类别。"
+        ],
+        "suggested_checks": [],
+        "limitations": [
+          "未检索到适用于该设备且已审核的维修知识；不生成维修步骤。"
+        ],
+        "citations": [],
+        "runtime_safety": {
+          "mode": "human_review",
+          "allow_definitive_diagnosis": false,
+          "allow_automatic_control": false,
+          "request_human_review": true,
+          "reasons": [
+            "missing_runtime_signal",
+            "confidence_not_calibrated",
+            "calibration_not_configured"
+          ],
+          "config": {
+            "ood_warn": 0.7,
+            "ood_critical": 0.9,
+            "drift_warn": 0.2,
+            "drift_critical": 0.3,
+            "min_calibrated_confidence": 0.7,
+            "calibration_id": "UNSET"
+          },
+          "decision_source": "deterministic_runtime_guard",
+          "note": "OOD/drift/confidence scores are external signals; calibrate thresholds for each task and equipment family."
+        },
+        "failure_categories": [
+          "model_uncertainty_or_ood",
+          "retrieval_miss"
+        ],
+        "tool_calls": [
+          {
+            "name": "search_knowledge",
+            "success": true,
+            "started_at": "2026-11-02T02:09:17.190288+00:00",
+            "finished_at": "2026-11-02T02:09:17.190394+00:00",
+            "call_id": "offline-search-1",
+            "arguments": {
+              "query": "PUMP-CLI-01 steady_load normal 设备检查 维修手册",
+              "top_k": 5
+            },
+            "result": {
+              "hits": [],
+              "count": 0,
+              "scope_equipment": "PUMP-CLI-01",
+              "note": "Only approved and effective documents are returned."
+            }
+          },
+          {
+            "name": "summarize_sensor_window",
+            "success": true,
+            "started_at": "2026-11-02T02:09:17.192994+00:00",
+            "finished_at": "2026-11-02T02:09:17.193014+00:00",
+            "call_id": "offline-sensors-1",
+            "arguments": {
+              "metrics": []
+            },
+            "result": {
+              "metrics": {},
+              "count": 0,
+              "note": "Descriptive statistics only; no fault classification is performed."
+            }
+          }
+        ],
+        "human_review_ticket": {
+          "ticket_id": "48b6b15e-163a-44da-b620-97aa6cb40245",
+          "episode_id": "CLI-FAULT-002",
+          "reason": "missing_runtime_signal;confidence_not_calibrated;calibration_not_configured",
+          "priority": "high",
+          "status": "open",
+          "created_at": "2026-11-02T02:09:17.194158+00:00"
+        },
+        "provider_error": null,
+        "versions": {
+          "release_id": "local-unreleased",
+          "policy_version": "diagnostic-policy-v1.0.0",
+          "prompt_version": "diagnostic-agent-prompt-v1.0.0",
+          "tool_schema_version": "diagnostic-tools-v1.0.0",
+          "kb_version": "knowledge-catalog-current",
+          "retrieval_config_version": "tfidf-v0",
+          "risk_policy_version": "runtime-guard-v0",
+          "prompt_sha256": "703c5e01887a1bca3165c957fc35fe2862a786d48293a00410cfdbef609be384",
+          "tool_schema_sha256": "88060997971e7d302f7ab947c551fecf94f4ddb8fb202b9566a87bd3a0d7e11c"
+        },
+        "episode_persistence": {
+          "stored": true,
+          "episode_id": "CLI-FAULT-002",
+          "event_hash": "532c5532bc04d2342cf29f902d416841b67b59a8af24fe473d36d64a1b335645"
+        },
+        "model_input_provenance": {
+          "source": "VersionedIndustrialFaultBridge",
+          "model_root": "/mnt/data/dual_task_cli_smoke_final/industrial_fault_registry",
+          "checkpoint_sha256": "19c91b7d29a0ab0378ace9542eb3fa65216e5bbd6d66a8cb9512b134b0069e8a",
+          "model_version": "M0"
+        }
+      }
+    ],
+    "note": "Task outputs remain task-specific; no forecast/fault-score fusion is performed."
+  },
+  "warning": "Synthetic data and intentionally permissive thresholds were used solely to verify CLI wiring. They are not production thresholds or field performance evidence."
+}

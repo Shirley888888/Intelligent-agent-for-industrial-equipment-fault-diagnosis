@@ -1,0 +1,17 @@
+{
+  "episode_id": "PUMP-EP-REPLACE-ME",
+  "equipment_id": "PUMP-01-REPLACE-ME",
+  "prediction_time": "2026-11-02T10:00:00+08:00",
+  "operating_condition": "replace_with_real_operating_condition",
+  "feature_names": [
+    "feature_1",
+    "feature_2",
+    "feature_3",
+    "feature_4",
+    "feature_5",
+    "feature_6",
+    "feature_7"
+  ],
+  "sensor_readings": {},
+  "history": []
+}

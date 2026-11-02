@@ -1,0 +1,100 @@
+{
+  "allow_upgrade": true,
+  "recent_ok": true,
+  "historical_ok": true,
+  "recent_limit": 14.86597330768903,
+  "historical_limit": 12.851693922201791,
+  "incumbent_recent_mae": 15.648392955462137,
+  "candidate_recent_mae": 12.588465332984924,
+  "incumbent_historical_mae": 12.599699923727247,
+  "candidate_historical_mae": 9.576617762777541,
+  "incumbent_version": "M0",
+  "candidate_id": "C1",
+  "incumbent_activation_id": 0,
+  "incumbent_checkpoint_sha256": "451d8f4ed2545cf055168753308145f92debcb102a0e6878698ced3248f46bf2",
+  "checkpoint_sha256": "2f188311adf1bd12f4221312fc788d60c2f163133a14e71f9749f62ae5c7153e",
+  "snapshot_sha256": "7041ddf7c00ecd9faa276bd82a9055d27c39defe998eaa6294e8843140698a57",
+  "gate_config": {
+    "recent_gain": 0.05,
+    "old_tolerance": 0.02,
+    "min_recent_gain": 0.01,
+    "min_old_tolerance": 0.01
+  },
+  "evaluated_as_of": "2016-11-05T00:00:00",
+  "recent": {
+    "incumbent": {
+      "MAE": 15.648392955462137,
+      "windows": 1,
+      "target_range": [
+        3024,
+        3048
+      ],
+      "origins": [
+        3024
+      ]
+    },
+    "candidate": {
+      "MAE": 12.588465332984924,
+      "windows": 1,
+      "target_range": [
+        3024,
+        3048
+      ],
+      "origins": [
+        3024
+      ]
+    }
+  },
+  "historical": {
+    "incumbent": {
+      "MAE": 12.599699923727247,
+      "windows": 15,
+      "target_range": [
+        1920,
+        2280
+      ],
+      "origins": [
+        1920,
+        1944,
+        1968,
+        1992,
+        2016,
+        2040,
+        2064,
+        2088,
+        2112,
+        2136,
+        2160,
+        2184,
+        2208,
+        2232,
+        2256
+      ]
+    },
+    "candidate": {
+      "MAE": 9.576617762777541,
+      "windows": 15,
+      "target_range": [
+        1920,
+        2280
+      ],
+      "origins": [
+        1920,
+        1944,
+        1968,
+        1992,
+        2016,
+        2040,
+        2064,
+        2088,
+        2112,
+        2136,
+        2160,
+        2184,
+        2208,
+        2232,
+        2256
+      ]
+    }
+  }
+}

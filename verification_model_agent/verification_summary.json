@@ -1,0 +1,91 @@
+{
+  "test_suites": [
+    {
+      "suite": "tests_agent",
+      "total": 29,
+      "passed": 29,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "tests_dual",
+      "total": 12,
+      "passed": 12,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "tests_integration",
+      "total": 8,
+      "passed": 8,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "test_loop + test_torch_version_checks",
+      "total": 29,
+      "passed": 28,
+      "failed": 0,
+      "skipped": 1,
+      "skip_reason": "CUDA cross-device consistency test skipped: CUDA unavailable in this runtime"
+    }
+  ],
+  "totals": {
+    "total": 78,
+    "passed": 77,
+    "failed": 0,
+    "skipped": 1
+  },
+  "environment": {
+    "python": "3.13.5",
+    "torch": "2.10.0+cpu",
+    "cuda_available": false
+  },
+  "model_to_agent_smoke": [
+    {
+      "model_family": "LSTM",
+      "model_root": "run_gpu_smoke",
+      "version": "M0",
+      "activation_id": 2,
+      "checkpoint_sha256": "451d8f4ed2545cf055168753308145f92debcb102a0e6878698ced3248f46bf2",
+      "forecast_horizon": 24,
+      "agent_decision": "human_review",
+      "fault_type": null,
+      "reason": "The bundled LSTM is an ETTh1 regression forecaster, not a fault classifier."
+    },
+    {
+      "model_family": "TCN",
+      "model_root": "run_tcn_agent_etth1",
+      "version": "M0",
+      "activation_id": 0,
+      "checkpoint_sha256": "24759aacc30e6e7b7fdebc84f1a4e5b97bffc84a517fe967a6e3258d7d25f9",
+      "forecast_horizon": 24,
+      "agent_decision": "human_review",
+      "fault_type": null,
+      "training_dataset": "ETTh1",
+      "epochs": 1,
+      "validation_mae": 3.2214816940633706,
+      "recent_baseline_mae": 13.347678261522196,
+      "reason": "Regression-only TCN integration fixture; metrics are not a claim of production accuracy."
+    }
+  ],
+  "human_feedback_strategy_candidates": {
+    "trigger": "verified human-reviewed episodes only",
+    "minimum_support_default": 2,
+    "candidate_types": [
+      "prompt",
+      "tool_route",
+      "retrieval"
+    ],
+    "requires_human_approval": true,
+    "requires_frozen_replay": true,
+    "auto_applied": false,
+    "test_coverage": [
+      "single sample does not trigger",
+      "disputed sample excluded",
+      "three candidate families generated",
+      "idempotent generation"
+    ]
+  },
+  "provider_testing": "Offline Planner executed end-to-end. OpenAI-compatible provider covered by mocked HTTP/timeout unit tests; no live API request was made."
+}

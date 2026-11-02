@@ -1,0 +1,345 @@
+{
+  "schema_version": 1,
+  "task": "transformer_oil_temperature_forecasting",
+  "model_id": "Chronos2-ETT-15min-LORA",
+  "model_family": "Chronos-2",
+  "parameter_count_claim": "120M (upstream model card; not locally re-counted)",
+  "base_model_id": "amazon/chronos-2",
+  "base_model_revision_requested": "default upstream revision",
+  "base_model_commit": "29ec3766d36d6f73f0696f85560a422f50e8498c",
+  "finetune_mode": "lora",
+  "model_artifact": "finetuned-ckpt",
+  "model_artifact_sha256_tree": "fe6bb2294fe0869e827869af355f3bc0e294fe4baf34b10b58fe10623825a991",
+  "target": "OT",
+  "target_unit": "degC",
+  "past_covariates": [
+    "HUFL",
+    "HULL",
+    "MUFL",
+    "MULL",
+    "LUFL",
+    "LULL"
+  ],
+  "future_load_assumed_known": false,
+  "frequency": "15min",
+  "sample_interval_minutes": 15,
+  "prediction_length": 24,
+  "context_length": 512,
+  "batch_size_per_device": 2,
+  "gradient_accumulation_steps": 2,
+  "effective_batch_size_per_device": 4,
+  "num_steps": 20,
+  "input_duration_hours": 128.0,
+  "forecast_duration_hours": 6.0,
+  "quantile_levels": [
+    0.1,
+    0.5,
+    0.9
+  ],
+  "training_data_sources": [
+    {
+      "dataset": "ETTm1",
+      "role": "training_and_hf_validation",
+      "rows": 69680,
+      "sha256": "6ce1759b1a18e3328421d5d75fadcb316c449fcd7cec32820c8dafda71986c9e",
+      "github_blob_sha1": "62c9f979e2dc5b05d9cc5b38891e60e6baf77417",
+      "source_commit": "1d16c8f4f943005d613b5bc962e9eeb06058cf07",
+      "start": "2016-07-01T00:00:00",
+      "end": "2018-06-26T19:45:00",
+      "source_url": "https://raw.githubusercontent.com/zhouhaoyi/ETDataset/1d16c8f4f943005d613b5bc962e9eeb06058cf07/ETT-small/ETTm1.csv"
+    },
+    {
+      "dataset": "ETTm2",
+      "role": "training_and_hf_validation",
+      "rows": 69680,
+      "sha256": "db973ca252c6410a30d0469b13d696cf919648d0f3fd588c60f03fdbdbadd1fd",
+      "github_blob_sha1": "f9d46027c987d442d2d8f81308d1d8c4d1d35db8",
+      "source_commit": "1d16c8f4f943005d613b5bc962e9eeb06058cf07",
+      "start": "2016-07-01T00:00:00",
+      "end": "2018-06-26T19:45:00",
+      "source_url": "https://raw.githubusercontent.com/zhouhaoyi/ETDataset/1d16c8f4f943005d613b5bc962e9eeb06058cf07/ETT-small/ETTm2.csv"
+    }
+  ],
+  "evaluation_data_sources": [
+    {
+      "dataset": "ETTm1",
+      "role": "candidate_gate_and_final_test",
+      "rows": 69680,
+      "sha256": "6ce1759b1a18e3328421d5d75fadcb316c449fcd7cec32820c8dafda71986c9e",
+      "github_blob_sha1": "62c9f979e2dc5b05d9cc5b38891e60e6baf77417",
+      "source_commit": "1d16c8f4f943005d613b5bc962e9eeb06058cf07",
+      "start": "2016-07-01T00:00:00",
+      "end": "2018-06-26T19:45:00",
+      "source_url": "https://raw.githubusercontent.com/zhouhaoyi/ETDataset/1d16c8f4f943005d613b5bc962e9eeb06058cf07/ETT-small/ETTm1.csv"
+    },
+    {
+      "dataset": "ETTm2",
+      "role": "candidate_gate_and_final_test",
+      "rows": 69680,
+      "sha256": "db973ca252c6410a30d0469b13d696cf919648d0f3fd588c60f03fdbdbadd1fd",
+      "github_blob_sha1": "f9d46027c987d442d2d8f81308d1d8c4d1d35db8",
+      "source_commit": "1d16c8f4f943005d613b5bc962e9eeb06058cf07",
+      "start": "2016-07-01T00:00:00",
+      "end": "2018-06-26T19:45:00",
+      "source_url": "https://raw.githubusercontent.com/zhouhaoyi/ETDataset/1d16c8f4f943005d613b5bc962e9eeb06058cf07/ETT-small/ETTm2.csv"
+    }
+  ],
+  "data_sources": [
+    {
+      "dataset": "ETTm1",
+      "role": "training_and_hf_validation",
+      "rows": 69680,
+      "sha256": "6ce1759b1a18e3328421d5d75fadcb316c449fcd7cec32820c8dafda71986c9e",
+      "github_blob_sha1": "62c9f979e2dc5b05d9cc5b38891e60e6baf77417",
+      "source_commit": "1d16c8f4f943005d613b5bc962e9eeb06058cf07",
+      "start": "2016-07-01T00:00:00",
+      "end": "2018-06-26T19:45:00",
+      "source_url": "https://raw.githubusercontent.com/zhouhaoyi/ETDataset/1d16c8f4f943005d613b5bc962e9eeb06058cf07/ETT-small/ETTm1.csv"
+    },
+    {
+      "dataset": "ETTm2",
+      "role": "training_and_hf_validation",
+      "rows": 69680,
+      "sha256": "db973ca252c6410a30d0469b13d696cf919648d0f3fd588c60f03fdbdbadd1fd",
+      "github_blob_sha1": "f9d46027c987d442d2d8f81308d1d8c4d1d35db8",
+      "source_commit": "1d16c8f4f943005d613b5bc962e9eeb06058cf07",
+      "start": "2016-07-01T00:00:00",
+      "end": "2018-06-26T19:45:00",
+      "source_url": "https://raw.githubusercontent.com/zhouhaoyi/ETDataset/1d16c8f4f943005d613b5bc962e9eeb06058cf07/ETT-small/ETTm2.csv"
+    },
+    {
+      "dataset": "ETTm1",
+      "role": "candidate_gate_and_final_test",
+      "rows": 69680,
+      "sha256": "6ce1759b1a18e3328421d5d75fadcb316c449fcd7cec32820c8dafda71986c9e",
+      "github_blob_sha1": "62c9f979e2dc5b05d9cc5b38891e60e6baf77417",
+      "source_commit": "1d16c8f4f943005d613b5bc962e9eeb06058cf07",
+      "start": "2016-07-01T00:00:00",
+      "end": "2018-06-26T19:45:00",
+      "source_url": "https://raw.githubusercontent.com/zhouhaoyi/ETDataset/1d16c8f4f943005d613b5bc962e9eeb06058cf07/ETT-small/ETTm1.csv"
+    },
+    {
+      "dataset": "ETTm2",
+      "role": "candidate_gate_and_final_test",
+      "rows": 69680,
+      "sha256": "db973ca252c6410a30d0469b13d696cf919648d0f3fd588c60f03fdbdbadd1fd",
+      "github_blob_sha1": "f9d46027c987d442d2d8f81308d1d8c4d1d35db8",
+      "source_commit": "1d16c8f4f943005d613b5bc962e9eeb06058cf07",
+      "start": "2016-07-01T00:00:00",
+      "end": "2018-06-26T19:45:00",
+      "source_url": "https://raw.githubusercontent.com/zhouhaoyi/ETDataset/1d16c8f4f943005d613b5bc962e9eeb06058cf07/ETT-small/ETTm2.csv"
+    }
+  ],
+  "evaluation_design": "same_station_temporal_holdout",
+  "split_policy": "chronological_per_series_60_10_10_20; train prefix 0-60%; Chronos fit-validation prefix 0-70% (last horizon is HF validation target); reserved gate-validation rolling targets 70-80%; final test rolling targets 80-100%",
+  "training_split_ranges": {
+    "ETTm1": {
+      "train_end_exclusive": 41808,
+      "fit_validation_end_exclusive": 48776,
+      "gate_validation_start_inclusive": 48776,
+      "gate_validation_end_exclusive": 55744,
+      "test_start_inclusive": 55744,
+      "test_end_exclusive": 69680
+    },
+    "ETTm2": {
+      "train_end_exclusive": 41808,
+      "fit_validation_end_exclusive": 48776,
+      "gate_validation_start_inclusive": 48776,
+      "gate_validation_end_exclusive": 55744,
+      "test_start_inclusive": 55744,
+      "test_end_exclusive": 69680
+    }
+  },
+  "evaluation_split_ranges": {
+    "ETTm1": {
+      "train_end_exclusive": 41808,
+      "fit_validation_end_exclusive": 48776,
+      "gate_validation_start_inclusive": 48776,
+      "gate_validation_end_exclusive": 55744,
+      "test_start_inclusive": 55744,
+      "test_end_exclusive": 69680
+    },
+    "ETTm2": {
+      "train_end_exclusive": 41808,
+      "fit_validation_end_exclusive": 48776,
+      "gate_validation_start_inclusive": 48776,
+      "gate_validation_end_exclusive": 55744,
+      "test_start_inclusive": 55744,
+      "test_end_exclusive": 69680
+    }
+  },
+  "zero_shot_gate_validation_metrics": {
+    "aggregate": {
+      "MAE_degC": 0.933101394264651,
+      "RMSE_degC": 1.5766839056009991,
+      "P95_AE_degC": 3.1124881744384747,
+      "P99_AE_degC": 6.7471722698211645,
+      "MaxAE_degC": 14.238504409790039,
+      "P10_P90_coverage": 0.7195402298850575,
+      "P10_P90_mean_width_degC": 2.3122568130493164,
+      "test_windows": 580
+    },
+    "per_series": {
+      "ETTm1": {
+        "MAE_degC": 0.634557932961047,
+        "RMSE_degC": 0.8891915887249381,
+        "P95_AE_degC": 1.948084962368011,
+        "P99_AE_degC": 2.819769561290737,
+        "MaxAE_degC": 5.656469821929932,
+        "P10_P90_coverage": 0.7676724137931035,
+        "P10_P90_mean_width_degC": 1.903930425643921,
+        "test_windows": 290
+      },
+      "ETTm2": {
+        "MAE_degC": 1.231644855568255,
+        "RMSE_degC": 2.044798913072692,
+        "P95_AE_degC": 4.359330177307128,
+        "P99_AE_degC": 8.078624563217163,
+        "MaxAE_degC": 14.238504409790039,
+        "P10_P90_coverage": 0.6714080459770115,
+        "P10_P90_mean_width_degC": 2.720583200454712,
+        "test_windows": 290
+      }
+    }
+  },
+  "candidate_gate_validation_metrics": {
+    "aggregate": {
+      "MAE_degC": 0.9321968696980025,
+      "RMSE_degC": 1.5752185814500295,
+      "P95_AE_degC": 3.1201402366161335,
+      "P99_AE_degC": 6.737437057495113,
+      "MaxAE_degC": 14.135931015014648,
+      "P10_P90_coverage": 0.7208333333333333,
+      "P10_P90_mean_width_degC": 2.315253496170044,
+      "test_windows": 580
+    },
+    "per_series": {
+      "ETTm1": {
+        "MAE_degC": 0.6347782598251756,
+        "RMSE_degC": 0.8894853276968175,
+        "P95_AE_degC": 1.951222038269041,
+        "P99_AE_degC": 2.8225575780868493,
+        "MaxAE_degC": 5.657588958740234,
+        "P10_P90_coverage": 0.7685344827586207,
+        "P10_P90_mean_width_degC": 1.9060184955596924,
+        "test_windows": 290
+      },
+      "ETTm2": {
+        "MAE_degC": 1.2296154795708296,
+        "RMSE_degC": 2.0424110777468307,
+        "P95_AE_degC": 4.35566449165344,
+        "P99_AE_degC": 8.066047997474666,
+        "MaxAE_degC": 14.135931015014648,
+        "P10_P90_coverage": 0.673132183908046,
+        "P10_P90_mean_width_degC": 2.7244884967803955,
+        "test_windows": 290
+      }
+    }
+  },
+  "zero_shot_test_metrics": {
+    "aggregate": {
+      "MAE_degC": 0.8980736231185154,
+      "RMSE_degC": 1.4866941610584683,
+      "P95_AE_degC": 2.971367263793945,
+      "P99_AE_degC": 5.808107657432561,
+      "MaxAE_degC": 14.965593338012695,
+      "P10_P90_coverage": 0.7760775862068966,
+      "P10_P90_mean_width_degC": 2.6276793479919434,
+      "test_windows": 1160
+    },
+    "per_series": {
+      "ETTm1": {
+        "MAE_degC": 0.6985789219945155,
+        "RMSE_degC": 1.0728390186621928,
+        "P95_AE_degC": 2.1272410631179803,
+        "P99_AE_degC": 3.808239712715145,
+        "MaxAE_degC": 9.574673295021057,
+        "P10_P90_coverage": 0.7892959770114942,
+        "P10_P90_mean_width_degC": 2.090923547744751,
+        "test_windows": 580
+      },
+      "ETTm2": {
+        "MAE_degC": 1.0975683242425152,
+        "RMSE_degC": 1.8081856920921116,
+        "P95_AE_degC": 3.74287576675415,
+        "P99_AE_degC": 7.169293708801264,
+        "MaxAE_degC": 14.965593338012695,
+        "P10_P90_coverage": 0.7628591954022989,
+        "P10_P90_mean_width_degC": 3.1644351482391357,
+        "test_windows": 580
+      }
+    }
+  },
+  "candidate_test_metrics": {
+    "aggregate": {
+      "MAE_degC": 0.8968403150498782,
+      "RMSE_degC": 1.485037025542835,
+      "P95_AE_degC": 2.96563491821289,
+      "P99_AE_degC": 5.806068892478945,
+      "MaxAE_degC": 14.920980453491211,
+      "P10_P90_coverage": 0.7779813218390804,
+      "P10_P90_mean_width_degC": 2.63240385055542,
+      "test_windows": 1160
+    },
+    "per_series": {
+      "ETTm1": {
+        "MAE_degC": 0.6984146840506416,
+        "RMSE_degC": 1.0730900260798264,
+        "P95_AE_degC": 2.1266021966934203,
+        "P99_AE_degC": 3.8158682680129887,
+        "MaxAE_degC": 9.579015374183655,
+        "P10_P90_coverage": 0.7898706896551724,
+        "P10_P90_mean_width_degC": 2.093714475631714,
+        "test_windows": 580
+      },
+      "ETTm2": {
+        "MAE_degC": 1.0952659460491148,
+        "RMSE_degC": 1.8053109788604895,
+        "P95_AE_degC": 3.728700637817383,
+        "P99_AE_degC": 7.165985145568832,
+        "MaxAE_degC": 14.920980453491211,
+        "P10_P90_coverage": 0.7660919540229885,
+        "P10_P90_mean_width_degC": 3.171093225479126,
+        "test_windows": 580
+      }
+    }
+  },
+  "candidate_gate": {
+    "passed": false,
+    "checks": {
+      "aggregate_mae_non_regression": true,
+      "aggregate_p99_non_regression": true,
+      "aggregate_maxae_non_regression": true,
+      "each_station_mae_non_regression": true,
+      "aggregate_interval_coverage_floor": true,
+      "each_station_interval_coverage_floor": false,
+      "interval_width_not_excessively_wider": true
+    },
+    "aggregate_mae_regression_pct": -0.09693743597514182,
+    "aggregate_p99_regression_pct": -0.14428581243723926,
+    "aggregate_maxae_regression_pct": -0.7203944446922628,
+    "aggregate_interval_width_regression_pct": 0.12959992609020698,
+    "candidate_interval_coverage": 0.7208333333333333,
+    "station_mae_regression_pct": {
+      "ETTm1": 0.034721315845898104,
+      "ETTm2": -0.1647695752757583
+    },
+    "station_interval_coverage": {
+      "ETTm1": 0.7685344827586207,
+      "ETTm2": 0.673132183908046
+    },
+    "thresholds": {
+      "overall_mae_allow_pct": 1.0,
+      "station_mae_allow_pct": 3.0,
+      "p99_allow_pct": 5.0,
+      "maxae_allow_pct": 10.0,
+      "min_interval_coverage": 0.7,
+      "interval_width_allow_pct": 20.0
+    },
+    "note": "Gate is evaluated on a reserved 70%-80% validation segment, not on the final 20% test set. Passing still requires independent test review, project model gate, shadow replay and joint release review."
+  },
+  "release_status": "candidate_rejected_by_gate_validation",
+  "agent_activation": false,
+  "dataset_license": "CC BY-ND 4.0; original files are not redistributed in this package",
+  "created_at": "2026-11-02T13:06:13"
+}

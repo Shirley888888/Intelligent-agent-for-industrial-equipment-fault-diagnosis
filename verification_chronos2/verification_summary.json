@@ -1,0 +1,73 @@
+{
+  "test_summary": {
+    "tests": 74,
+    "passed": 74,
+    "failed": 0,
+    "skipped": 0,
+    "suites": {
+      "tests_chronos": {
+        "tests": 11,
+        "passed": 11,
+        "failed": 0,
+        "status": "passed"
+      },
+      "tests_ett": {
+        "tests": 5,
+        "passed": 5,
+        "failed": 0,
+        "status": "passed"
+      },
+      "tests_agent": {
+        "tests": 29,
+        "passed": 29,
+        "failed": 0,
+        "status": "passed"
+      },
+      "tests_integration": {
+        "tests": 8,
+        "passed": 8,
+        "failed": 0,
+        "status": "passed"
+      },
+      "tests_dual": {
+        "tests": 12,
+        "passed": 12,
+        "failed": 0,
+        "status": "passed"
+      },
+      "tests_dual_task": {
+        "tests": 9,
+        "passed": 9,
+        "failed": 0,
+        "status": "passed"
+      }
+    }
+  },
+  "data": {
+    "official_repository": "https://github.com/zhouhaoyi/ETDataset",
+    "pinned_commit": "1d16c8f4f943005d613b5bc962e9eeb06058cf07",
+    "etth1_verified": true,
+    "other_files_downloaded_in_build_environment": false,
+    "expected_files_in_manifest": 4
+  },
+  "foundation_model": {
+    "model_id": "amazon/chronos-2",
+    "weights_downloaded": false,
+    "fine_tuning_executed": false,
+    "reason": "Build environment is CPU-only and has no outbound DNS/network; chronos/transformers/peft/accelerate are not installed.",
+    "preflight_etth1_passed": true,
+    "mock_pipeline_tests_passed": true
+  },
+  "environment": {
+    "python": "3.13.5",
+    "torch": "2.10.0+cpu",
+    "cuda_available": false,
+    "optional_modules": {
+      "chronos": false,
+      "transformers": false,
+      "peft": false,
+      "accelerate": false
+    }
+  },
+  "interpretation": "All tests validate data pipeline, mocked Chronos fine-tuning orchestration, gates, Agent bridge and existing Agent/dual-evolution features. They do not constitute a real Chronos-2 weight download or fine-tuning result."
+}

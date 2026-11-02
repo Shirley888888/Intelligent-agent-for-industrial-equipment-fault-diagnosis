@@ -1,0 +1,49 @@
+usage: train_chronos2_ett.py [-h] [--config CONFIG] [--data-dir DATA_DIR]
+                             [--frequency {hourly,15min,all}]
+                             [--datasets {ETTh1,ETTh2,ETTm1,ETTm2} [{ETTh1,ETTh2,ETTm1,ETTm2} ...]]
+                             [--eval-datasets {ETTh1,ETTh2,ETTm1,ETTm2} [{ETTh1,ETTh2,ETTm1,ETTm2} ...]]
+                             [--base-model BASE_MODEL] [--revision REVISION]
+                             [--device-map DEVICE_MAP] [--out-dir OUT_DIR]
+                             [--run-name RUN_NAME] [--preflight-only]
+                             [--prediction-length PREDICTION_LENGTH]
+                             [--context-length CONTEXT_LENGTH]
+                             [--num-steps NUM_STEPS] [--batch-size BATCH_SIZE]
+                             [--gradient-accumulation-steps GRADIENT_ACCUMULATION_STEPS]
+                             [--learning-rate LEARNING_RATE]
+                             [--finetune-mode {lora,full}]
+                             [--test-stride TEST_STRIDE] [--seed SEED]
+
+LoRA/full fine-tune Chronos-2 on real transformer oil-temperature data
+
+options:
+  -h, --help            show this help message and exit
+  --config CONFIG       Optional JSON run configuration; CLI flags override it
+  --data-dir DATA_DIR
+  --frequency {hourly,15min,all}
+  --datasets {ETTh1,ETTh2,ETTm1,ETTm2} [{ETTh1,ETTh2,ETTm1,ETTm2} ...]
+                        Series used for fine-tuning (training + HF validation)
+  --eval-datasets {ETTh1,ETTh2,ETTm1,ETTm2} [{ETTh1,ETTh2,ETTm1,ETTm2} ...]
+                        Series used for reserved gate and final test; use the
+                        other station for leave-one-station-out
+  --base-model BASE_MODEL
+  --revision REVISION
+  --device-map DEVICE_MAP
+                        Hugging Face device_map: auto, cuda, cpu
+  --out-dir OUT_DIR
+  --run-name RUN_NAME   Optional specific run folder under --out-dir (useful
+                        for LOSO runs)
+  --preflight-only      Validate downloaded datasets and temporal splits
+                        without loading Chronos weights or training
+  --prediction-length PREDICTION_LENGTH
+  --context-length CONTEXT_LENGTH
+  --num-steps NUM_STEPS
+  --batch-size BATCH_SIZE
+                        Per-device micro-batch; 4 is a conservative starting
+                        point for 8GB GPUs
+  --gradient-accumulation-steps GRADIENT_ACCUMULATION_STEPS
+                        Accumulate gradients to approximate a larger effective
+                        batch
+  --learning-rate LEARNING_RATE
+  --finetune-mode {lora,full}
+  --test-stride TEST_STRIDE
+  --seed SEED

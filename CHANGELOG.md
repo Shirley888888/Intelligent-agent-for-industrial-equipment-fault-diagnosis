@@ -1,3 +1,16 @@
+# GPU 实际验证与 torch 元数据规范化（2026-10）
+
+修改基线：版本切换一致性修复后的 `online_loop_minimal`。在本机 `etth1_gpu` 环境（Python 3.11.16、torch 2.7.1+cu128、RTX 5060）实际运行 torch 后端。
+
+| 位置 | 修改 |
+|---|---|
+| `minimal_loop.py` ForecastModel | `.pt` 加载时对 metadata 做 JSON 往返规范化：`torch.save` 保留 tuple 而 JSON sidecar 为 list，统一两侧比较语义；兼容旧 checkpoint |
+| `test_torch_version_checks.py` | 新增 torch 后端版本一致性测试：bootstrap 绑定、同 seed 逐 tensor 复现、gate 输出合法 JSON、升级/回滚/陈旧门禁/损坏检测、sidecar 篡改拒绝、CPU/GPU 跨设备预测一致 |
+| `smoke_torch.py` | 新增 `--version-checks`：受控门禁分数演练升级/回滚/陈旧门禁拒绝/损坏检测；损坏检查在临时副本上执行，正式产物不受影响 |
+| 验证记录 | `test_results_gpu.txt`：`python -O -m unittest -v test_loop test_torch_version_checks` 共 27 项通过（1 项因 CUDA 可达跳过） |
+
+GPU 全量回放与既有结果一致（默认规则 0 次自然重训；演练候选近期无足够改善被门禁拒绝）。演练中的受控门禁分数是测试输入，不是模型精度收益。
+
 # 版本切换一致性修复
 
 修改基线：最新上传的 `online_loop_minimal.zip`。保留类名、函数签名、数据结构、模型后端和原实验记录。
@@ -40,3 +53,13 @@
 - Monitor 等待下一检查块时，也返回已有最近 N 样本 MAE；evaluated_blocks 表示本次是否进行了新的触发判断。
 - 按默认配置重跑的参考 MAE 与 v1 在数值容差内一致。新增验证不能表述为 LSTM 在线精度提升。
 - 本次未执行 GPU 分支；smoke_torch.py 在用户已有 PyTorch 环境中进行实际执行检查。
+
+
+## 双任务统一模型—Agent 接入 V2（2026-11）
+
+- 新增工业故障多任务 LSTM/TCN：故障分类必需，异常分数、RUL 与故障幅值按标注可选训练。
+- 新增工业数据 NPZ schema、时间/设备组隔离声明、独立 cal_fit/cal_eval 温度校准与分层发布门禁。
+- 新增版本化 IndustrialFaultBridge 与 TaskAwareModelRouter，让 ETTh1 预测和工业故障任务进入同一个 DiagnosticAgent/EpisodeStore，但不混合任务输出。
+- 新增校准 ID、Checkpoint SHA-256、OOD/漂移缺失时 fail-closed 人工复核。
+- 辅助任务标签一旦存在，就必须配置对应 MAE/AUROC 发布阈值；否则只保存候选，不激活。
+- 新增 9 项双任务测试及 CLI 训练/多任务端到端 smoke。无真实工业标注数据，不生成或宣称工业现场预训练权重。

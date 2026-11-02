@@ -1,0 +1,38 @@
+{
+  "model_gate": {
+    "mae_max_degradation": 0.02,
+    "p95_max_degradation": 0.05,
+    "p99_max_degradation": 0.05,
+    "max_error_max_degradation": 0.10,
+    "stratum_mae_max_degradation": 0.10,
+    "stratum_tail_max_degradation": 0.10,
+    "p95_min_samples": 20,
+    "p99_min_samples": 100,
+    "min_stratum_samples": 20,
+    "min_critical_stratum_samples": 5,
+    "critical_fault_types": [],
+    "absolute_max_error_limit": null,
+    "zero_baseline_epsilon": 1e-8
+  },
+  "runtime_guard": {
+    "ood_warn": 0.70,
+    "ood_critical": 0.90,
+    "drift_warn": 0.20,
+    "drift_critical": 0.30,
+    "min_calibrated_confidence": 0.70,
+    "calibration_id": "UNSET"
+  },
+  "agent_gate": {
+    "min_case_pass_rate": 0.95,
+    "min_tool_success_rate": 0.98,
+    "min_citation_coverage": 0.95,
+    "max_critical_failures": 0
+  },
+  "release_policy": {
+    "require_model_gate_pass": true,
+    "require_agent_gate_pass": true,
+    "require_shadow_pass": true,
+    "require_safety_policy_approval": true,
+    "automatic_activation": false
+  }
+}

@@ -1,0 +1,6 @@
+# Optional Chronos-2 time-series foundation-model fine-tuning environment.
+# Use a fresh environment; do not overwrite the project's existing torch stack blindly.
+chronos-forecasting==2.3.2
+peft>=0.20,<1
+accelerate>=1.1.0,<2
+pandas>=2.0,<4
