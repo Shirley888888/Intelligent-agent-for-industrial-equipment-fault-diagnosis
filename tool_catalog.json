@@ -1,0 +1,3282 @@
+{
+  "schema_version": 2,
+  "scope": "Tools implemented in this uploaded standalone loop",
+  "excluded_modules": [
+    "Risk",
+    "Anomaly",
+    "RAG",
+    "Diagnosis: not present in this archive"
+  ],
+  "features": [
+    "HUFL",
+    "HULL",
+    "MUFL",
+    "MULL",
+    "LUFL",
+    "LULL",
+    "OT"
+  ],
+  "input_hours": 96,
+  "forecast_hours": 24,
+  "target": "OT",
+  "metric_unit": "degC",
+  "timestamp_policy": "ETTh1 naive dataset-local hourly time",
+  "constructors": {
+    "FeedbackMonitor": "(n: 'int' = 30, relative: 'float' = 0.2, absolute: 'float' = 0.1, patience: 'int' = 2, cooldown_episodes: 'int' = 30)",
+    "VersionManager": "(root: 'str | Path', device: 'str' = 'cpu')"
+  },
+  "structures": {
+    "FeedbackEpisode": {
+      "type": "object",
+      "title": "FeedbackEpisode",
+      "properties": {
+        "episode_id": {
+          "type": "string"
+        },
+        "prediction_time": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}$",
+          "description": "ISO 8601 dataset-local time; no UTC offset is asserted"
+        },
+        "model_version": {
+          "type": "string"
+        },
+        "activation_id": {
+          "type": "integer"
+        },
+        "origin_idx": {
+          "type": "integer"
+        },
+        "target_end_idx": {
+          "type": "integer"
+        },
+        "history": {
+          "type": "array",
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "number"
+            },
+            "minItems": 7,
+            "maxItems": 7
+          },
+          "minItems": 96,
+          "maxItems": 96
+        },
+        "history_times": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}$",
+            "description": "ISO 8601 dataset-local time; no UTC offset is asserted"
+          },
+          "minItems": 96,
+          "maxItems": 96
+        },
+        "forecast": {
+          "type": "array",
+          "items": {
+            "type": "number"
+          },
+          "minItems": 24,
+          "maxItems": 24
+        },
+        "target_times": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}$",
+            "description": "ISO 8601 dataset-local time; no UTC offset is asserted"
+          },
+          "minItems": 24,
+          "maxItems": 24
+        },
+        "truth": {
+          "anyOf": [
+            {
+              "type": "array",
+              "items": {
+                "type": "number"
+              },
+              "minItems": 24,
+              "maxItems": 24
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "MAE": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "feedback_time": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "status": {
+          "enum": [
+            "pending",
+            "complete"
+          ]
+        }
+      },
+      "required": [
+        "episode_id",
+        "prediction_time",
+        "model_version",
+        "activation_id",
+        "origin_idx",
+        "target_end_idx",
+        "history",
+        "history_times",
+        "forecast",
+        "target_times",
+        "truth",
+        "MAE",
+        "feedback_time",
+        "status"
+      ],
+      "additionalProperties": false
+    },
+    "DataVersion": {
+      "type": "object",
+      "title": "DataVersion",
+      "properties": {
+        "data_version": {
+          "type": "string"
+        },
+        "observed_end": {
+          "type": "integer"
+        },
+        "as_of": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}$",
+          "description": "ISO 8601 dataset-local time; no UTC offset is asserted"
+        },
+        "train_ranges": {
+          "type": "array",
+          "items": {
+            "type": "array",
+            "prefixItems": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "integer"
+              }
+            ],
+            "minItems": 2,
+            "maxItems": 2
+          }
+        },
+        "validation_range": {
+          "type": "array",
+          "prefixItems": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "integer"
+            }
+          ],
+          "minItems": 2,
+          "maxItems": 2
+        },
+        "historical_range": {
+          "type": "array",
+          "prefixItems": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "integer"
+            }
+          ],
+          "minItems": 2,
+          "maxItems": 2
+        },
+        "recent_range": {
+          "type": "array",
+          "prefixItems": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "integer"
+            }
+          ],
+          "minItems": 2,
+          "maxItems": 2
+        },
+        "snapshot_sha256": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "data_version",
+        "observed_end",
+        "as_of",
+        "train_ranges",
+        "validation_range",
+        "historical_range",
+        "recent_range",
+        "snapshot_sha256"
+      ],
+      "additionalProperties": false
+    },
+    "TrainConfig": {
+      "type": "object",
+      "title": "TrainConfig",
+      "properties": {
+        "backend": {
+          "type": "string"
+        },
+        "model_name": {
+          "type": "string"
+        },
+        "ridge": {
+          "type": "number"
+        },
+        "epochs": {
+          "type": "integer"
+        },
+        "patience": {
+          "type": "integer"
+        },
+        "lr": {
+          "type": "number"
+        },
+        "batch_size": {
+          "type": "integer"
+        },
+        "weight_decay": {
+          "type": "number"
+        },
+        "grad_clip": {
+          "type": "number"
+        },
+        "train_stride": {
+          "type": "integer"
+        },
+        "hidden_size": {
+          "type": "integer"
+        },
+        "num_layers": {
+          "type": "integer"
+        },
+        "dropout": {
+          "type": "number"
+        },
+        "seed": {
+          "type": "integer"
+        },
+        "device": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "backend",
+        "model_name",
+        "ridge",
+        "epochs",
+        "patience",
+        "lr",
+        "batch_size",
+        "weight_decay",
+        "grad_clip",
+        "train_stride",
+        "hidden_size",
+        "num_layers",
+        "dropout",
+        "seed",
+        "device"
+      ],
+      "additionalProperties": false
+    },
+    "GateConfig": {
+      "type": "object",
+      "title": "GateConfig",
+      "properties": {
+        "recent_gain": {
+          "type": "number"
+        },
+        "old_tolerance": {
+          "type": "number"
+        },
+        "min_recent_gain": {
+          "type": "number"
+        },
+        "min_old_tolerance": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "recent_gain",
+        "old_tolerance",
+        "min_recent_gain",
+        "min_old_tolerance"
+      ],
+      "additionalProperties": false
+    },
+    "CandidateResult": {
+      "type": "object",
+      "title": "CandidateResult",
+      "properties": {
+        "candidate_id": {
+          "type": "string"
+        },
+        "checkpoint_path": {
+          "type": "string"
+        },
+        "checkpoint_sha256": {
+          "type": "string"
+        },
+        "data_version": {
+          "type": "string"
+        },
+        "trained_as_of": {
+          "type": "string"
+        },
+        "train_config": {
+          "type": "object",
+          "title": "TrainConfig",
+          "properties": {
+            "backend": {
+              "type": "string"
+            },
+            "model_name": {
+              "type": "string"
+            },
+            "ridge": {
+              "type": "number"
+            },
+            "epochs": {
+              "type": "integer"
+            },
+            "patience": {
+              "type": "integer"
+            },
+            "lr": {
+              "type": "number"
+            },
+            "batch_size": {
+              "type": "integer"
+            },
+            "weight_decay": {
+              "type": "number"
+            },
+            "grad_clip": {
+              "type": "number"
+            },
+            "train_stride": {
+              "type": "integer"
+            },
+            "hidden_size": {
+              "type": "integer"
+            },
+            "num_layers": {
+              "type": "integer"
+            },
+            "dropout": {
+              "type": "number"
+            },
+            "seed": {
+              "type": "integer"
+            },
+            "device": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "backend",
+            "model_name",
+            "ridge",
+            "epochs",
+            "patience",
+            "lr",
+            "batch_size",
+            "weight_decay",
+            "grad_clip",
+            "train_stride",
+            "hidden_size",
+            "num_layers",
+            "dropout",
+            "seed",
+            "device"
+          ],
+          "additionalProperties": false
+        },
+        "validation_metrics": {
+          "type": "object",
+          "title": "ValidationMetrics",
+          "properties": {
+            "MAE": {
+              "type": "number"
+            },
+            "unit": {
+              "type": "string"
+            },
+            "windows": {
+              "type": "integer"
+            },
+            "best_epoch": {
+              "type": "integer"
+            }
+          },
+          "required": [
+            "MAE",
+            "unit",
+            "windows",
+            "best_epoch"
+          ],
+          "additionalProperties": false
+        },
+        "manifest": {
+          "type": "object",
+          "title": "DataVersion",
+          "properties": {
+            "data_version": {
+              "type": "string"
+            },
+            "observed_end": {
+              "type": "integer"
+            },
+            "as_of": {
+              "type": "string",
+              "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}$",
+              "description": "ISO 8601 dataset-local time; no UTC offset is asserted"
+            },
+            "train_ranges": {
+              "type": "array",
+              "items": {
+                "type": "array",
+                "prefixItems": [
+                  {
+                    "type": "integer"
+                  },
+                  {
+                    "type": "integer"
+                  }
+                ],
+                "minItems": 2,
+                "maxItems": 2
+              }
+            },
+            "validation_range": {
+              "type": "array",
+              "prefixItems": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "integer"
+                }
+              ],
+              "minItems": 2,
+              "maxItems": 2
+            },
+            "historical_range": {
+              "type": "array",
+              "prefixItems": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "integer"
+                }
+              ],
+              "minItems": 2,
+              "maxItems": 2
+            },
+            "recent_range": {
+              "type": "array",
+              "prefixItems": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "integer"
+                }
+              ],
+              "minItems": 2,
+              "maxItems": 2
+            },
+            "snapshot_sha256": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "data_version",
+            "observed_end",
+            "as_of",
+            "train_ranges",
+            "validation_range",
+            "historical_range",
+            "recent_range",
+            "snapshot_sha256"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "candidate_id",
+        "checkpoint_path",
+        "checkpoint_sha256",
+        "data_version",
+        "trained_as_of",
+        "train_config",
+        "validation_metrics",
+        "manifest"
+      ],
+      "additionalProperties": false
+    },
+    "MonitorDecision": {
+      "type": "object",
+      "title": "MonitorDecision",
+      "properties": {
+        "model_version": {
+          "type": "string"
+        },
+        "activation_id": {
+          "type": "integer"
+        },
+        "n": {
+          "type": "integer"
+        },
+        "count": {
+          "type": "integer"
+        },
+        "baseline_mae": {
+          "type": "number"
+        },
+        "recent_mae": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "threshold": {
+          "type": "number"
+        },
+        "episode_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "checked_count": {
+          "type": "integer"
+        },
+        "evaluated_blocks": {
+          "type": "integer"
+        },
+        "degraded": {
+          "type": "boolean"
+        },
+        "streak": {
+          "type": "integer"
+        },
+        "trigger_retrain": {
+          "type": "boolean"
+        },
+        "reason": {
+          "type": "string"
+        },
+        "as_of": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}$",
+          "description": "ISO 8601 dataset-local time; no UTC offset is asserted"
+        }
+      },
+      "required": [
+        "model_version",
+        "activation_id",
+        "n",
+        "count",
+        "baseline_mae",
+        "recent_mae",
+        "threshold",
+        "episode_ids",
+        "checked_count",
+        "evaluated_blocks",
+        "degraded",
+        "streak",
+        "trigger_retrain",
+        "reason",
+        "as_of"
+      ],
+      "additionalProperties": false
+    },
+    "GateResult": {
+      "type": "object",
+      "title": "GateResult",
+      "properties": {
+        "allow_upgrade": {
+          "type": "boolean"
+        },
+        "recent_ok": {
+          "type": "boolean"
+        },
+        "historical_ok": {
+          "type": "boolean"
+        },
+        "recent_limit": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "historical_limit": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "incumbent_recent_mae": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "candidate_recent_mae": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "incumbent_historical_mae": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "candidate_historical_mae": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "incumbent_version": {
+          "type": "string"
+        },
+        "incumbent_activation_id": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "incumbent_checkpoint_sha256": {
+          "type": "string"
+        },
+        "candidate_id": {
+          "type": "string"
+        },
+        "checkpoint_sha256": {
+          "type": "string"
+        },
+        "snapshot_sha256": {
+          "type": "string"
+        },
+        "evaluated_as_of": {
+          "type": "string"
+        },
+        "gate_config": {
+          "type": "object",
+          "title": "GateConfig",
+          "properties": {
+            "recent_gain": {
+              "type": "number"
+            },
+            "old_tolerance": {
+              "type": "number"
+            },
+            "min_recent_gain": {
+              "type": "number"
+            },
+            "min_old_tolerance": {
+              "type": "number"
+            }
+          },
+          "required": [
+            "recent_gain",
+            "old_tolerance",
+            "min_recent_gain",
+            "min_old_tolerance"
+          ],
+          "additionalProperties": false
+        },
+        "recent": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "title": "EvalResult",
+            "properties": {
+              "MAE": {
+                "type": "number"
+              },
+              "windows": {
+                "type": "integer"
+              },
+              "target_range": {
+                "type": "array",
+                "items": {
+                  "type": "integer"
+                }
+              },
+              "origins": {
+                "type": "array",
+                "items": {
+                  "type": "integer"
+                }
+              }
+            },
+            "required": [
+              "MAE",
+              "windows",
+              "target_range",
+              "origins"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "historical": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "title": "EvalResult",
+            "properties": {
+              "MAE": {
+                "type": "number"
+              },
+              "windows": {
+                "type": "integer"
+              },
+              "target_range": {
+                "type": "array",
+                "items": {
+                  "type": "integer"
+                }
+              },
+              "origins": {
+                "type": "array",
+                "items": {
+                  "type": "integer"
+                }
+              }
+            },
+            "required": [
+              "MAE",
+              "windows",
+              "target_range",
+              "origins"
+            ],
+            "additionalProperties": false
+          }
+        }
+      },
+      "required": [
+        "allow_upgrade",
+        "recent_ok",
+        "historical_ok",
+        "recent_limit",
+        "historical_limit",
+        "incumbent_recent_mae",
+        "candidate_recent_mae",
+        "incumbent_historical_mae",
+        "candidate_historical_mae",
+        "incumbent_version",
+        "incumbent_activation_id",
+        "incumbent_checkpoint_sha256",
+        "candidate_id",
+        "checkpoint_sha256",
+        "snapshot_sha256",
+        "evaluated_as_of",
+        "gate_config",
+        "recent",
+        "historical"
+      ],
+      "additionalProperties": false
+    },
+    "VersionPointer": {
+      "type": "object",
+      "title": "VersionPointer",
+      "properties": {
+        "model_version": {
+          "type": "string"
+        },
+        "activation_id": {
+          "type": "integer"
+        },
+        "activated_as_of": {
+          "type": "string"
+        },
+        "action": {
+          "type": "string"
+        },
+        "baseline_mae": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "model_version",
+        "activation_id",
+        "activated_as_of",
+        "action",
+        "baseline_mae"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "tools": [
+    {
+      "name": "Prediction",
+      "entrypoint": "predict_tool",
+      "signature": "(model: 'ForecastModel', history: 'list[list[float]]', history_times: 'list[datetime]', prediction_time: 'datetime', model_version: 'str', activation_id: 'int', origin_idx: 'int') -> 'FeedbackEpisode'",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "model": {
+            "type": "object",
+            "x-python-type": "ForecastModel",
+            "description": "In-process model handle loaded from a checkpoint; not a JSON array"
+          },
+          "history": {
+            "type": "array",
+            "items": {
+              "type": "array",
+              "items": {
+                "type": "number"
+              }
+            }
+          },
+          "history_times": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}$",
+              "description": "ISO 8601 dataset-local time; no UTC offset is asserted",
+              "x-python-type": "datetime"
+            }
+          },
+          "prediction_time": {
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}$",
+            "description": "ISO 8601 dataset-local time; no UTC offset is asserted",
+            "x-python-type": "datetime"
+          },
+          "model_version": {
+            "type": "string"
+          },
+          "activation_id": {
+            "type": "integer"
+          },
+          "origin_idx": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "model",
+          "history",
+          "history_times",
+          "prediction_time",
+          "model_version",
+          "activation_id",
+          "origin_idx"
+        ],
+        "additionalProperties": false
+      },
+      "output_schema": {
+        "type": "object",
+        "title": "FeedbackEpisode",
+        "properties": {
+          "episode_id": {
+            "type": "string"
+          },
+          "prediction_time": {
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}$",
+            "description": "ISO 8601 dataset-local time; no UTC offset is asserted"
+          },
+          "model_version": {
+            "type": "string"
+          },
+          "activation_id": {
+            "type": "integer"
+          },
+          "origin_idx": {
+            "type": "integer"
+          },
+          "target_end_idx": {
+            "type": "integer"
+          },
+          "history": {
+            "type": "array",
+            "items": {
+              "type": "array",
+              "items": {
+                "type": "number"
+              },
+              "minItems": 7,
+              "maxItems": 7
+            },
+            "minItems": 96,
+            "maxItems": 96
+          },
+          "history_times": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}$",
+              "description": "ISO 8601 dataset-local time; no UTC offset is asserted"
+            },
+            "minItems": 96,
+            "maxItems": 96
+          },
+          "forecast": {
+            "type": "array",
+            "items": {
+              "type": "number"
+            },
+            "minItems": 24,
+            "maxItems": 24
+          },
+          "target_times": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}$",
+              "description": "ISO 8601 dataset-local time; no UTC offset is asserted"
+            },
+            "minItems": 24,
+            "maxItems": 24
+          },
+          "truth": {
+            "anyOf": [
+              {
+                "type": "array",
+                "items": {
+                  "type": "number"
+                },
+                "minItems": 24,
+                "maxItems": 24
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "MAE": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "feedback_time": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "status": {
+            "enum": [
+              "pending",
+              "complete"
+            ]
+          }
+        },
+        "required": [
+          "episode_id",
+          "prediction_time",
+          "model_version",
+          "activation_id",
+          "origin_idx",
+          "target_end_idx",
+          "history",
+          "history_times",
+          "forecast",
+          "target_times",
+          "truth",
+          "MAE",
+          "feedback_time",
+          "status"
+        ],
+        "additionalProperties": false
+      },
+      "side_effect": "none; caller appends predictions.jsonl",
+      "constraints": [
+        "history [96,7]; exactly 96 hourly timestamps",
+        "all history times < prediction_time",
+        "forecast [24]; truth/MAE initially null"
+      ],
+      "errors": [
+        "ValueError: invalid values, shapes, timestamps, splits or stale gate",
+        "FileNotFoundError/OSError: unavailable local artifact",
+        "RuntimeError/ImportError: unavailable PyTorch/CUDA backend"
+      ]
+    },
+    {
+      "name": "Feedback Collector",
+      "entrypoint": "complete_feedback",
+      "signature": "(ep: 'FeedbackEpisode', observed_values: 'np.ndarray', observed_times: 'list[datetime]', as_of: 'datetime') -> 'FeedbackEpisode'",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "ep": {
+            "type": "object",
+            "title": "FeedbackEpisode",
+            "properties": {
+              "episode_id": {
+                "type": "string"
+              },
+              "prediction_time": {
+                "type": "string",
+                "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}$",
+                "description": "ISO 8601 dataset-local time; no UTC offset is asserted"
+              },
+              "model_version": {
+                "type": "string"
+              },
+              "activation_id": {
+                "type": "integer"
+              },
+              "origin_idx": {
+                "type": "integer"
+              },
+              "target_end_idx": {
+                "type": "integer"
+              },
+              "history": {
+                "type": "array",
+                "items": {
+                  "type": "array",
+                  "items": {
+                    "type": "number"
+                  },
+                  "minItems": 7,
+                  "maxItems": 7
+                },
+                "minItems": 96,
+                "maxItems": 96
+              },
+              "history_times": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}$",
+                  "description": "ISO 8601 dataset-local time; no UTC offset is asserted"
+                },
+                "minItems": 96,
+                "maxItems": 96
+              },
+              "forecast": {
+                "type": "array",
+                "items": {
+                  "type": "number"
+                },
+                "minItems": 24,
+                "maxItems": 24
+              },
+              "target_times": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}$",
+                  "description": "ISO 8601 dataset-local time; no UTC offset is asserted"
+                },
+                "minItems": 24,
+                "maxItems": 24
+              },
+              "truth": {
+                "anyOf": [
+                  {
+                    "type": "array",
+                    "items": {
+                      "type": "number"
+                    },
+                    "minItems": 24,
+                    "maxItems": 24
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "MAE": {
+                "anyOf": [
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "feedback_time": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "status": {
+                "enum": [
+                  "pending",
+                  "complete"
+                ]
+              }
+            },
+            "required": [
+              "episode_id",
+              "prediction_time",
+              "model_version",
+              "activation_id",
+              "origin_idx",
+              "target_end_idx",
+              "history",
+              "history_times",
+              "forecast",
+              "target_times",
+              "truth",
+              "MAE",
+              "feedback_time",
+              "status"
+            ],
+            "additionalProperties": false
+          },
+          "observed_values": {
+            "type": "array",
+            "items": {
+              "type": "array",
+              "items": {
+                "type": "number"
+              },
+              "minItems": 7,
+              "maxItems": 7
+            },
+            "x-python-type": "numpy.ndarray",
+            "description": "Observed values [T,7], finite"
+          },
+          "observed_times": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}$",
+              "description": "ISO 8601 dataset-local time; no UTC offset is asserted",
+              "x-python-type": "datetime"
+            }
+          },
+          "as_of": {
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}$",
+            "description": "ISO 8601 dataset-local time; no UTC offset is asserted",
+            "x-python-type": "datetime"
+          }
+        },
+        "required": [
+          "ep",
+          "observed_values",
+          "observed_times",
+          "as_of"
+        ],
+        "additionalProperties": false
+      },
+      "output_schema": {
+        "type": "object",
+        "title": "FeedbackEpisode",
+        "properties": {
+          "episode_id": {
+            "type": "string"
+          },
+          "prediction_time": {
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}$",
+            "description": "ISO 8601 dataset-local time; no UTC offset is asserted"
+          },
+          "model_version": {
+            "type": "string"
+          },
+          "activation_id": {
+            "type": "integer"
+          },
+          "origin_idx": {
+            "type": "integer"
+          },
+          "target_end_idx": {
+            "type": "integer"
+          },
+          "history": {
+            "type": "array",
+            "items": {
+              "type": "array",
+              "items": {
+                "type": "number"
+              },
+              "minItems": 7,
+              "maxItems": 7
+            },
+            "minItems": 96,
+            "maxItems": 96
+          },
+          "history_times": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}$",
+              "description": "ISO 8601 dataset-local time; no UTC offset is asserted"
+            },
+            "minItems": 96,
+            "maxItems": 96
+          },
+          "forecast": {
+            "type": "array",
+            "items": {
+              "type": "number"
+            },
+            "minItems": 24,
+            "maxItems": 24
+          },
+          "target_times": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}$",
+              "description": "ISO 8601 dataset-local time; no UTC offset is asserted"
+            },
+            "minItems": 24,
+            "maxItems": 24
+          },
+          "truth": {
+            "anyOf": [
+              {
+                "type": "array",
+                "items": {
+                  "type": "number"
+                },
+                "minItems": 24,
+                "maxItems": 24
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "MAE": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "feedback_time": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "status": {
+            "enum": [
+              "pending",
+              "complete"
+            ]
+          }
+        },
+        "required": [
+          "episode_id",
+          "prediction_time",
+          "model_version",
+          "activation_id",
+          "origin_idx",
+          "target_end_idx",
+          "history",
+          "history_times",
+          "forecast",
+          "target_times",
+          "truth",
+          "MAE",
+          "feedback_time",
+          "status"
+        ],
+        "additionalProperties": false
+      },
+      "side_effect": "none; returns a new completed Episode",
+      "constraints": [
+        "input is only observed prefix [0,T)",
+        "truth times align exactly with 24 target times",
+        "last target time < as_of",
+        "original forecast and model_version preserved"
+      ],
+      "errors": [
+        "ValueError: invalid values, shapes, timestamps, splits or stale gate",
+        "FileNotFoundError/OSError: unavailable local artifact",
+        "RuntimeError/ImportError: unavailable PyTorch/CUDA backend"
+      ]
+    },
+    {
+      "name": "Feedback Monitor",
+      "entrypoint": "FeedbackMonitor.run",
+      "signature": "(self, episodes: 'list[FeedbackEpisode]', model_version: 'str', activation_id: 'int', baseline_mae: 'float', as_of: 'str') -> 'MonitorDecision'",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "episodes": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "title": "FeedbackEpisode",
+              "properties": {
+                "episode_id": {
+                  "type": "string"
+                },
+                "prediction_time": {
+                  "type": "string",
+                  "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}$",
+                  "description": "ISO 8601 dataset-local time; no UTC offset is asserted"
+                },
+                "model_version": {
+                  "type": "string"
+                },
+                "activation_id": {
+                  "type": "integer"
+                },
+                "origin_idx": {
+                  "type": "integer"
+                },
+                "target_end_idx": {
+                  "type": "integer"
+                },
+                "history": {
+                  "type": "array",
+                  "items": {
+                    "type": "array",
+                    "items": {
+                      "type": "number"
+                    },
+                    "minItems": 7,
+                    "maxItems": 7
+                  },
+                  "minItems": 96,
+                  "maxItems": 96
+                },
+                "history_times": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}$",
+                    "description": "ISO 8601 dataset-local time; no UTC offset is asserted"
+                  },
+                  "minItems": 96,
+                  "maxItems": 96
+                },
+                "forecast": {
+                  "type": "array",
+                  "items": {
+                    "type": "number"
+                  },
+                  "minItems": 24,
+                  "maxItems": 24
+                },
+                "target_times": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}$",
+                    "description": "ISO 8601 dataset-local time; no UTC offset is asserted"
+                  },
+                  "minItems": 24,
+                  "maxItems": 24
+                },
+                "truth": {
+                  "anyOf": [
+                    {
+                      "type": "array",
+                      "items": {
+                        "type": "number"
+                      },
+                      "minItems": 24,
+                      "maxItems": 24
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "MAE": {
+                  "anyOf": [
+                    {
+                      "type": "number"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "feedback_time": {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "status": {
+                  "enum": [
+                    "pending",
+                    "complete"
+                  ]
+                }
+              },
+              "required": [
+                "episode_id",
+                "prediction_time",
+                "model_version",
+                "activation_id",
+                "origin_idx",
+                "target_end_idx",
+                "history",
+                "history_times",
+                "forecast",
+                "target_times",
+                "truth",
+                "MAE",
+                "feedback_time",
+                "status"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "model_version": {
+            "type": "string"
+          },
+          "activation_id": {
+            "type": "integer"
+          },
+          "baseline_mae": {
+            "type": "number"
+          },
+          "as_of": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "episodes",
+          "model_version",
+          "activation_id",
+          "baseline_mae",
+          "as_of"
+        ],
+        "additionalProperties": false
+      },
+      "output_schema": {
+        "type": "object",
+        "title": "MonitorDecision",
+        "properties": {
+          "model_version": {
+            "type": "string"
+          },
+          "activation_id": {
+            "type": "integer"
+          },
+          "n": {
+            "type": "integer"
+          },
+          "count": {
+            "type": "integer"
+          },
+          "baseline_mae": {
+            "type": "number"
+          },
+          "recent_mae": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "threshold": {
+            "type": "number"
+          },
+          "episode_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "checked_count": {
+            "type": "integer"
+          },
+          "evaluated_blocks": {
+            "type": "integer"
+          },
+          "degraded": {
+            "type": "boolean"
+          },
+          "streak": {
+            "type": "integer"
+          },
+          "trigger_retrain": {
+            "type": "boolean"
+          },
+          "reason": {
+            "type": "string"
+          },
+          "as_of": {
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}$",
+            "description": "ISO 8601 dataset-local time; no UTC offset is asserted"
+          }
+        },
+        "required": [
+          "model_version",
+          "activation_id",
+          "n",
+          "count",
+          "baseline_mae",
+          "recent_mae",
+          "threshold",
+          "episode_ids",
+          "checked_count",
+          "evaluated_blocks",
+          "degraded",
+          "streak",
+          "trigger_retrain",
+          "reason",
+          "as_of"
+        ],
+        "additionalProperties": false
+      },
+      "side_effect": "updates local checked/streak/cooldown state",
+      "constraints": [
+        "current model_version + activation_id only",
+        "latest N complete episodes for rolling MAE",
+        "triggers require consecutive nonoverlapping degraded blocks and cooldown"
+      ],
+      "errors": [
+        "ValueError: invalid values, shapes, timestamps, splits or stale gate",
+        "FileNotFoundError/OSError: unavailable local artifact",
+        "RuntimeError/ImportError: unavailable PyTorch/CUDA backend"
+      ]
+    },
+    {
+      "name": "Train Candidate",
+      "entrypoint": "train_candidate_tool",
+      "signature": "(data_version: 'DataVersion', train_config: 'TrainConfig', observed_values: 'np.ndarray', observed_times: 'list[datetime]', candidate_dir: 'str | Path', *, bootstrap: 'bool' = False) -> 'CandidateResult'",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "data_version": {
+            "type": "object",
+            "title": "DataVersion",
+            "properties": {
+              "data_version": {
+                "type": "string"
+              },
+              "observed_end": {
+                "type": "integer"
+              },
+              "as_of": {
+                "type": "string",
+                "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}$",
+                "description": "ISO 8601 dataset-local time; no UTC offset is asserted"
+              },
+              "train_ranges": {
+                "type": "array",
+                "items": {
+                  "type": "array",
+                  "prefixItems": [
+                    {
+                      "type": "integer"
+                    },
+                    {
+                      "type": "integer"
+                    }
+                  ],
+                  "minItems": 2,
+                  "maxItems": 2
+                }
+              },
+              "validation_range": {
+                "type": "array",
+                "prefixItems": [
+                  {
+                    "type": "integer"
+                  },
+                  {
+                    "type": "integer"
+                  }
+                ],
+                "minItems": 2,
+                "maxItems": 2
+              },
+              "historical_range": {
+                "type": "array",
+                "prefixItems": [
+                  {
+                    "type": "integer"
+                  },
+                  {
+                    "type": "integer"
+                  }
+                ],
+                "minItems": 2,
+                "maxItems": 2
+              },
+              "recent_range": {
+                "type": "array",
+                "prefixItems": [
+                  {
+                    "type": "integer"
+                  },
+                  {
+                    "type": "integer"
+                  }
+                ],
+                "minItems": 2,
+                "maxItems": 2
+              },
+              "snapshot_sha256": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "data_version",
+              "observed_end",
+              "as_of",
+              "train_ranges",
+              "validation_range",
+              "historical_range",
+              "recent_range",
+              "snapshot_sha256"
+            ],
+            "additionalProperties": false
+          },
+          "train_config": {
+            "type": "object",
+            "title": "TrainConfig",
+            "properties": {
+              "backend": {
+                "type": "string"
+              },
+              "model_name": {
+                "type": "string"
+              },
+              "ridge": {
+                "type": "number"
+              },
+              "epochs": {
+                "type": "integer"
+              },
+              "patience": {
+                "type": "integer"
+              },
+              "lr": {
+                "type": "number"
+              },
+              "batch_size": {
+                "type": "integer"
+              },
+              "weight_decay": {
+                "type": "number"
+              },
+              "grad_clip": {
+                "type": "number"
+              },
+              "train_stride": {
+                "type": "integer"
+              },
+              "hidden_size": {
+                "type": "integer"
+              },
+              "num_layers": {
+                "type": "integer"
+              },
+              "dropout": {
+                "type": "number"
+              },
+              "seed": {
+                "type": "integer"
+              },
+              "device": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "backend",
+              "model_name",
+              "ridge",
+              "epochs",
+              "patience",
+              "lr",
+              "batch_size",
+              "weight_decay",
+              "grad_clip",
+              "train_stride",
+              "hidden_size",
+              "num_layers",
+              "dropout",
+              "seed",
+              "device"
+            ],
+            "additionalProperties": false
+          },
+          "observed_values": {
+            "type": "array",
+            "items": {
+              "type": "array",
+              "items": {
+                "type": "number"
+              },
+              "minItems": 7,
+              "maxItems": 7
+            },
+            "x-python-type": "numpy.ndarray",
+            "description": "Observed values [T,7], finite"
+          },
+          "observed_times": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}$",
+              "description": "ISO 8601 dataset-local time; no UTC offset is asserted",
+              "x-python-type": "datetime"
+            }
+          },
+          "candidate_dir": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "string",
+                "x-python-type": "pathlib.Path"
+              }
+            ]
+          },
+          "bootstrap": {
+            "type": "boolean",
+            "default": false
+          }
+        },
+        "required": [
+          "data_version",
+          "train_config",
+          "observed_values",
+          "observed_times",
+          "candidate_dir"
+        ],
+        "additionalProperties": false
+      },
+      "output_schema": {
+        "type": "object",
+        "title": "CandidateResult",
+        "properties": {
+          "candidate_id": {
+            "type": "string"
+          },
+          "checkpoint_path": {
+            "type": "string"
+          },
+          "checkpoint_sha256": {
+            "type": "string"
+          },
+          "data_version": {
+            "type": "string"
+          },
+          "trained_as_of": {
+            "type": "string"
+          },
+          "train_config": {
+            "type": "object",
+            "title": "TrainConfig",
+            "properties": {
+              "backend": {
+                "type": "string"
+              },
+              "model_name": {
+                "type": "string"
+              },
+              "ridge": {
+                "type": "number"
+              },
+              "epochs": {
+                "type": "integer"
+              },
+              "patience": {
+                "type": "integer"
+              },
+              "lr": {
+                "type": "number"
+              },
+              "batch_size": {
+                "type": "integer"
+              },
+              "weight_decay": {
+                "type": "number"
+              },
+              "grad_clip": {
+                "type": "number"
+              },
+              "train_stride": {
+                "type": "integer"
+              },
+              "hidden_size": {
+                "type": "integer"
+              },
+              "num_layers": {
+                "type": "integer"
+              },
+              "dropout": {
+                "type": "number"
+              },
+              "seed": {
+                "type": "integer"
+              },
+              "device": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "backend",
+              "model_name",
+              "ridge",
+              "epochs",
+              "patience",
+              "lr",
+              "batch_size",
+              "weight_decay",
+              "grad_clip",
+              "train_stride",
+              "hidden_size",
+              "num_layers",
+              "dropout",
+              "seed",
+              "device"
+            ],
+            "additionalProperties": false
+          },
+          "validation_metrics": {
+            "type": "object",
+            "title": "ValidationMetrics",
+            "properties": {
+              "MAE": {
+                "type": "number"
+              },
+              "unit": {
+                "type": "string"
+              },
+              "windows": {
+                "type": "integer"
+              },
+              "best_epoch": {
+                "type": "integer"
+              }
+            },
+            "required": [
+              "MAE",
+              "unit",
+              "windows",
+              "best_epoch"
+            ],
+            "additionalProperties": false
+          },
+          "manifest": {
+            "type": "object",
+            "title": "DataVersion",
+            "properties": {
+              "data_version": {
+                "type": "string"
+              },
+              "observed_end": {
+                "type": "integer"
+              },
+              "as_of": {
+                "type": "string",
+                "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}$",
+                "description": "ISO 8601 dataset-local time; no UTC offset is asserted"
+              },
+              "train_ranges": {
+                "type": "array",
+                "items": {
+                  "type": "array",
+                  "prefixItems": [
+                    {
+                      "type": "integer"
+                    },
+                    {
+                      "type": "integer"
+                    }
+                  ],
+                  "minItems": 2,
+                  "maxItems": 2
+                }
+              },
+              "validation_range": {
+                "type": "array",
+                "prefixItems": [
+                  {
+                    "type": "integer"
+                  },
+                  {
+                    "type": "integer"
+                  }
+                ],
+                "minItems": 2,
+                "maxItems": 2
+              },
+              "historical_range": {
+                "type": "array",
+                "prefixItems": [
+                  {
+                    "type": "integer"
+                  },
+                  {
+                    "type": "integer"
+                  }
+                ],
+                "minItems": 2,
+                "maxItems": 2
+              },
+              "recent_range": {
+                "type": "array",
+                "prefixItems": [
+                  {
+                    "type": "integer"
+                  },
+                  {
+                    "type": "integer"
+                  }
+                ],
+                "minItems": 2,
+                "maxItems": 2
+              },
+              "snapshot_sha256": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "data_version",
+              "observed_end",
+              "as_of",
+              "train_ranges",
+              "validation_range",
+              "historical_range",
+              "recent_range",
+              "snapshot_sha256"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "candidate_id",
+          "checkpoint_path",
+          "checkpoint_sha256",
+          "data_version",
+          "trained_as_of",
+          "train_config",
+          "validation_metrics",
+          "manifest"
+        ],
+        "additionalProperties": false
+      },
+      "side_effect": "writes a new candidate directory",
+      "constraints": [
+        "only train_ranges fit weights/scaler",
+        "validation selects epoch; gate targets excluded",
+        "one fixed configuration per candidate; existing model never overwritten"
+      ],
+      "errors": [
+        "ValueError: invalid values, shapes, timestamps, splits or stale gate",
+        "FileNotFoundError/OSError: unavailable local artifact",
+        "RuntimeError/ImportError: unavailable PyTorch/CUDA backend"
+      ]
+    },
+    {
+      "name": "Model Gate",
+      "entrypoint": "model_gate_tool",
+      "signature": "(candidate: 'CandidateResult', incumbent: 'ForecastModel', incumbent_version: 'str', observed_values: 'np.ndarray', observed_times: 'list[datetime]', device: 'str' = 'cpu', *, incumbent_activation_id: 'int | None' = None, gate_config: 'GateConfig | None' = None) -> 'GateResult'",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "candidate": {
+            "type": "object",
+            "title": "CandidateResult",
+            "properties": {
+              "candidate_id": {
+                "type": "string"
+              },
+              "checkpoint_path": {
+                "type": "string"
+              },
+              "checkpoint_sha256": {
+                "type": "string"
+              },
+              "data_version": {
+                "type": "string"
+              },
+              "trained_as_of": {
+                "type": "string"
+              },
+              "train_config": {
+                "type": "object",
+                "title": "TrainConfig",
+                "properties": {
+                  "backend": {
+                    "type": "string"
+                  },
+                  "model_name": {
+                    "type": "string"
+                  },
+                  "ridge": {
+                    "type": "number"
+                  },
+                  "epochs": {
+                    "type": "integer"
+                  },
+                  "patience": {
+                    "type": "integer"
+                  },
+                  "lr": {
+                    "type": "number"
+                  },
+                  "batch_size": {
+                    "type": "integer"
+                  },
+                  "weight_decay": {
+                    "type": "number"
+                  },
+                  "grad_clip": {
+                    "type": "number"
+                  },
+                  "train_stride": {
+                    "type": "integer"
+                  },
+                  "hidden_size": {
+                    "type": "integer"
+                  },
+                  "num_layers": {
+                    "type": "integer"
+                  },
+                  "dropout": {
+                    "type": "number"
+                  },
+                  "seed": {
+                    "type": "integer"
+                  },
+                  "device": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "backend",
+                  "model_name",
+                  "ridge",
+                  "epochs",
+                  "patience",
+                  "lr",
+                  "batch_size",
+                  "weight_decay",
+                  "grad_clip",
+                  "train_stride",
+                  "hidden_size",
+                  "num_layers",
+                  "dropout",
+                  "seed",
+                  "device"
+                ],
+                "additionalProperties": false
+              },
+              "validation_metrics": {
+                "type": "object",
+                "title": "ValidationMetrics",
+                "properties": {
+                  "MAE": {
+                    "type": "number"
+                  },
+                  "unit": {
+                    "type": "string"
+                  },
+                  "windows": {
+                    "type": "integer"
+                  },
+                  "best_epoch": {
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "MAE",
+                  "unit",
+                  "windows",
+                  "best_epoch"
+                ],
+                "additionalProperties": false
+              },
+              "manifest": {
+                "type": "object",
+                "title": "DataVersion",
+                "properties": {
+                  "data_version": {
+                    "type": "string"
+                  },
+                  "observed_end": {
+                    "type": "integer"
+                  },
+                  "as_of": {
+                    "type": "string",
+                    "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}$",
+                    "description": "ISO 8601 dataset-local time; no UTC offset is asserted"
+                  },
+                  "train_ranges": {
+                    "type": "array",
+                    "items": {
+                      "type": "array",
+                      "prefixItems": [
+                        {
+                          "type": "integer"
+                        },
+                        {
+                          "type": "integer"
+                        }
+                      ],
+                      "minItems": 2,
+                      "maxItems": 2
+                    }
+                  },
+                  "validation_range": {
+                    "type": "array",
+                    "prefixItems": [
+                      {
+                        "type": "integer"
+                      },
+                      {
+                        "type": "integer"
+                      }
+                    ],
+                    "minItems": 2,
+                    "maxItems": 2
+                  },
+                  "historical_range": {
+                    "type": "array",
+                    "prefixItems": [
+                      {
+                        "type": "integer"
+                      },
+                      {
+                        "type": "integer"
+                      }
+                    ],
+                    "minItems": 2,
+                    "maxItems": 2
+                  },
+                  "recent_range": {
+                    "type": "array",
+                    "prefixItems": [
+                      {
+                        "type": "integer"
+                      },
+                      {
+                        "type": "integer"
+                      }
+                    ],
+                    "minItems": 2,
+                    "maxItems": 2
+                  },
+                  "snapshot_sha256": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "data_version",
+                  "observed_end",
+                  "as_of",
+                  "train_ranges",
+                  "validation_range",
+                  "historical_range",
+                  "recent_range",
+                  "snapshot_sha256"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "required": [
+              "candidate_id",
+              "checkpoint_path",
+              "checkpoint_sha256",
+              "data_version",
+              "trained_as_of",
+              "train_config",
+              "validation_metrics",
+              "manifest"
+            ],
+            "additionalProperties": false
+          },
+          "incumbent": {
+            "type": "object",
+            "x-python-type": "ForecastModel",
+            "description": "In-process model handle loaded from a checkpoint; not a JSON array"
+          },
+          "incumbent_version": {
+            "type": "string"
+          },
+          "observed_values": {
+            "type": "array",
+            "items": {
+              "type": "array",
+              "items": {
+                "type": "number"
+              },
+              "minItems": 7,
+              "maxItems": 7
+            },
+            "x-python-type": "numpy.ndarray",
+            "description": "Observed values [T,7], finite"
+          },
+          "observed_times": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}$",
+              "description": "ISO 8601 dataset-local time; no UTC offset is asserted",
+              "x-python-type": "datetime"
+            }
+          },
+          "device": {
+            "type": "string",
+            "default": "cpu"
+          },
+          "incumbent_activation_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
+          "gate_config": {
+            "anyOf": [
+              {
+                "type": "object",
+                "title": "GateConfig",
+                "properties": {
+                  "recent_gain": {
+                    "type": "number"
+                  },
+                  "old_tolerance": {
+                    "type": "number"
+                  },
+                  "min_recent_gain": {
+                    "type": "number"
+                  },
+                  "min_old_tolerance": {
+                    "type": "number"
+                  }
+                },
+                "required": [
+                  "recent_gain",
+                  "old_tolerance",
+                  "min_recent_gain",
+                  "min_old_tolerance"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          }
+        },
+        "required": [
+          "candidate",
+          "incumbent",
+          "incumbent_version",
+          "observed_values",
+          "observed_times"
+        ],
+        "additionalProperties": false
+      },
+      "output_schema": {
+        "type": "object",
+        "title": "GateResult",
+        "properties": {
+          "allow_upgrade": {
+            "type": "boolean"
+          },
+          "recent_ok": {
+            "type": "boolean"
+          },
+          "historical_ok": {
+            "type": "boolean"
+          },
+          "recent_limit": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "historical_limit": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "incumbent_recent_mae": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "candidate_recent_mae": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "incumbent_historical_mae": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "candidate_historical_mae": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "incumbent_version": {
+            "type": "string"
+          },
+          "incumbent_activation_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "incumbent_checkpoint_sha256": {
+            "type": "string"
+          },
+          "candidate_id": {
+            "type": "string"
+          },
+          "checkpoint_sha256": {
+            "type": "string"
+          },
+          "snapshot_sha256": {
+            "type": "string"
+          },
+          "evaluated_as_of": {
+            "type": "string"
+          },
+          "gate_config": {
+            "type": "object",
+            "title": "GateConfig",
+            "properties": {
+              "recent_gain": {
+                "type": "number"
+              },
+              "old_tolerance": {
+                "type": "number"
+              },
+              "min_recent_gain": {
+                "type": "number"
+              },
+              "min_old_tolerance": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "recent_gain",
+              "old_tolerance",
+              "min_recent_gain",
+              "min_old_tolerance"
+            ],
+            "additionalProperties": false
+          },
+          "recent": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "object",
+              "title": "EvalResult",
+              "properties": {
+                "MAE": {
+                  "type": "number"
+                },
+                "windows": {
+                  "type": "integer"
+                },
+                "target_range": {
+                  "type": "array",
+                  "items": {
+                    "type": "integer"
+                  }
+                },
+                "origins": {
+                  "type": "array",
+                  "items": {
+                    "type": "integer"
+                  }
+                }
+              },
+              "required": [
+                "MAE",
+                "windows",
+                "target_range",
+                "origins"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "historical": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "object",
+              "title": "EvalResult",
+              "properties": {
+                "MAE": {
+                  "type": "number"
+                },
+                "windows": {
+                  "type": "integer"
+                },
+                "target_range": {
+                  "type": "array",
+                  "items": {
+                    "type": "integer"
+                  }
+                },
+                "origins": {
+                  "type": "array",
+                  "items": {
+                    "type": "integer"
+                  }
+                }
+              },
+              "required": [
+                "MAE",
+                "windows",
+                "target_range",
+                "origins"
+              ],
+              "additionalProperties": false
+            }
+          }
+        },
+        "required": [
+          "allow_upgrade",
+          "recent_ok",
+          "historical_ok",
+          "recent_limit",
+          "historical_limit",
+          "incumbent_recent_mae",
+          "candidate_recent_mae",
+          "incumbent_historical_mae",
+          "candidate_historical_mae",
+          "incumbent_version",
+          "incumbent_activation_id",
+          "incumbent_checkpoint_sha256",
+          "candidate_id",
+          "checkpoint_sha256",
+          "snapshot_sha256",
+          "evaluated_as_of",
+          "gate_config",
+          "recent",
+          "historical"
+        ],
+        "additionalProperties": false
+      },
+      "side_effect": "none; caller writes gate.json",
+      "constraints": [
+        "same recent and historical windows for both models",
+        "each model uses its own scaler",
+        "both quantitative conditions must pass",
+        "activation ID/hash/snapshot bound for publication"
+      ],
+      "errors": [
+        "ValueError: invalid values, shapes, timestamps, splits or stale gate",
+        "FileNotFoundError/OSError: unavailable local artifact",
+        "RuntimeError/ImportError: unavailable PyTorch/CUDA backend"
+      ]
+    },
+    {
+      "name": "Publish Version",
+      "entrypoint": "VersionManager.publish",
+      "signature": "(self, candidate: 'CandidateResult', gate: 'GateResult | None', as_of: 'str', baseline_mae: 'float') -> 'VersionPointer'",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "candidate": {
+            "type": "object",
+            "title": "CandidateResult",
+            "properties": {
+              "candidate_id": {
+                "type": "string"
+              },
+              "checkpoint_path": {
+                "type": "string"
+              },
+              "checkpoint_sha256": {
+                "type": "string"
+              },
+              "data_version": {
+                "type": "string"
+              },
+              "trained_as_of": {
+                "type": "string"
+              },
+              "train_config": {
+                "type": "object",
+                "title": "TrainConfig",
+                "properties": {
+                  "backend": {
+                    "type": "string"
+                  },
+                  "model_name": {
+                    "type": "string"
+                  },
+                  "ridge": {
+                    "type": "number"
+                  },
+                  "epochs": {
+                    "type": "integer"
+                  },
+                  "patience": {
+                    "type": "integer"
+                  },
+                  "lr": {
+                    "type": "number"
+                  },
+                  "batch_size": {
+                    "type": "integer"
+                  },
+                  "weight_decay": {
+                    "type": "number"
+                  },
+                  "grad_clip": {
+                    "type": "number"
+                  },
+                  "train_stride": {
+                    "type": "integer"
+                  },
+                  "hidden_size": {
+                    "type": "integer"
+                  },
+                  "num_layers": {
+                    "type": "integer"
+                  },
+                  "dropout": {
+                    "type": "number"
+                  },
+                  "seed": {
+                    "type": "integer"
+                  },
+                  "device": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "backend",
+                  "model_name",
+                  "ridge",
+                  "epochs",
+                  "patience",
+                  "lr",
+                  "batch_size",
+                  "weight_decay",
+                  "grad_clip",
+                  "train_stride",
+                  "hidden_size",
+                  "num_layers",
+                  "dropout",
+                  "seed",
+                  "device"
+                ],
+                "additionalProperties": false
+              },
+              "validation_metrics": {
+                "type": "object",
+                "title": "ValidationMetrics",
+                "properties": {
+                  "MAE": {
+                    "type": "number"
+                  },
+                  "unit": {
+                    "type": "string"
+                  },
+                  "windows": {
+                    "type": "integer"
+                  },
+                  "best_epoch": {
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "MAE",
+                  "unit",
+                  "windows",
+                  "best_epoch"
+                ],
+                "additionalProperties": false
+              },
+              "manifest": {
+                "type": "object",
+                "title": "DataVersion",
+                "properties": {
+                  "data_version": {
+                    "type": "string"
+                  },
+                  "observed_end": {
+                    "type": "integer"
+                  },
+                  "as_of": {
+                    "type": "string",
+                    "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}$",
+                    "description": "ISO 8601 dataset-local time; no UTC offset is asserted"
+                  },
+                  "train_ranges": {
+                    "type": "array",
+                    "items": {
+                      "type": "array",
+                      "prefixItems": [
+                        {
+                          "type": "integer"
+                        },
+                        {
+                          "type": "integer"
+                        }
+                      ],
+                      "minItems": 2,
+                      "maxItems": 2
+                    }
+                  },
+                  "validation_range": {
+                    "type": "array",
+                    "prefixItems": [
+                      {
+                        "type": "integer"
+                      },
+                      {
+                        "type": "integer"
+                      }
+                    ],
+                    "minItems": 2,
+                    "maxItems": 2
+                  },
+                  "historical_range": {
+                    "type": "array",
+                    "prefixItems": [
+                      {
+                        "type": "integer"
+                      },
+                      {
+                        "type": "integer"
+                      }
+                    ],
+                    "minItems": 2,
+                    "maxItems": 2
+                  },
+                  "recent_range": {
+                    "type": "array",
+                    "prefixItems": [
+                      {
+                        "type": "integer"
+                      },
+                      {
+                        "type": "integer"
+                      }
+                    ],
+                    "minItems": 2,
+                    "maxItems": 2
+                  },
+                  "snapshot_sha256": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "data_version",
+                  "observed_end",
+                  "as_of",
+                  "train_ranges",
+                  "validation_range",
+                  "historical_range",
+                  "recent_range",
+                  "snapshot_sha256"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "required": [
+              "candidate_id",
+              "checkpoint_path",
+              "checkpoint_sha256",
+              "data_version",
+              "trained_as_of",
+              "train_config",
+              "validation_metrics",
+              "manifest"
+            ],
+            "additionalProperties": false
+          },
+          "gate": {
+            "anyOf": [
+              {
+                "type": "object",
+                "title": "GateResult",
+                "properties": {
+                  "allow_upgrade": {
+                    "type": "boolean"
+                  },
+                  "recent_ok": {
+                    "type": "boolean"
+                  },
+                  "historical_ok": {
+                    "type": "boolean"
+                  },
+                  "recent_limit": {
+                    "anyOf": [
+                      {
+                        "type": "number"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "historical_limit": {
+                    "anyOf": [
+                      {
+                        "type": "number"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "incumbent_recent_mae": {
+                    "anyOf": [
+                      {
+                        "type": "number"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "candidate_recent_mae": {
+                    "anyOf": [
+                      {
+                        "type": "number"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "incumbent_historical_mae": {
+                    "anyOf": [
+                      {
+                        "type": "number"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "candidate_historical_mae": {
+                    "anyOf": [
+                      {
+                        "type": "number"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "incumbent_version": {
+                    "type": "string"
+                  },
+                  "incumbent_activation_id": {
+                    "anyOf": [
+                      {
+                        "type": "integer"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "incumbent_checkpoint_sha256": {
+                    "type": "string"
+                  },
+                  "candidate_id": {
+                    "type": "string"
+                  },
+                  "checkpoint_sha256": {
+                    "type": "string"
+                  },
+                  "snapshot_sha256": {
+                    "type": "string"
+                  },
+                  "evaluated_as_of": {
+                    "type": "string"
+                  },
+                  "gate_config": {
+                    "type": "object",
+                    "title": "GateConfig",
+                    "properties": {
+                      "recent_gain": {
+                        "type": "number"
+                      },
+                      "old_tolerance": {
+                        "type": "number"
+                      },
+                      "min_recent_gain": {
+                        "type": "number"
+                      },
+                      "min_old_tolerance": {
+                        "type": "number"
+                      }
+                    },
+                    "required": [
+                      "recent_gain",
+                      "old_tolerance",
+                      "min_recent_gain",
+                      "min_old_tolerance"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "recent": {
+                    "type": "object",
+                    "additionalProperties": {
+                      "type": "object",
+                      "title": "EvalResult",
+                      "properties": {
+                        "MAE": {
+                          "type": "number"
+                        },
+                        "windows": {
+                          "type": "integer"
+                        },
+                        "target_range": {
+                          "type": "array",
+                          "items": {
+                            "type": "integer"
+                          }
+                        },
+                        "origins": {
+                          "type": "array",
+                          "items": {
+                            "type": "integer"
+                          }
+                        }
+                      },
+                      "required": [
+                        "MAE",
+                        "windows",
+                        "target_range",
+                        "origins"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "historical": {
+                    "type": "object",
+                    "additionalProperties": {
+                      "type": "object",
+                      "title": "EvalResult",
+                      "properties": {
+                        "MAE": {
+                          "type": "number"
+                        },
+                        "windows": {
+                          "type": "integer"
+                        },
+                        "target_range": {
+                          "type": "array",
+                          "items": {
+                            "type": "integer"
+                          }
+                        },
+                        "origins": {
+                          "type": "array",
+                          "items": {
+                            "type": "integer"
+                          }
+                        }
+                      },
+                      "required": [
+                        "MAE",
+                        "windows",
+                        "target_range",
+                        "origins"
+                      ],
+                      "additionalProperties": false
+                    }
+                  }
+                },
+                "required": [
+                  "allow_upgrade",
+                  "recent_ok",
+                  "historical_ok",
+                  "recent_limit",
+                  "historical_limit",
+                  "incumbent_recent_mae",
+                  "candidate_recent_mae",
+                  "incumbent_historical_mae",
+                  "candidate_historical_mae",
+                  "incumbent_version",
+                  "incumbent_activation_id",
+                  "incumbent_checkpoint_sha256",
+                  "candidate_id",
+                  "checkpoint_sha256",
+                  "snapshot_sha256",
+                  "evaluated_as_of",
+                  "gate_config",
+                  "recent",
+                  "historical"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "as_of": {
+            "type": "string"
+          },
+          "baseline_mae": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "candidate",
+          "gate",
+          "as_of",
+          "baseline_mae"
+        ],
+        "additionalProperties": false
+      },
+      "output_schema": {
+        "type": "object",
+        "title": "VersionPointer",
+        "properties": {
+          "model_version": {
+            "type": "string"
+          },
+          "activation_id": {
+            "type": "integer"
+          },
+          "activated_as_of": {
+            "type": "string"
+          },
+          "action": {
+            "type": "string"
+          },
+          "baseline_mae": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "model_version",
+          "activation_id",
+          "activated_as_of",
+          "action",
+          "baseline_mae"
+        ],
+        "additionalProperties": false
+      },
+      "side_effect": "immutable M directory + atomic current.json",
+      "constraints": [
+        "M0 bootstrap permits no gate",
+        "later publication requires current activation/hash binding",
+        "version numbers never reused after rollback",
+        "failed activation removes only the new unactivated bundle"
+      ],
+      "errors": [
+        "ValueError: invalid values, shapes, timestamps, splits or stale gate",
+        "FileNotFoundError/OSError: unavailable local artifact",
+        "RuntimeError/ImportError: unavailable PyTorch/CUDA backend"
+      ]
+    },
+    {
+      "name": "Rollback",
+      "entrypoint": "VersionManager.activate",
+      "signature": "(self, version: 'str', as_of: 'str', action: 'str' = 'rollback') -> 'VersionPointer'",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "version": {
+            "type": "string"
+          },
+          "as_of": {
+            "type": "string"
+          },
+          "action": {
+            "type": "string",
+            "default": "rollback"
+          }
+        },
+        "required": [
+          "version",
+          "as_of"
+        ],
+        "additionalProperties": false
+      },
+      "output_schema": {
+        "type": "object",
+        "title": "VersionPointer",
+        "properties": {
+          "model_version": {
+            "type": "string"
+          },
+          "activation_id": {
+            "type": "integer"
+          },
+          "activated_as_of": {
+            "type": "string"
+          },
+          "action": {
+            "type": "string"
+          },
+          "baseline_mae": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "model_version",
+          "activation_id",
+          "activated_as_of",
+          "action",
+          "baseline_mae"
+        ],
+        "additionalProperties": false
+      },
+      "side_effect": "event append followed by atomic current.json commit",
+      "constraints": [
+        "load/checksum/shape/scaler/inference verified before switch",
+        "clock cannot move backwards",
+        "activation_id increments; historical predictions unchanged",
+        "single writer; precommit I/O exceptions restore event bytes; no crash-atomicity guarantee"
+      ],
+      "errors": [
+        "ValueError: invalid values, shapes, timestamps, splits or stale gate",
+        "FileNotFoundError/OSError: unavailable local artifact",
+        "RuntimeError/ImportError: unavailable PyTorch/CUDA backend"
+      ]
+    },
+    {
+      "name": "Load Version",
+      "entrypoint": "VersionManager.load",
+      "signature": "(self, version: 'str') -> 'tuple[ForecastModel, dict]'",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "version": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "version"
+        ],
+        "additionalProperties": false
+      },
+      "output_schema": {
+        "type": "array",
+        "prefixItems": [
+          {
+            "type": "object",
+            "x-python-type": "ForecastModel",
+            "description": "In-process model handle loaded from a checkpoint; not a JSON array"
+          },
+          {
+            "type": "object"
+          }
+        ],
+        "minItems": 2,
+        "maxItems": 2
+      },
+      "side_effect": "none",
+      "constraints": [
+        "returns model handle and saved manifest"
+      ],
+      "errors": [
+        "ValueError: invalid values, shapes, timestamps, splits or stale gate",
+        "FileNotFoundError/OSError: unavailable local artifact",
+        "RuntimeError/ImportError: unavailable PyTorch/CUDA backend"
+      ]
+    },
+    {
+      "name": "Current Version",
+      "entrypoint": "VersionManager.current",
+      "signature": "(self) -> 'VersionPointer'",
+      "input_schema": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      },
+      "output_schema": {
+        "type": "object",
+        "title": "VersionPointer",
+        "properties": {
+          "model_version": {
+            "type": "string"
+          },
+          "activation_id": {
+            "type": "integer"
+          },
+          "activated_as_of": {
+            "type": "string"
+          },
+          "action": {
+            "type": "string"
+          },
+          "baseline_mae": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "model_version",
+          "activation_id",
+          "activated_as_of",
+          "action",
+          "baseline_mae"
+        ],
+        "additionalProperties": false
+      },
+      "side_effect": "none",
+      "constraints": [
+        "returns current pointer"
+      ],
+      "errors": [
+        "ValueError: invalid values, shapes, timestamps, splits or stale gate",
+        "FileNotFoundError/OSError: unavailable local artifact",
+        "RuntimeError/ImportError: unavailable PyTorch/CUDA backend"
+      ]
+    },
+    {
+      "name": "List Versions",
+      "entrypoint": "VersionManager.list_versions",
+      "signature": "(self) -> 'list[dict]'",
+      "input_schema": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      },
+      "output_schema": {
+        "type": "array",
+        "items": {
+          "type": "object"
+        }
+      },
+      "side_effect": "none",
+      "constraints": [
+        "checks each historical bundle"
+      ],
+      "errors": [
+        "ValueError: invalid values, shapes, timestamps, splits or stale gate",
+        "FileNotFoundError/OSError: unavailable local artifact",
+        "RuntimeError/ImportError: unavailable PyTorch/CUDA backend"
+      ]
+    }
+  ]
+}

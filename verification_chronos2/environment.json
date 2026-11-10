@@ -1,0 +1,14 @@
+{
+  "python": "3.13.5",
+  "platform": "Linux-6.18.57-x86_64-with-glibc2.41",
+  "torch": "2.10.0+cpu",
+  "cuda_available": false,
+  "cuda_device_count": 0,
+  "chronos_dependencies": {
+    "chronos": false,
+    "peft": false,
+    "transformers": false
+  },
+  "raw_github_dns_available": false,
+  "raw_github_dns_error": "gaierror: [Errno -3] Temporary failure in name resolution"
+}

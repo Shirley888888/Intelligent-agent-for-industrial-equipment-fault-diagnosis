@@ -1,0 +1,17 @@
+test_agent_gate_rejects_missing_citation (test_dual_evolution.TestAgentAndSafety.test_agent_gate_rejects_missing_citation) ... ok
+test_normal_requires_calibration (test_dual_evolution.TestAgentAndSafety.test_normal_requires_calibration) ... ok
+test_uncalibrated_confidence_forces_human_review (test_dual_evolution.TestAgentAndSafety.test_uncalibrated_confidence_forces_human_review) ... ok
+test_candidate_agent_may_not_break_a_previously_passing_case (test_dual_evolution.TestAgentCompare.test_candidate_agent_may_not_break_a_previously_passing_case) ... ok
+test_demo_artifacts_and_expected_guardrails (test_dual_evolution.TestDemo.test_demo_artifacts_and_expected_guardrails) ... ok
+test_review_lifecycle_and_integrity (test_dual_evolution.TestEpisodeStore.test_review_lifecycle_and_integrity) ... ok
+test_tamper_detection (test_dual_evolution.TestEpisodeStore.test_tamper_detection) ... ok
+test_joint_release_requires_all_gates (test_dual_evolution.TestKnowledgeAndRegistry.test_joint_release_requires_all_gates) ... ok
+test_only_approved_effective_knowledge_retrieves (test_dual_evolution.TestKnowledgeAndRegistry.test_only_approved_effective_knowledge_retrieves) ... ok
+test_rollback_only_targets_a_previously_activated_release (test_dual_evolution.TestKnowledgeAndRegistry.test_rollback_only_targets_a_previously_activated_release) ... ok
+test_insufficient_critical_samples_requires_review (test_dual_evolution.TestModelGate.test_insufficient_critical_samples_requires_review) ... ok
+test_stratum_regression_rejects_global_improvement (test_dual_evolution.TestModelGate.test_stratum_regression_rejects_global_improvement) ... ok
+
+----------------------------------------------------------------------
+Ran 12 tests in 0.048s
+
+OK

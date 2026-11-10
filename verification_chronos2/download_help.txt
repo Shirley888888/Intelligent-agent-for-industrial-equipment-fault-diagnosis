@@ -1,0 +1,11 @@
+usage: download_ett.py [-h] [--output-dir OUTPUT_DIR]
+                       [--names {ETTh1,ETTh2,ETTm1,ETTm2} [{ETTh1,ETTh2,ETTm1,ETTm2} ...]]
+                       [--force]
+
+Download original ETT-small transformer oil-temperature data
+
+options:
+  -h, --help            show this help message and exit
+  --output-dir OUTPUT_DIR
+  --names {ETTh1,ETTh2,ETTm1,ETTm2} [{ETTh1,ETTh2,ETTm1,ETTm2} ...]
+  --force

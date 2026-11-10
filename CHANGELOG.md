@@ -1,0 +1,72 @@
+# GPU 实际验证与 torch 元数据规范化（2026-10）
+
+修改基线：版本切换一致性修复后的 `online_loop_minimal`。在本机 `etth1_gpu` 环境（Python 3.11.16、torch 2.7.1+cu128、RTX 5060）实际运行 torch 后端。
+
+| 位置 | 修改 |
+|---|---|
+| `minimal_loop.py` ForecastModel | `.pt` 加载时对 metadata 做 JSON 往返规范化：`torch.save` 保留 tuple 而 JSON sidecar 为 list，统一两侧比较语义；兼容旧 checkpoint |
+| `test_torch_version_checks.py` | 新增 torch 后端版本一致性测试：bootstrap 绑定、同 seed 逐 tensor 复现、gate 输出合法 JSON、升级/回滚/陈旧门禁/损坏检测、sidecar 篡改拒绝、CPU/GPU 跨设备预测一致 |
+| `smoke_torch.py` | 新增 `--version-checks`：受控门禁分数演练升级/回滚/陈旧门禁拒绝/损坏检测；损坏检查在临时副本上执行，正式产物不受影响 |
+| 验证记录 | `test_results_gpu.txt`：`python -O -m unittest -v test_loop test_torch_version_checks` 共 27 项通过（1 项因 CUDA 可达跳过） |
+
+GPU 全量回放与既有结果一致（默认规则 0 次自然重训；演练候选近期无足够改善被门禁拒绝）。演练中的受控门禁分数是测试输入，不是模型精度收益。
+
+# 版本切换一致性修复
+
+修改基线：最新上传的 `online_loop_minimal.zip`。保留类名、函数签名、数据结构、模型后端和原实验记录。
+
+| 位置 | 修改 |
+|---|---|
+| `VersionManager.activate` | 日志先写、指针最后提交；异常时截断部分日志或删除首次新建日志，清理指针临时文件；成功提交后不执行额外 I/O |
+| `VersionManager.publish` | 激活失败删除本次新建的未激活版本目录，候选与历史版本保留，可重新发布 |
+| `simulate` | 门禁通过后在提交前加载并试推候选，提交后直接使用准备好的模型句柄，避免加载失败导致版本与权重不符 |
+| `test_loop.py` | 新增日志失败、回滚失败、日志部分写入、指针替换失败、初始化失败及重试、模拟器失败保留与正常升级路径测试 |
+| Tool/设计说明 | 同步提交顺序、副作用及单写者异常恢复范围 |
+
+本次故障测试的门禁分数是受控测试输入，不是模型精度收益。普通 I/O 异常恢复不等于断电/进程终止时的跨文件原子性；清理操作自身失败时会显式报错。
+
+# v2 针对性修改清单（保留原记录）
+
+修改基线：本次上传的 ETTh1_Online_Learning_Minimal_Loop(1).zip。
+保留原函数名、类名、数据字段和 NumPy / LSTM 两条后端；未重写 models.py 或修改 ETTh1.csv。
+
+| 前面要求 | 本次落地位置 | 修改与验证 |
+|---|---|---|
+| 1. Tool 清单与 I/O | tool_catalog.py、tool_catalog.json、minimal_loop.py 的 TypedDict | 从实际签名导出类型、默认值、输出结构和约束；公开 tools 命令 |
+| 2. Feedback Episode | FeedbackEpisode、predict_tool、complete_feedback、FeedbackEpisode_example.json | 保留全部字段；检查历史未篡改、预测形状、真值时间逐点对齐及成熟条件 |
+| 3. Feedback Monitor | FeedbackMonitor.run / reset | 每次返回完整固定结构，最近 N 次滚动 MAE；非重叠块作触发依据；批量反馈和激活切换自动重置 |
+| 4. Train Candidate | TrainConfig.validate、train_candidate_tool、configs/ | 配置 JSON 与完整 CLI；拟合与独立验证分离；显式有限值和时间边界检查；新增 GPU 执行检查入口 |
+| 5. Model Gate | GateConfig、model_gate_tool、validate_candidate | 近期改善和历史容差均量化；绑定候选 hash、数据快照、现役 hash 和 activation_id；非法指标拒绝且返回合法 JSON |
+| 6. 版本与回滚 | VersionManager.publish / activate / list_versions | 完整产物暂存后获取 M 编号；指针原子切换；旧 gate 不可在回滚后复用；恢复前检查权重/配置/基线/时钟 |
+| 7. ETTh1 模拟 | simulate、run_config.json、results_*_v2 | 严格时间前缀、延迟 truth、训练/验证/两门禁隔离；训练失败继续使用 M0；v1 原记录保留 |
+| 无未来泄露验证 | check_observed / check_manifest、test_loop.py | 将可被优化模式移除的 assert 改为显式 ValueError；测试未来扰动前缀不变及 python -O 校验 |
+
+## 改动注释
+
+代码使用 `modify:` 标记，例如 explicit-validation、prefix-contract、rolling-monitor、publication-binding、atomic-version、full-cli。
+所有旧断言边界改用统一 require()，即使 Python 以 -O 运行也不绕过校验。对于非法外部输入，异常类型从 AssertionError 统一改为 ValueError。
+
+## 兼容性与结果边界
+
+- 原 CLI simulate / rollback 仍可使用；新增配置参数、tools / versions 子命令。
+- 原生成的保存版本可通过相对目录加载；新发布要求使用新的门禁绑定字段。
+- Monitor 等待下一检查块时，也返回已有最近 N 样本 MAE；evaluated_blocks 表示本次是否进行了新的触发判断。
+- 按默认配置重跑的参考 MAE 与 v1 在数值容差内一致。新增验证不能表述为 LSTM 在线精度提升。
+- 本次未执行 GPU 分支；smoke_torch.py 在用户已有 PyTorch 环境中进行实际执行检查。
+
+
+## 双任务统一模型—Agent 接入 V2（2026-11）
+
+- 新增工业故障多任务 LSTM/TCN：故障分类必需，异常分数、RUL 与故障幅值按标注可选训练。
+- 新增工业数据 NPZ schema、时间/设备组隔离声明、独立 cal_fit/cal_eval 温度校准与分层发布门禁。
+- 新增版本化 IndustrialFaultBridge 与 TaskAwareModelRouter，让 ETTh1 预测和工业故障任务进入同一个 DiagnosticAgent/EpisodeStore，但不混合任务输出。
+- 新增校准 ID、Checkpoint SHA-256、OOD/漂移缺失时 fail-closed 人工复核。
+- 辅助任务标签一旦存在，就必须配置对应 MAE/AUROC 发布阈值；否则只保存候选，不激活。
+- 新增 9 项双任务测试及 CLI 训练/多任务端到端 smoke。无真实工业标注数据，不生成或宣称工业现场预训练权重。
+
+## Autonomous architecture evolution V2 (2026-11-08)
+- Added four executable candidate architectures: LSTM+Attention, RevIN-LSTM, PatchTransformerLite, and DecompLinear; original Linear/CNN1D/LSTM/TCN implementations are retained.
+- Research planning now maps residual weaknesses and retrieved paper-method clues to whitelisted architecture specifications.
+- Added safe architecture validation, model parameter budgets, candidate sweep adapter, and per-candidate failure isolation.
+- Research cycle validates candidate architecture specifications before calling the host trainer.
+- No arbitrary LLM-generated Python is executed; candidates still require real host training and release-gate approval.

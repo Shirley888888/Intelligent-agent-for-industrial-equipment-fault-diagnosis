@@ -1,0 +1,25 @@
+{
+  "episode_id": "EXAMPLE-PUMP-0001",
+  "prediction_time": "2026-11-02T08:00:00+08:00",
+  "equipment_id": "PUMP-001",
+  "operating_condition": "steady_load",
+  "sensor_readings": {
+    "bearing_temp_c": [68.1, 69.0, 70.2],
+    "vibration_mm_s": [2.1, 2.3, 2.2]
+  },
+  "model": {
+    "model_name": "TCN",
+    "model_version": "M0",
+    "activation_id": 1
+  },
+  "model_prediction": {
+    "fault_type": "bearing_fault_candidate",
+    "anomaly_score": 0.81,
+    "confidence": 0.86,
+    "confidence_calibrated": true,
+    "ood_score": 0.12,
+    "drift_score": 0.08,
+    "rul_hours": 36.0,
+    "fault_amplitude": 0.42
+  }
+}

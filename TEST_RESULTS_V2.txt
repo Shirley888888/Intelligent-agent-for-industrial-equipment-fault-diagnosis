@@ -1,0 +1,20 @@
+ATREA V2 verification
+=====================
+
+Command:
+  PYTHONPATH=. pytest -q
+
+Result:
+  108 passed, 1 skipped, 3 subtests passed
+
+Additional smoke test:
+  PYTHONPATH=. python -m atrea.cli --synthetic-demo --workspace /tmp/atrea_v2_smoke3.sqlite3
+
+Result:
+  Passed. The CLI demo used synthetic fixture data and fabricated model metrics; it is a software smoke test only, not a real Chronos-2 training benchmark.
+
+Legacy SQLite migration:
+  work/atrea-demo.sqlite3 and work/atrea-demo2.sqlite3 opened successfully after memory_scope schema migration.
+
+Not performed:
+  No new GPU/Chronos-2 training run was launched in this environment. Real training requires the user's configured PyTorch/Chronos dependencies, verified ETT data, GPU/CPU resources, and the configured planner factory.

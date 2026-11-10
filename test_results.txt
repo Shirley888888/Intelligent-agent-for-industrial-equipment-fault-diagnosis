@@ -1,0 +1,11 @@
+test_candidate_target_ranges_are_disjoint (__main__.LoopTests.test_candidate_target_ranges_are_disjoint) ... ok
+test_feedback_alignment_and_delayed_release (__main__.LoopTests.test_feedback_alignment_and_delayed_release) ... ok
+test_future_perturbation_does_not_change_prefix (__main__.LoopTests.test_future_perturbation_does_not_change_prefix) ... ok
+test_gate_requires_both_conditions (__main__.LoopTests.test_gate_requires_both_conditions) ... ok
+test_monitor_two_blocks_and_version_filter (__main__.LoopTests.test_monitor_two_blocks_and_version_filter) ... ok
+test_version_upgrade_rollback_and_corruption (__main__.LoopTests.test_version_upgrade_rollback_and_corruption) ... ok
+
+----------------------------------------------------------------------
+Ran 6 tests in 1.311s
+
+OK

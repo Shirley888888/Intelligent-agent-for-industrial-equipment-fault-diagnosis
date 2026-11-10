@@ -1,0 +1,7 @@
+{
+  "max_attempts_per_candidate_family": 3,
+  "max_total_attempts": 6,
+  "max_total_training_seconds": 3600.0,
+  "retry_same_failure_signature": false,
+  "production_activation_from_research_loop": false
+}

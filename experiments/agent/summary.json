@@ -1,0 +1,26 @@
+{
+  "backend": "numpy",
+  "model_name": "Linear",
+  "complete_episodes": 108,
+  "pending_episodes": 1,
+  "baseline_mae": 1.3505053022379878,
+  "prequential_mae": 1.6502232479279864,
+  "strategy": "react",
+  "retrain_attempts": 8,
+  "upgrades": 1,
+  "candidate_errors": [],
+  "current": {
+    "model_version": "M1",
+    "activation_id": 1,
+    "activated_as_of": "2018-04-13T23:00:00",
+    "action": "upgrade",
+    "baseline_mae": 1.5406148035979064
+  },
+  "observed_end": 17420,
+  "anchor": [
+    12914,
+    14087
+  ],
+  "final_as_of": "2018-06-26T20:00:00",
+  "engineering_exercise_at": null
+}

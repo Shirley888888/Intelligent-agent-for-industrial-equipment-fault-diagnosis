@@ -1,0 +1,160 @@
+{
+  "episode_id": "DEMO-AGENT-0001",
+  "equipment_id": "PUMP-DEMO-001",
+  "prediction_time": "2026-11-02T08:00:00+08:00",
+  "decision": "human_review",
+  "manual_review_requested": true,
+  "diagnosis": {
+    "fault_type": "bearing_fault_candidate",
+    "fault_type_source": "independent_time_series_model",
+    "fault_type_overridable_by_agent": false,
+    "model_version": "M0",
+    "activation_id": 1,
+    "prediction": {
+      "anomaly_score": 0.81,
+      "confidence": 0.86,
+      "rul_hours": 36.0,
+      "fault_amplitude": 0.42
+    }
+  },
+  "summary": "独立时序模型输出候选故障类别：bearing_fault_candidate。Agent 未重新分类；当前处理状态：human_review。",
+  "observations": [
+    "已读取独立模型输出和传感器统计摘要；Agent 未重新判定故障类别。"
+  ],
+  "suggested_checks": [
+    {
+      "check": "由具备资质的维护人员对照已审核资料检查相关状态，具体操作以现场安全规程为准",
+      "source_ids": [
+        "SYNTHETIC-DEMO-PUMP"
+      ],
+      "status": "professional_review_required"
+    }
+  ],
+  "limitations": [
+    "维修检查建议仅来自当前命中的已审核知识条目，仍须由专业人员按现场规程核验。"
+  ],
+  "citations": [
+    {
+      "source_id": "SYNTHETIC-DEMO-PUMP",
+      "source_version": "0.0-demo",
+      "title": "合成演示资料（非真实设备手册）",
+      "source_uri": "demo://synthetic-not-a-real-manual",
+      "content_sha256": "92174fb57f69fe90727afea078b7fab02d4573f48d3c939745ada43d301b2fef",
+      "score": 0.1159832303189847,
+      "snippet": "仅用于验证知识检索和引用链路，不包含可执行维修步骤。"
+    }
+  ],
+  "runtime_safety": {
+    "mode": "human_review",
+    "allow_definitive_diagnosis": false,
+    "allow_automatic_control": false,
+    "request_human_review": true,
+    "reasons": [
+      "calibration_not_configured"
+    ],
+    "config": {
+      "ood_warn": 0.7,
+      "ood_critical": 0.9,
+      "drift_warn": 0.2,
+      "drift_critical": 0.3,
+      "min_calibrated_confidence": 0.7,
+      "calibration_id": "UNSET"
+    },
+    "decision_source": "deterministic_runtime_guard",
+    "note": "OOD/drift/confidence scores are external signals; calibrate thresholds for each task and equipment family."
+  },
+  "failure_categories": [
+    "model_uncertainty_or_ood"
+  ],
+  "tool_calls": [
+    {
+      "name": "search_knowledge",
+      "success": true,
+      "started_at": "2026-11-02T01:18:54.341512+00:00",
+      "finished_at": "2026-11-02T01:18:54.342598+00:00",
+      "call_id": "offline-search-1",
+      "arguments": {
+        "query": "PUMP-DEMO-001 steady_load bearing_fault_candidate 设备检查 维修手册",
+        "top_k": 5
+      },
+      "result": {
+        "hits": [
+          {
+            "document_id": "SYNTHETIC-DEMO-PUMP",
+            "version": "0.0-demo",
+            "title": "合成演示资料（非真实设备手册）",
+            "source_uri": "demo://synthetic-not-a-real-manual",
+            "content_sha256": "92174fb57f69fe90727afea078b7fab02d4573f48d3c939745ada43d301b2fef",
+            "score": 0.1159832303189847,
+            "equipment_scope": [
+              "PUMP-DEMO-001"
+            ],
+            "approval_ref": "demo://synthetic-approval-not-for-production",
+            "snippet": "仅用于验证知识检索和引用链路，不包含可执行维修步骤。"
+          }
+        ],
+        "count": 1,
+        "scope_equipment": "PUMP-DEMO-001",
+        "note": "Only approved and effective documents are returned."
+      }
+    },
+    {
+      "name": "summarize_sensor_window",
+      "success": true,
+      "started_at": "2026-11-02T01:18:54.344056+00:00",
+      "finished_at": "2026-11-02T01:18:54.344220+00:00",
+      "call_id": "offline-sensors-1",
+      "arguments": {
+        "metrics": [
+          "bearing_temp_c",
+          "vibration_mm_s"
+        ]
+      },
+      "result": {
+        "metrics": {
+          "bearing_temp_c": {
+            "count": 3,
+            "min": 68.1,
+            "max": 70.2,
+            "mean": 69.10000000000001,
+            "last": 70.2
+          },
+          "vibration_mm_s": {
+            "count": 3,
+            "min": 2.1,
+            "max": 2.3,
+            "mean": 2.1999999999999997,
+            "last": 2.2
+          }
+        },
+        "count": 2,
+        "note": "Descriptive statistics only; no fault classification is performed."
+      }
+    }
+  ],
+  "human_review_ticket": {
+    "ticket_id": "acbec3e3-2caf-4ed3-847b-29097308de4e",
+    "episode_id": "DEMO-AGENT-0001",
+    "reason": "calibration_not_configured",
+    "priority": "high",
+    "status": "open",
+    "created_at": "2026-11-02T01:18:54.345394+00:00"
+  },
+  "provider_error": null,
+  "versions": {
+    "release_id": "local-unreleased",
+    "policy_version": "diagnostic-policy-v1.0.0",
+    "prompt_version": "diagnostic-agent-prompt-v1.0.0",
+    "tool_schema_version": "diagnostic-tools-v1.0.0",
+    "kb_version": "knowledge-catalog-current",
+    "retrieval_config_version": "tfidf-v0",
+    "risk_policy_version": "runtime-guard-v0",
+    "prompt_sha256": "f0536df4fe62633ed0be4eda966f3ffd298f84513d0048062bd43d35c656961f",
+    "tool_schema_sha256": "88060997971e7d302f7ab947c551fecf94f4ddb8fb202b9566a87bd3a0d7e11c"
+  },
+  "episode_persistence": {
+    "stored": true,
+    "episode_id": "DEMO-AGENT-0001",
+    "event_hash": "8c38251e7e15607b445a3ef4e20ee850d83f0e6126028ede9d809c5d873b29fe"
+  }
+}

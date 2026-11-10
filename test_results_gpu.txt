@@ -1,0 +1,60 @@
+﻿GPU verification log - 2026-10-13 01:14:53
+env: etth1_gpu (conda)
+Python 3.11.16
+torch: 2.7.1+cu128+cuda:True device:NVIDIA GeForce RTX 5060 Laptop GPU
+command: python -O -m unittest -v test_loop test_torch_version_checks
+python : test_bootstrap_failure_leaves_no_pointer_and_can_retry (test_loop.LoopTests.test_bootstrap_failure_leaves_no_p
+ointer_and_can_retry) ... ok
+所在位置 C:\Users\limin\AppData\Local\Temp\genie-ps-1791825288225-chubv5.ps1:954 字符: 505
++ ... `n"; $out = python -O -m unittest -v test_loop test_torch_version_che ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (test_bootstrap_...n_retry) ... ok:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+test_candidate_target_ranges_are_disjoint (test_loop.LoopTests.test_candidate_target_ranges_are_disjoint) ... ok
+test_catalog_and_custom_configuration (test_loop.LoopTests.test_catalog_and_custom_configuration) ... ok
+test_failed_candidate_keeps_active_model (test_loop.LoopTests.test_failed_candidate_keeps_active_model) ... ok
+test_feedback_alignment_and_delayed_release (test_loop.LoopTests.test_feedback_alignment_and_delayed_release) ... ok
+test_future_perturbation_does_not_change_prefix (test_loop.LoopTests.test_future_perturbation_does_not_change_prefix) .
+.. ok
+test_gate_requires_both_conditions (test_loop.LoopTests.test_gate_requires_both_conditions) ... ok
+test_invalid_feedback_never_becomes_a_score (test_loop.LoopTests.test_invalid_feedback_never_becomes_a_score) ... ok
+test_invalid_ranges_and_candidate_config (test_loop.LoopTests.test_invalid_ranges_and_candidate_config) ... ok
+test_monitor_two_blocks_and_version_filter (test_loop.LoopTests.test_monitor_two_blocks_and_version_filter) ... ok
+test_partial_event_failure_restores_exact_journal_bytes (test_loop.LoopTests.test_partial_event_failure_restores_exact_
+journal_bytes) ... ok
+test_pointer_replace_failure_restores_event_and_cleans_temp (test_loop.LoopTests.test_pointer_replace_failure_restores_
+event_and_cleans_temp) ... ok
+test_rollback_clock_and_manifest_are_checked (test_loop.LoopTests.test_rollback_clock_and_manifest_are_checked) ... ok
+test_rollback_event_failure_preserves_pointer (test_loop.LoopTests.test_rollback_event_failure_preserves_pointer) ... o
+k
+test_rolling_monitor_and_batched_feedback (test_loop.LoopTests.test_rolling_monitor_and_batched_feedback) ... ok
+test_runtime_checks_survive_python_optimization (test_loop.LoopTests.test_runtime_checks_survive_python_optimization) .
+.. ok
+test_simulator_failed_activation_keeps_runtime_and_disk_consistent (test_loop.LoopTests.test_simulator_failed_activatio
+n_keeps_runtime_and_disk_consistent) ... ok
+test_simulator_successful_activation_uses_prepared_candidate (test_loop.LoopTests.test_simulator_successful_activation_
+uses_prepared_candidate) ... ok
+test_upgrade_event_failure_preserves_pointer_and_allows_retry (test_loop.LoopTests.test_upgrade_event_failure_preserves
+_pointer_and_allows_retry) ... ok
+test_version_upgrade_rollback_and_corruption (test_loop.LoopTests.test_version_upgrade_rollback_and_corruption) ... ok
+test_bootstrap_summary_and_version_binding (test_torch_version_checks.TorchVersionChecks.test_bootstrap_summary_and_ver
+sion_binding) ... ok
+test_gate_tool_produces_valid_json_on_torch_checkpoints (test_torch_version_checks.TorchVersionChecks.test_gate_tool_pr
+oduces_valid_json_on_torch_checkpoints) ... ok
+test_predictions_are_stable_across_devices (test_torch_version_checks.TorchVersionChecks.test_predictions_are_stable_ac
+ross_devices) ... ok
+test_same_seed_reproduces_training (test_torch_version_checks.TorchVersionChecks.test_same_seed_reproduces_training) ..
+. ok
+test_unavailable_cuda_device_is_rejected (test_torch_version_checks.TorchVersionChecks.test_unavailable_cuda_device_is_
+rejected) ... skipped 'CUDA is available; rejection path not reachable'
+test_upgrade_rollback_stale_gate_and_corruption (test_torch_version_checks.TorchVersionChecks.test_upgrade_rollback_sta
+le_gate_and_corruption) ... ok
+test_validate_candidate_rejects_tampered_sidecar (test_torch_version_checks.TorchVersionChecks.test_validate_candidate_
+rejects_tampered_sidecar) ... ok
+
+----------------------------------------------------------------------
+Ran 27 tests in 13.392s
+
+OK (skipped=1)
+

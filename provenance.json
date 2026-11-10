@@ -1,0 +1,42 @@
+{
+  "repository": "Shirley888888/Intelligent-agent-for-industrial-equipment-fault-diagnosis",
+  "commit": "ab60dbdb07c8d604b8bef13d47ed111874625a7b",
+  "reused_files": [
+    "models.py",
+    "data/ETTh1.csv"
+  ],
+  "new_files": [
+    "minimal_loop.py",
+    "test_loop.py",
+    "Online_Learning_Minimal_Loop.md",
+    "README.md",
+    "requirements.txt"
+  ],
+  "attachment": "Industrial_Agent_Chapters_1-3_Reviewed.docx",
+  "validation_backend": "numpy Linear",
+  "pytorch_execution": "not run: torch unavailable in this execution environment",
+  "revision_v2": {
+    "source_archive": "ETTh1_Online_Learning_Minimal_Loop(1).zip",
+    "source_sha256": "a91894ce4231913f8ce10a0b6e4b821a90289d87b2431bcd325d6cc77fbdc24e",
+    "modified_files": [
+      "minimal_loop.py",
+      "test_loop.py",
+      "README.md",
+      "Online_Learning_Minimal_Loop.md",
+      "provenance.json"
+    ],
+    "added_files": [
+      "tool_catalog.py",
+      "tool_catalog.json",
+      "smoke_torch.py",
+      "configs/",
+      "CHANGELOG.md",
+      "FeedbackEpisode_example.json",
+      "verification_v2.json",
+      "results_*_v2/",
+      "test_results_v2.txt",
+      "cli_smoke_v2.txt"
+    ],
+    "validation": "NumPy replay, 13 tests under python -O, CLI rollback; PyTorch not executed"
+  }
+}

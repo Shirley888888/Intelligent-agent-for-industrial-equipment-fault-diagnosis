@@ -1,0 +1,27 @@
+# --- Python ---
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+
+# --- 实验产物（每次 simulate 必须用新目录，不入库） ---
+run_*/
+results_*/
+agent_workspace*/
+run_numpy_live_1109/
+run_numpy_exercise_1109/
+
+# --- 数据与大文件 ---
+data/
+*.npz
+*.pt
+*.safetensors
+*.bin
+*.sqlite3
+
+# --- 编辑器 / 系统 ---
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

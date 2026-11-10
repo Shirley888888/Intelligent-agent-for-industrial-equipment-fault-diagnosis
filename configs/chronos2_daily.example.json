@@ -1,0 +1,18 @@
+{
+  "data_dir": "data/ett",
+  "frequency": "hourly",
+  "datasets": ["ETTh1"],
+  "eval_datasets": ["ETTh2"],
+  "base_model": "amazon/chronos-2",
+  "device_map": "auto",
+  "out_dir": "models/atrea_chronos2_runs",
+  "prediction_length": 24,
+  "context_length": 512,
+  "num_steps": 1000,
+  "batch_size": 4,
+  "gradient_accumulation_steps": 4,
+  "learning_rate": 0.00001,
+  "finetune_mode": "lora",
+  "test_stride": 24,
+  "seed": 42
+}

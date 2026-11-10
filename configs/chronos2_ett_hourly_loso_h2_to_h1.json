@@ -1,0 +1,31 @@
+{
+  "base_model": "amazon/chronos-2",
+  "target": "OT",
+  "past_covariates": [
+    "HUFL",
+    "HULL",
+    "MUFL",
+    "MULL",
+    "LUFL",
+    "LULL"
+  ],
+  "prediction_length": 24,
+  "context_length": 512,
+  "finetune_mode": "lora",
+  "num_steps": 1000,
+  "batch_size": 4,
+  "learning_rate": 1e-05,
+  "device_map": "auto",
+  "test_stride": 24,
+  "seed": 42,
+  "frequency": "hourly",
+  "datasets": [
+    "ETTh2"
+  ],
+  "eval_datasets": [
+    "ETTh1"
+  ],
+  "out_dir": "models/chronos2_ett_loso",
+  "run_name": "hourly_ETTh2_to_ETTh1",
+  "gradient_accumulation_steps": 4
+}
