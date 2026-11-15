@@ -70,14 +70,29 @@ def _method_candidates(papers: list[dict[str, Any]]) -> list[str]:
     return list(dict.fromkeys(methods))
 
 
-def build_research_hypothesis(papers: list[dict[str, Any]], memory: dict[str, Any]) -> dict[str, Any]:
-    """Build a falsifiable, conservative plan from residual evidence and paper leads."""
+def build_research_hypothesis(papers: list[dict[str, Any]], memory: dict[str, Any],
+                              *, experience_tool=None, query="time series forecasting") -> dict[str, Any]:
+    """Build a falsifiable plan and selectively search experience when evidence is thin.
+
+    The default planner uses an explicit, auditable rule: search the archive only when
+    the current scholarly shortlist is small or yields no actionable methods. A custom
+    LLM planner can make a richer decision through the same SearchExperience tool.
+    """
     experiments = memory.get("experiments", [])
     failed = [e for e in experiments if e.get("status") not in ("completed", "success")]
     recent = experiments[:10]
     diagnostics = [e.get("metrics", {}).get("error_diagnostics", {}) for e in recent]
     diagnostics = [d for d in diagnostics if d]
     methods = _method_candidates(papers)
+    experience_results = []
+    search_reason = None
+    if experience_tool is not None and (len(papers) < 3 or not methods):
+        search_reason = ("外部论文候选不足" if len(papers) < 3 else "外部论文未提取到可执行方法")
+        found = experience_tool.search_experience(query, limit=5)
+        experience_results = found.get("results", [])
+        experience_leads = [{"title": x["title"], "abstract": x.get("content", ""),
+                             "extracted_methods": []} for x in experience_results]
+        methods = list(dict.fromkeys(methods + _method_candidates(experience_leads)))
     # Prior failed candidates are explicitly excluded from automatic repetition.
     failed_names = {e.get("model_name", "") for e in failed}
     if diagnostics:
@@ -112,7 +127,10 @@ def build_research_hypothesis(papers: list[dict[str, Any]], memory: dict[str, An
                  "所有方法必须在相同时间切分、预处理和随机种子下重新验证。")
     return {
         "statement": f"针对{weakness}，检验论文候选方法是否能在 ETTh1/当前任务冻结验证协议上改善 MAE，且不恶化其他关键指标。",
-        "rationale": rationale,
+        "rationale": rationale + (f" 已按规则检索经验论文：{len(experience_results)} 篇（原因：{search_reason}）。" if search_reason else " 未检索经验库：当前外部论文证据足以形成候选方案。"),
+        "experience_paper_evidence": [{"experience_id": x["experience_id"], "title": x["title"],
+                                       "file_path": x["file_path"], "score": x["score"]}
+                                      for x in experience_results],
         "diagnosis": {"weakness": weakness, "candidate_methods": candidate_methods,
                       "historical_failed_models": sorted(x for x in failed_names if x),
                       "candidate_architectures": architecture_candidates,

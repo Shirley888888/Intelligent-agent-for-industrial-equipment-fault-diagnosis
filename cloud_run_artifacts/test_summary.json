@@ -1,0 +1,51 @@
+{
+  "tests_integration_cloud.log": {
+    "ran": 8,
+    "duration_seconds": 0.929,
+    "skipped": 0,
+    "failed": false
+  },
+  "tests_dual_task_cloud.log": {
+    "ran": 9,
+    "duration_seconds": 1.82,
+    "skipped": 0,
+    "failed": false
+  },
+  "atrea_synthetic_demo.log": {
+    "ran": null,
+    "duration_seconds": null,
+    "skipped": 0,
+    "failed": false,
+    "type": "synthetic workflow demo, not unit tests"
+  },
+  "tests_chronos_cloud.log": {
+    "ran": 11,
+    "duration_seconds": 0.064,
+    "skipped": 0,
+    "failed": false
+  },
+  "tests_agent_cloud.log": {
+    "ran": 65,
+    "duration_seconds": 3.451,
+    "skipped": 0,
+    "failed": false
+  },
+  "online_loop_cloud.log": {
+    "ran": 29,
+    "duration_seconds": 10.364,
+    "skipped": 1,
+    "failed": false
+  },
+  "tests_ett_cloud.log": {
+    "ran": 5,
+    "duration_seconds": 1.335,
+    "skipped": 0,
+    "failed": false
+  },
+  "tests_dual_cloud.log": {
+    "ran": 18,
+    "duration_seconds": 0.032,
+    "skipped": 0,
+    "failed": false
+  }
+}

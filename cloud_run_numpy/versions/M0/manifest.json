@@ -1,0 +1,65 @@
+{
+  "candidate_id": "C0",
+  "checkpoint_path": "/root/autodl-tmp/atrea_upgrade/cloud_run_numpy/candidates/C0/checkpoint.npz",
+  "checkpoint_sha256": "1688fdba9ad354ae9e4066860df656d5d6582e7f83d808a4acdf7d302b30d320",
+  "data_version": "D14807_59d7444fcc2b",
+  "trained_as_of": "2018-03-09T23:00:00",
+  "train_config": {
+    "backend": "numpy",
+    "model_name": "Linear",
+    "ridge": 1.0,
+    "epochs": 10,
+    "patience": 3,
+    "lr": 0.001,
+    "batch_size": 128,
+    "weight_decay": 1e-05,
+    "grad_clip": 1.0,
+    "train_stride": 1,
+    "hidden_size": 128,
+    "num_layers": 2,
+    "dropout": 0.1,
+    "tcn_channels": [
+      64,
+      64,
+      128
+    ],
+    "kernel_size": 5,
+    "seed": 42,
+    "device": "cpu"
+  },
+  "validation_metrics": {
+    "MAE": 1.06899517505963,
+    "unit": "degC",
+    "windows": 30,
+    "best_epoch": 0
+  },
+  "manifest": {
+    "data_version": "D14807_59d7444fcc2b",
+    "observed_end": 14807,
+    "as_of": "2018-03-09T23:00:00",
+    "train_ranges": [
+      [
+        0,
+        12194
+      ]
+    ],
+    "validation_range": [
+      12194,
+      12914
+    ],
+    "historical_range": [
+      12914,
+      14087
+    ],
+    "recent_range": [
+      14087,
+      14807
+    ],
+    "snapshot_sha256": "59d7444fcc2b5808624448d6277182511668cca066ce95915e2a52e7bae91f37"
+  },
+  "model_version": "M0",
+  "checkpoint_filename": "M0_checkpoint.npz",
+  "parent_version": null,
+  "activated_as_of": "2018-03-09T23:00:00",
+  "baseline_mae": 1.350505302238003
+}

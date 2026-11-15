@@ -4,9 +4,10 @@ The host injects a runner that performs actual model fitting/evaluation on froze
 No arm is allowed to bypass its own experiment protocol or fabricate scores.
 """
 from __future__ import annotations
-import json, uuid
+import json, uuid, inspect
 from datetime import datetime, timezone
 from pathlib import Path
+from .experience import SearchExperienceTool
 
 ARMS = (
     {"id":"A1_fixed_retrain","label":"固定时间重训","trigger_policy":"fixed_interval","retrain_interval_days":1,"paper_search":False,"use_memory":False,"change_architecture":False},
@@ -31,9 +32,17 @@ def run_three_arm_ablation(*, store, experiment_runner, paper_searcher=None,
         # reviewed source set so later A3 cycles can reuse the literature trail.
         paper_ids=([store.add_paper(p) for p in papers]
                    if arm["id"] == "A3_experience_enhanced" else [])
-        memory=(store.retrieve_experience(query=query,limit=50,dataset=dataset,
-                    memory_scope=arm["id"]) if arm["use_memory"] else {"experiments":[],"patterns":[]})
-        records=experiment_runner(arm,papers,memory,batch_id)
+        # No arm receives database memory as an automatic payload. A3 gets the
+        # same explicit callable search tool used by the main ReAct research cycle.
+        memory={"experiments":[],"patterns":[]}
+        experience_tool=SearchExperienceTool(store, memory_scope=arm["id"])
+        runner_params=inspect.signature(experiment_runner).parameters
+        if "experience_tool" in runner_params:
+            records=experiment_runner(arm,papers,memory,batch_id,experience_tool=experience_tool)
+        elif len(runner_params) >= 5:
+            records=experiment_runner(arm,papers,memory,batch_id,experience_tool)
+        else:
+            records=experiment_runner(arm,papers,memory,batch_id)
         if not records:
             raise ValueError(f"{arm['id']} runner returned no experiment records")
         saved=[]
@@ -48,7 +57,7 @@ def run_three_arm_ablation(*, store, experiment_runner, paper_searcher=None,
             if arm["id"]=="A2_online_no_memory" and memory["experiments"]:
                 raise ValueError("A2 must not consume experience memory")
             if arm["id"]=="A3_experience_enhanced" and not row.get("experience_considered",False):
-                raise ValueError("A3 runner must record that retrieved experience was considered")
+                raise ValueError("A3 runner must record whether the SearchExperience tool results were considered")
             # Only A3 is allowed to write into the reusable experience memory.
             # A1/A2 results remain in arm-specific artifacts for fair ablation.
             if arm["id"] == "A3_experience_enhanced":
@@ -59,12 +68,12 @@ def run_three_arm_ablation(*, store, experiment_runner, paper_searcher=None,
         pattern_ids=(store.induce_pairwise_patterns(memory_scope=arm["id"])
                      if arm["id"] == "A3_experience_enhanced" else [])
         result={"arm":arm,"batch_id":batch_id,"paper_count":len(papers),
-                "memory_experiments":len(memory["experiments"]),
-                "memory_patterns":len(memory["patterns"]),"experiment_ids":saved,
+                "memory_experiments":0,
+                "memory_patterns":0,"experience_search_calls":experience_tool.calls,"experiment_ids":saved,
                 "induced_pattern_ids":pattern_ids,"papers":papers,"records":records}
         # Every arm receives its own durable, paper-like experiment report.
         report_lines=[f"# {arm['label']} 实验报告", "", f"- Batch: {batch_id}",
-            f"- 论文数量：{len(papers)}", f"- 规划前读取经验：{len(memory['experiments'])} 条实验、{len(memory['patterns'])} 条模式",
+            f"- 论文数量：{len(papers)}", f"- 自动注入经验：0 条；Agent 搜索工具调用：{experience_tool.calls} 次",
             f"- 归纳经验模式：{len(pattern_ids)} 条", "", "## 检索论文"]
         if papers:
             for paper in papers:

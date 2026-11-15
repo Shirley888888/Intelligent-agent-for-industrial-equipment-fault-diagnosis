@@ -23,7 +23,7 @@ def run_daily_job(now=None):
     runner = _load_factory(runner_spec)()
     builder_spec = os.getenv("ATREA_HYPOTHESIS_BUILDER")
     if not builder_spec:
-        raise RuntimeError("Set ATREA_HYPOTHESIS_BUILDER to a factory returning hypothesis_builder(papers, memory); unattended research requires a configured planner")
+        raise RuntimeError("Set ATREA_HYPOTHESIS_BUILDER to a factory returning hypothesis_builder(papers, memory, experience_tool); unattended research requires a configured planner. The planner receives an empty memory object and must call experience_tool.search_experience(query) when it judges prior experience relevant")
     hypothesis_builder = _load_factory(builder_spec)()
     workspace = os.getenv("ATREA_WORKSPACE", "agent_workspace/atrea_experience.sqlite3")
     query = os.getenv("ATREA_PAPER_QUERY", "industrial transformer oil temperature time series forecasting foundation model")

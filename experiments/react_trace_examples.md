@@ -156,8 +156,8 @@ These excerpts are selected from the actual Arm 3 JSONL trace; if a scenario did
     "incumbent_version": "M0",
     "candidate_id": "C1",
     "incumbent_activation_id": 0,
-    "incumbent_checkpoint_sha256": "1b386acffe48655aba07d4b4dcda9cc00752f548c593685206569d577dae25f1",
-    "checkpoint_sha256": "c2198b35dc27b032bba261f278108e0e2fd77d27ec97cbda23ae76dc9d6b869a",
+    "incumbent_checkpoint_sha256": "e99468264bf9dedd8e32343ac50b555326d4cab7f22b0ef59574f337fccdcc36",
+    "checkpoint_sha256": "8e6e05f01787effdd2a3bb471a32824ab827012b4a22cd2527bb0804ae2c580d",
     "snapshot_sha256": "bd3c61af3966f34d5dff5e0c09e5e65737c1f426d4dd9947b541f95884cdbc1b",
     "gate_config": {
       "recent_gain": 0.05,
@@ -383,8 +383,8 @@ These excerpts are selected from the actual Arm 3 JSONL trace; if a scenario did
     "incumbent_version": "M0",
     "candidate_id": "C3",
     "incumbent_activation_id": 0,
-    "incumbent_checkpoint_sha256": "1b386acffe48655aba07d4b4dcda9cc00752f548c593685206569d577dae25f1",
-    "checkpoint_sha256": "29fd86761fb337cfcffa6162d4746b9837f06772fa4dbd62234f48968b5092b1",
+    "incumbent_checkpoint_sha256": "e99468264bf9dedd8e32343ac50b555326d4cab7f22b0ef59574f337fccdcc36",
+    "checkpoint_sha256": "6039226369cadb526416456ee58209daa515aac431fb0f566db6410e1b419159",
     "snapshot_sha256": "50f2f7156792b1bf8c8269a272164599ff0dc189401203858940aa39ba785ab5",
     "gate_config": {
       "recent_gain": 0.05,

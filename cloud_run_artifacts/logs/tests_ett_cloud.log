@@ -1,0 +1,14 @@
+test_bad_sampling_interval_is_rejected (test_ett_oil_pipeline.ETTOilPipelineTests.test_bad_sampling_interval_is_rejected) ... ok
+test_lstm_and_tcn_checkpoint_then_agent_episode (test_ett_oil_pipeline.ETTOilPipelineTests.test_lstm_and_tcn_checkpoint_then_agent_episode) ... [hourly/LSTM] epoch 1/1 train_mse=1.183281 val_MAE=1.73046
+[SAVED] /tmp/tmpsrnzer7c/LSTM/checkpoint.pt sha256=fa2b379666da43d735347d4684bed2327d487a96e28e45bdd7279e1f25c6ed2c
+[hourly/TCN] epoch 1/1 train_mse=1.240257 val_MAE=1.74825
+ok
+test_modified_official_file_is_rejected_by_pinned_github_blob_sha (test_ett_oil_pipeline.ETTOilPipelineTests.test_modified_official_file_is_rejected_by_pinned_github_blob_sha) ... ok
+test_packaged_etth1_is_real_hourly_schema (test_ett_oil_pipeline.ETTOilPipelineTests.test_packaged_etth1_is_real_hourly_schema) ... ok
+test_train_only_scaler_and_series_split (test_ett_oil_pipeline.ETTOilPipelineTests.test_train_only_scaler_and_series_split) ... ok
+
+----------------------------------------------------------------------
+Ran 5 tests in 1.335s
+
+OK
+[SAVED] /tmp/tmpsrnzer7c/TCN/checkpoint.pt sha256=c896cb8425f75ff1c6df4fd92fb2958cb5826e46c437533b2f1608e1a63216b6

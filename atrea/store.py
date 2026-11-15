@@ -30,6 +30,11 @@ CREATE TABLE IF NOT EXISTS papers(
  published TEXT, abstract TEXT, source TEXT, relevance REAL,
  extracted_methods_json TEXT, adoption_status TEXT DEFAULT 'unreviewed',
  discovered_at TEXT NOT NULL);
+CREATE TABLE IF NOT EXISTS experience_papers(
+ experience_id TEXT PRIMARY KEY, title TEXT NOT NULL, topic TEXT NOT NULL,
+ content TEXT NOT NULL, source_batch_id TEXT, dataset TEXT, tags_json TEXT NOT NULL,
+ file_path TEXT NOT NULL, created_at TEXT NOT NULL, memory_scope TEXT NOT NULL DEFAULT 'default');
+CREATE INDEX IF NOT EXISTS idx_experience_papers_scope ON experience_papers(memory_scope, created_at);
 CREATE TABLE IF NOT EXISTS hypotheses(
  hypothesis_id TEXT PRIMARY KEY, statement TEXT NOT NULL, rationale TEXT,
  paper_ids_json TEXT, pattern_ids_json TEXT, experiment_plan_json TEXT,
@@ -50,6 +55,8 @@ class ExperienceStore:
             pattern_columns = {row[1] for row in c.execute("PRAGMA table_info(patterns)")}
             if "memory_scope" not in pattern_columns:
                 c.execute("ALTER TABLE patterns ADD COLUMN memory_scope TEXT NOT NULL DEFAULT 'default'")
+        # Recover the directory index after an interrupted prior process.
+        self._refresh_experience_catalog()
     def connect(self):
         c = sqlite3.connect(self.path, timeout=30)
         c.execute("PRAGMA foreign_keys=ON")
@@ -136,6 +143,82 @@ class ExperienceStore:
         with self.session() as c:
             row=c.execute("SELECT MAX(substr(published,1,10)) FROM papers WHERE published IS NOT NULL").fetchone()
         return row[0] if row else None
+
+    def _experience_library_dir(self):
+        return self.path.parent / "experience_library"
+
+    def _refresh_experience_catalog(self):
+        """Rebuild the human-readable paper directory from the authoritative DB rows."""
+        library = self._experience_library_dir()
+        library.mkdir(parents=True, exist_ok=True)
+        with self.session() as c:
+            rows = c.execute("SELECT experience_id,title,topic,dataset,created_at,file_path,tags_json FROM experience_papers ORDER BY created_at DESC, title").fetchall()
+        lines = ["# ATREA 经验论文目录", "", f"> 论文总数：{len(rows)}", "",
+                 "本目录由经验库自动维护。新增经验论文入库后会立即重建本文件。", "",
+                 "| 编号 | 论文题目 | 主题 | 数据集 | 入库时间 | 文件 |", "|---|---|---|---|---|---|"]
+        for eid,title,topic,dataset,created,path,tags in rows:
+            rel = Path(path)
+            try: rel = rel.relative_to(library.parent)
+            except ValueError: pass
+            safe = lambda x: str(x or "").replace("|", "\\|").replace("\n", " ")
+            lines.append(f"| `{eid[:8]}` | {safe(title)} | {safe(topic)} | {safe(dataset)} | {safe(created)} | `{rel.as_posix()}` |")
+        (library / "目录.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
+        return library / "目录.md"
+
+    def add_experience_paper(self, *, title, topic, content, source_batch_id=None,
+                             dataset=None, tags=None, memory_scope="default"):
+        """Persist one complete, citable experience paper and refresh its directory."""
+        title = str(title or "").strip()
+        content = str(content or "").strip()
+        if not title or not content:
+            raise ValueError("experience paper requires non-empty title and content")
+        eid = str(uuid.uuid4())
+        library = self._experience_library_dir()
+        library.mkdir(parents=True, exist_ok=True)
+        filename = f"{self.now()[:10]}_{eid[:8]}.md"
+        path = library / filename
+        created = self.now()
+        tags = list(tags or [])
+        front = [f"# {title}", "", f"- 经验编号：`{eid}`", f"- 主题：{topic}",
+                 f"- 数据集：{dataset or '未指定'}", f"- 来源批次：{source_batch_id or '未指定'}",
+                 f"- 入库时间：{created}", f"- 标签：{', '.join(tags) or '无'}", "", "---", ""]
+        path.write_text("\n".join(front) + content + "\n", encoding="utf-8")
+        try:
+            with self.session() as c:
+                c.execute("""INSERT INTO experience_papers
+                    (experience_id,title,topic,content,source_batch_id,dataset,tags_json,file_path,created_at,memory_scope)
+                    VALUES(?,?,?,?,?,?,?,?,?,?)""",
+                    (eid,title,str(topic or "通用"),content,source_batch_id,dataset,
+                     json.dumps(tags,ensure_ascii=False),str(path),created,memory_scope))
+        except Exception:
+            path.unlink(missing_ok=True)
+            raise
+        catalog = self._refresh_experience_catalog()
+        return {"experience_id":eid,"title":title,"file_path":str(path),"catalog_path":str(catalog)}
+
+    def search_experience_papers(self, query, *, limit=5, dataset=None, memory_scope="default"):
+        """Agent-callable lexical search over stored experience papers; never auto-injected."""
+        query = str(query or "").strip()
+        if not query:
+            return {"query":query,"results":[],"message":"搜索词不能为空"}
+        terms = [t.lower() for t in query.replace("/", " ").split() if len(t) > 1]
+        with self.session() as c:
+            sql = "SELECT experience_id,title,topic,content,dataset,tags_json,file_path,created_at FROM experience_papers WHERE memory_scope=?"
+            args = [memory_scope]
+            if dataset:
+                sql += " AND (dataset=? OR dataset IS NULL)"; args.append(dataset)
+            rows = c.execute(sql, args).fetchall()
+        ranked=[]
+        for row in rows:
+            eid,title,topic,content,ds,tags_json,file_path,created = row
+            tags = json.loads(tags_json)
+            hay = " ".join([title,topic,content,ds or "",*tags]).lower()
+            score = sum(hay.count(term) for term in terms)
+            if score:
+                ranked.append({"experience_id":eid,"title":title,"topic":topic,"dataset":ds,
+                    "tags":tags,"score":score,"content":content,"file_path":file_path,"created_at":created})
+        ranked.sort(key=lambda x:(x["score"],x["created_at"]),reverse=True)
+        return {"query":query,"results":ranked[:max(1,int(limit))],"total_matches":len(ranked)}
 
     def retrieve_experience(self, query=None, *, limit=20, dataset=None, memory_scope="default"):
         """Return prior experiment facts for one isolated memory scope."""

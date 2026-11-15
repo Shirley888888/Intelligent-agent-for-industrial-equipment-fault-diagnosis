@@ -13,6 +13,12 @@
     "hidden_size": 128,
     "num_layers": 2,
     "dropout": 0.1,
+    "tcn_channels": [
+      64,
+      64,
+      128
+    ],
+    "kernel_size": 5,
     "seed": 42,
     "device": "cpu"
   },

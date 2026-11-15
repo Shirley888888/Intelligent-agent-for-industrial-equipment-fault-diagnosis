@@ -7,6 +7,7 @@ from .report import generate_sections,render_markdown
 from .react import ReActTrace
 from .research import build_research_hypothesis, diagnose_experiment
 from .architecture import validate_architecture_spec
+from .experience import SearchExperienceTool
 
 def run_research_cycle(*, store, train_and_evaluate, query="time series forecasting foundation model",
                        max_papers=15, hypothesis_builder=None, batch_id=None,
@@ -30,23 +31,37 @@ def run_research_cycle(*, store, train_and_evaluate, query="time series forecast
     trace.log(phase="observe", action="search_papers", observation=f"Discovered {len(papers)} candidate papers",
               artifacts=paper_ids, details={"provider_sources":sorted({p.get("source","unknown") for p in papers}),
                                             "provider_errors":paper_search_errors})
-    # Retrieve the agent's own prior evidence before constructing the next hypothesis.
-    memory = store.retrieve_experience(query=query, limit=30, memory_scope=memory_scope) if hasattr(store, "retrieve_experience") else {"experiments": [], "patterns": []}
-    trace.log(phase="think", action="retrieve_experience",
-              observation=f"Retrieved {len(memory.get('experiments', []))} experiments and {len(memory.get('patterns', []))} patterns",
-              details={"memory_scope":memory_scope})
+    # Experience is not injected into the planner. The planner receives a callable
+    # search tool and decides whether prior papers are relevant to this research task.
+    memory = {"experiments": [], "patterns": []}
+    experience_tool = SearchExperienceTool(store, memory_scope=memory_scope, trace=trace)
+    trace.log(phase="think", action="assess_experience_search_need",
+              observation="No experience records were injected; the planner may call SearchExperience when useful",
+              details={"memory_scope": memory_scope, "tool": experience_tool.name})
     # Default proposal is deliberately conservative; an LLM can replace hypothesis_builder,
     # but must return a falsifiable statement and an executable plan.
     if hypothesis_builder:
         # New planners receive both evidence sources; retain compatibility with legacy one-arg builders.
         import inspect
         try:
-            params=inspect.signature(hypothesis_builder).parameters
-            proposal=hypothesis_builder(papers, memory) if len(params) >= 2 else hypothesis_builder(papers)
+            signature=inspect.signature(hypothesis_builder)
+            params=signature.parameters
+            if "experience_tool" in params:
+                kwargs={"experience_tool": experience_tool}
+                if "memory" in params:
+                    proposal=hypothesis_builder(papers, memory=memory, **kwargs)
+                else:
+                    proposal=hypothesis_builder(papers, **kwargs)
+            elif len(params) >= 3:
+                proposal=hypothesis_builder(papers, memory, experience_tool)
+            elif len(params) >= 2:
+                proposal=hypothesis_builder(papers, memory)
+            else:
+                proposal=hypothesis_builder(papers)
         except (TypeError, ValueError):
             proposal=hypothesis_builder(papers)
     else:
-        proposal=build_research_hypothesis(papers, memory)
+        proposal=build_research_hypothesis(papers, memory, experience_tool=experience_tool, query=query)
     if not isinstance(proposal, dict) or not str(proposal.get("statement", "")).strip():
         raise ValueError("hypothesis_builder must return a dict with a non-empty falsifiable statement")
     if not isinstance(proposal.get("plan"), dict) or not proposal["plan"]:
@@ -70,27 +85,9 @@ def run_research_cycle(*, store, train_and_evaluate, query="time series forecast
         nas_cfg = proposal["plan"].get("nas_config", {})
         # Reuse prior NAS topologies as unranked starting points; all are retrained
         # on the current frozen split before they can influence selection.
-        prior_nas_rows = [e for e in memory.get("experiments", [])
-            if e.get("model_name") == "NAS_Composed"
-            and isinstance(e.get("config"), dict)
-            and e["config"].get("model_name") == "NAS_Composed"
-            and e.get("dataset") == str(proposal["plan"].get("dataset", "ETTh1"))
-            and e.get("status") in ("completed", "success")]
-        prior_nas_rows.sort(key=lambda e: float(e.get("metrics", {}).get("mae", float("inf"))))
-        prior_nas_parents = [e["config"] for e in prior_nas_rows[:4]]
-        # Bring forward only explicitly marked NAS offspring/ablation hypotheses.
-        for pattern in memory.get("patterns", []):
-            effect = pattern.get("effect", {})
-            if not isinstance(effect, dict): continue
-            for candidate in effect.get("next_generation_seed_population", []):
-                if isinstance(candidate, dict) and candidate.get("model_name") == "NAS_Composed":
-                    prior_nas_parents.append(candidate)
-            hypothesis = effect.get("nas_hypothesis", {})
-            if (isinstance(hypothesis, dict)
-                    and hypothesis.get("next_search_action") == "favor_simplification"):
-                candidate = hypothesis.get("component_removed_spec")
-                if isinstance(candidate, dict) and candidate.get("model_name") == "NAS_Composed":
-                    prior_nas_parents.append(candidate)
+        # No historical NAS records are silently injected. If the planner searched
+        # the paper library, it may explicitly place a justified seed in its plan.
+        prior_nas_parents = list(proposal["plan"].get("experience_nas_seeds", []))
         # De-duplicate declarative parent specs before seeding this round.
         import json as _json
         prior_nas_parents = list({_json.dumps(x, sort_keys=True): x for x in prior_nas_parents}.values())[:12]
@@ -195,8 +192,10 @@ def run_research_cycle(*, store, train_and_evaluate, query="time series forecast
     if paper_search_errors:
         sections["paper_review"] += "\n检索源异常：" + "; ".join(
             f"{x.get('provider')}: {x.get('error')}" for x in paper_search_errors)
-    sections["experience_review"] = (f"本轮规划前检索到 {len(memory.get('experiments', []))} 条历史实验和 "
-        f"{len(memory.get('patterns', []))} 条经验模式。历史经验仅作为候选依据，需在当前冻结切分上重新验证。")
+    sections["experience_review"] = (
+        f"本轮未自动注入历史经验；Agent 自主调用经验论文搜索工具 {experience_tool.calls} 次。"
+        "检索到的论文仅作为研究线索，所有方法和候选结构仍需在当前冻结切分上重新验证。"
+    )
     sections["failure_analysis"] = "\n".join(
         f"- {e['model_name']}: {e.get('failure_reason') or e.get('status')}"
         for e in experiments if e.get('status','completed') not in ('completed','success') or e.get('failure_reason')
@@ -210,6 +209,27 @@ def run_research_cycle(*, store, train_and_evaluate, query="time series forecast
     report_dir = store.path.parent / "reports"
     report_dir.mkdir(parents=True, exist_ok=True)
     (report_dir / f"{batch_id}.md").write_text(markdown, encoding="utf-8")
+    # Store each completed research cycle as a paper in the experience library.
+    exp_dataset = str(proposal["plan"].get("dataset", experiments[0].get("dataset", "未指定")))
+    exp_title = f"{exp_dataset}：{proposal['statement'][:100]}"
+    exp_content = "\n\n".join([
+        "## 摘要\n" + str(sections.get("abstract", "")),
+        "## 研究方法\n" + str(sections.get("methods", "")),
+        "## 实验结果\n" + str(sections.get("results", "")),
+        "## 误差与失败分析\n" + str(sections.get("failure_analysis", "")),
+        "## 讨论\n" + str(sections.get("discussion", "")),
+        "## 结论\n" + str(sections.get("conclusion", "")),
+        "## 关联外部论文\n" + str(sections.get("paper_review", "")),
+        "## 本轮研究假设\n" + str(proposal["statement"]),
+    ])
+    experience_paper = store.add_experience_paper(
+        title=exp_title, topic=query, content=exp_content, source_batch_id=batch_id,
+        dataset=exp_dataset, tags=[str(e.get("model_name", "")) for e in experiments],
+        memory_scope=memory_scope)
+    trace.log(phase="reflect", action="archive_experience_paper",
+              observation="Archived this research cycle as a paper and refreshed the experience catalog",
+              artifacts=[experience_paper["file_path"], experience_paper["catalog_path"]],
+              details={"experience_id": experience_paper["experience_id"], "title": exp_title})
     trace.log(phase="reflect", action="persist_experience_and_report",
               observation=f"Persisted {len(ids)} experiments and generated research report",
               artifacts=ids+[str(report_dir / f"{batch_id}.md")],
@@ -244,5 +264,6 @@ def run_research_cycle(*, store, train_and_evaluate, query="time series forecast
             "markdown":markdown,"report_path":str(report_dir / f"{batch_id}.md"),
             "trace_path":str(trace_path),
             "paper_search_errors":paper_search_errors,
-            "experience_used":{"experiments":len(memory.get("experiments",[])),
-                               "patterns":len(memory.get("patterns",[]))}}
+            "experience_used":{"experiments":0,"patterns":0,
+                                "search_tool_calls":experience_tool.calls},
+            "experience_paper":experience_paper}

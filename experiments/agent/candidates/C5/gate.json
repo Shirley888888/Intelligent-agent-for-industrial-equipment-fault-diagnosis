@@ -11,8 +11,8 @@
   "incumbent_version": "M1",
   "candidate_id": "C5",
   "incumbent_activation_id": 1,
-  "incumbent_checkpoint_sha256": "29fd86761fb337cfcffa6162d4746b9837f06772fa4dbd62234f48968b5092b1",
-  "checkpoint_sha256": "024509579318adc91f881c7e7fc76d7ec79f68e891980e3ee6f777157cf74b43",
+  "incumbent_checkpoint_sha256": "6039226369cadb526416456ee58209daa515aac431fb0f566db6410e1b419159",
+  "checkpoint_sha256": "f054e594cda20bc25185e95e4d935d91d8d5e9071fb7cb49f825ca50a7049488",
   "snapshot_sha256": "0c1a905db6d45e98e94139ac1c1d1e0cd510556464863ab83ecdf2b379d9fa0b",
   "gate_config": {
     "recent_gain": 0.05,

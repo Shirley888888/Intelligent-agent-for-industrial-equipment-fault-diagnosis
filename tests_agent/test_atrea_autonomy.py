@@ -49,17 +49,17 @@ class AtreaAutonomyTests(unittest.TestCase):
             def search(q, max_results=20):
                 return [{"paper_id":"p1", "title":"A paper", "url":"https://example.org/p", "abstract":"method"}]
             a3_runs = {"count": 0}
-            def runner(arm, papers, memory, batch):
-                if not arm["use_memory"]:
-                    self.assertEqual(memory["experiments"], [])
-                else:
-                    if a3_runs["count"] > 0:
-                        self.assertTrue(memory["experiments"], "A3 must retrieve its prior A3 experience")
+            def runner(arm, papers, memory, batch, experience_tool=None):
+                self.assertEqual(memory["experiments"], [], "no historical records may be auto-injected")
+                considered = False
+                if arm["use_memory"]:
+                    result = experience_tool.search_experience("ETTh1 forecasting", dataset="ETTh1")
+                    considered = bool(result["results"]) or experience_tool.calls > 0
                     a3_runs["count"] += 1
                 return [{"dataset":"ETTh1", "split_hash":"same", "model_name":arm["id"],
                     "config":{}, "hyperparameters":{"seed":1}, "seed":1,
                     "metrics":{"mae":1.0}, "architecture_changed":arm["change_architecture"],
-                    "experience_considered":arm["use_memory"]}]
+                    "experience_considered":considered}]
             r = run_three_arm_ablation(store=s, experiment_runner=runner,
                 paper_searcher=search, output_dir=Path(d)/"out")
             self.assertEqual(len(r["results"]), 3)

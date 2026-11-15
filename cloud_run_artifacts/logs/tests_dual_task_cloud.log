@@ -1,0 +1,14 @@
+test_auxiliary_targets_require_explicit_release_thresholds (test_dual_task_models.DualTaskModelTests.test_auxiliary_targets_require_explicit_release_thresholds) ... ok
+test_calibration_id_mismatch_forces_human_review (test_dual_task_models.DualTaskModelTests.test_calibration_id_mismatch_forces_human_review) ... ok
+test_checksum_tampering_is_rejected (test_dual_task_models.DualTaskModelTests.test_checksum_tampering_is_rejected) ... ok
+test_default_release_gate_blocks_low_quality_model (test_dual_task_models.DualTaskModelTests.test_default_release_gate_blocks_low_quality_model) ... ok
+test_industrial_lstm_trains_loads_and_returns_multitask_outputs (test_dual_task_models.DualTaskModelTests.test_industrial_lstm_trains_loads_and_returns_multitask_outputs) ... ok
+test_industrial_tcn_trains_loads_and_returns_fault_class (test_dual_task_models.DualTaskModelTests.test_industrial_tcn_trains_loads_and_returns_fault_class) ... ok
+test_missing_independent_calibration_set_prevents_activation (test_dual_task_models.DualTaskModelTests.test_missing_independent_calibration_set_prevents_activation) ... ok
+test_missing_ood_or_drift_signals_force_human_review (test_dual_task_models.DualTaskModelTests.test_missing_ood_or_drift_signals_force_human_review) ... ok
+test_unified_router_sends_forecast_and_fault_tasks_to_same_episode_store (test_dual_task_models.DualTaskModelTests.test_unified_router_sends_forecast_and_fault_tasks_to_same_episode_store) ... ok
+
+----------------------------------------------------------------------
+Ran 9 tests in 1.820s
+
+OK

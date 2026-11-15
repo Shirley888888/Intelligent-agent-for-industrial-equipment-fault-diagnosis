@@ -1,0 +1,13 @@
+test_bundled_etth1_trained_tcn_checkpoint_runs_through_agent (test_model_agent_e2e.ModelAgentEndToEndTests.test_bundled_etth1_trained_tcn_checkpoint_runs_through_agent) ... ok
+test_real_versioned_lstm_checkpoint_runs_through_agent (test_model_agent_e2e.ModelAgentEndToEndTests.test_real_versioned_lstm_checkpoint_runs_through_agent) ... ok
+test_structured_fault_model_output_is_passed_through_not_inferred (test_model_agent_e2e.ModelAgentEndToEndTests.test_structured_fault_model_output_is_passed_through_not_inferred) ... ok
+test_trained_tcn_checkpoint_runs_through_agent (test_model_agent_e2e.ModelAgentEndToEndTests.test_trained_tcn_checkpoint_runs_through_agent) ... ok
+test_candidate_generation_is_idempotent_for_same_evidence (test_strategy_candidate_generation.StrategyCandidateGenerationTests.test_candidate_generation_is_idempotent_for_same_evidence) ... ok
+test_disputed_feedback_does_not_generate_candidate (test_strategy_candidate_generation.StrategyCandidateGenerationTests.test_disputed_feedback_does_not_generate_candidate) ... ok
+test_single_verified_correction_does_not_create_candidate (test_strategy_candidate_generation.StrategyCandidateGenerationTests.test_single_verified_correction_does_not_create_candidate) ... ok
+test_verified_corrections_auto_generate_prompt_route_and_retrieval_candidates (test_strategy_candidate_generation.StrategyCandidateGenerationTests.test_verified_corrections_auto_generate_prompt_route_and_retrieval_candidates) ... ok
+
+----------------------------------------------------------------------
+Ran 8 tests in 0.929s
+
+OK

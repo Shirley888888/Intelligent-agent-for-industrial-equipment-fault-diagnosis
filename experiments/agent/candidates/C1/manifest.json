@@ -1,7 +1,7 @@
 {
   "candidate_id": "C1",
-  "checkpoint_path": "/mnt/data/online_loop_work/src/online_loop_minimal/experiments/agent/candidates/C1/checkpoint.npz",
-  "checkpoint_sha256": "c2198b35dc27b032bba261f278108e0e2fd77d27ec97cbda23ae76dc9d6b869a",
+  "checkpoint_path": "/mnt/data/atrea_cloud_run/atrea_upgrade/experiments/agent/candidates/C1/checkpoint.npz",
+  "checkpoint_sha256": "8e6e05f01787effdd2a3bb471a32824ab827012b4a22cd2527bb0804ae2c580d",
   "data_version": "D14975_bd3c61af3966",
   "trained_as_of": "2018-03-16T23:00:00",
   "train_config": {
@@ -18,6 +18,12 @@
     "hidden_size": 128,
     "num_layers": 2,
     "dropout": 0.1,
+    "tcn_channels": [
+      64,
+      64,
+      128
+    ],
+    "kernel_size": 5,
     "seed": 42,
     "device": "cpu"
   },
