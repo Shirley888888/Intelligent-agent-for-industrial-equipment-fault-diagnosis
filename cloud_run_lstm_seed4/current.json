@@ -1,0 +1,7 @@
+{
+  "model_version": "M1",
+  "activation_id": 1,
+  "activated_as_of": "2018-05-08T23:00:00",
+  "action": "upgrade",
+  "baseline_mae": 1.1964642011715472
+}

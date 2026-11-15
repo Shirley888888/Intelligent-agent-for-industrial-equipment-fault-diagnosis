@@ -1,0 +1,69 @@
+{
+  "candidate_id": "C1",
+  "checkpoint_path": "/root/autodl-tmp/atrea_upgrade/cloud_run_lstm_upg_seed1/candidates/C1/checkpoint.pt",
+  "checkpoint_sha256": "7350c54276ac96a908a58142acb3263c58382fa4cebbc9ebafabb8694bf75a6a",
+  "data_version": "D16247_b320087101fb",
+  "trained_as_of": "2018-05-08T23:00:00",
+  "train_config": {
+    "backend": "torch",
+    "model_name": "LSTM",
+    "ridge": 1.0,
+    "epochs": 10,
+    "patience": 3,
+    "lr": 0.001,
+    "batch_size": 128,
+    "weight_decay": 1e-05,
+    "grad_clip": 1.0,
+    "train_stride": 1,
+    "hidden_size": 128,
+    "num_layers": 2,
+    "dropout": 0.1,
+    "tcn_channels": [
+      64,
+      64,
+      128
+    ],
+    "kernel_size": 5,
+    "seed": 1,
+    "device": "cuda:0"
+  },
+  "validation_metrics": {
+    "MAE": 1.3310942638646701,
+    "unit": "degC",
+    "windows": 30,
+    "best_epoch": 5
+  },
+  "manifest": {
+    "data_version": "D16247_b320087101fb",
+    "observed_end": 16247,
+    "as_of": "2018-05-08T23:00:00",
+    "train_ranges": [
+      [
+        0,
+        12914
+      ],
+      [
+        14087,
+        14807
+      ]
+    ],
+    "validation_range": [
+      14807,
+      15527
+    ],
+    "historical_range": [
+      12914,
+      14087
+    ],
+    "recent_range": [
+      15527,
+      16247
+    ],
+    "snapshot_sha256": "b320087101fb246b96a31dddc6cebeed519f66649e4cb216619d97fa80f2bb93"
+  },
+  "model_version": "M1",
+  "checkpoint_filename": "M1_checkpoint.pt",
+  "parent_version": "M0",
+  "activated_as_of": "2018-05-08T23:00:00",
+  "baseline_mae": 1.2517978678973851
+}
